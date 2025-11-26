@@ -1,0 +1,4 @@
+Download rompatcher.min.js from:
+https://github.com/MarcRobledo/RomPatcher.js/releases/latest/download/rompatcher.min.js
+
+Save it as: rompatcher.min.js in this folder

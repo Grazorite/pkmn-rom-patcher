@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROM Patcher</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>ROM Patcher</h1>
+        
+        <div class="section">
+            <h2>Select Patch</h2>
+            <select id="patchSelect">
+                <option value="">Loading patches...</option>
+            </select>
+        </div>
+        
+        <div class="section">
+            <h2>Select ROM File</h2>
+            <input type="file" id="romFile" accept=".gb,.gbc,.gba,.nes,.smc,.sfc">
+            <div id="romValidation"></div>
+        </div>
+        
+        <div id="changelogSection" class="section" style="display:none">
+            <h2>Changelog</h2>
+            <div id="changelogContent"></div>
+        </div>
+        
+        <div class="section">
+            <button id="patchButton" disabled>Apply Patch</button>
+        </div>
+        
+        <div id="status"></div>
+    </div>
+    
+    <script src="js/rompatcher.min.js"></script>
+    <script>
+        let patches = [];
+        let selectedPatch = null;
+        
+        // CRC32 calculation
+        function crc32(data) {
+            const table = new Uint32Array(256);
+            for (let i = 0; i < 256; i++) {
+                let c = i;
+                for (let j = 0; j < 8; j++) {
+                    c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+                }
+                table[i] = c;
+            }
+            let crc = 0xFFFFFFFF;
+            for (let i = 0; i < data.length; i++) {
+                crc = table[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
+            }
+            return ((crc ^ 0xFFFFFFFF) >>> 0).toString(16).toUpperCase().padStart(8, '0');
+        }
+        
+        // Load manifest
+        fetch('manifest.json')
+            .then(r => r.json())
+            .then(data => {
+                patches = data;
+                const select = document.getElementById('patchSelect');
+                select.innerHTML = '<option value="">Choose a patch...</option>';
+                patches.forEach(patch => {
+                    const option = document.createElement('option');
+                    option.value = patch.id;
+                    option.textContent = patch.name;
+                    select.appendChild(option);
+                });
+            });
+        
+        document.getElementById('patchSelect').addEventListener('change', function(e) {
+            selectedPatch = patches.find(p => p.id === e.target.value);
+            
+            // Show changelog
+            const changelogSection = document.getElementById('changelogSection');
+            const changelogContent = document.getElementById('changelogContent');
+            if (selectedPatch && selectedPatch.changelog) {
+                changelogContent.innerHTML = marked.parse(selectedPatch.changelog);
+                changelogSection.style.display = 'block';
+            } else {
+                changelogSection.style.display = 'none';
+            }
+            
+            validateRom();
+            updatePatchButton();
+        });
+        
+        document.getElementById('romFile').addEventListener('change', function() {
+            validateRom();
+            updatePatchButton();
+        });
+        
+        function validateRom() {
+            const romFile = document.getElementById('romFile').files[0];
+            const validation = document.getElementById('romValidation');
+            
+            if (!romFile || !selectedPatch || !selectedPatch.crc32) {
+                validation.innerHTML = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const romData = new Uint8Array(e.target.result);
+                const calculatedCrc = crc32(romData);
+                
+                if (calculatedCrc === selectedPatch.crc32) {
+                    validation.innerHTML = '<div class="validation-success">✓ ROM validated</div>';
+                } else {
+                    validation.innerHTML = '<div class="validation-error">⚠ ROM CRC32 mismatch. Expected: ' + selectedPatch.crc32 + ', Got: ' + calculatedCrc + '</div>';
+                }
+            };
+            reader.readAsArrayBuffer(romFile);
+        }
+        
+        document.getElementById('patchButton').addEventListener('click', function() {
+            const romFile = document.getElementById('romFile').files[0];
+            if (!romFile || !selectedPatch) return;
+            
+            document.getElementById('status').textContent = 'Patching...';
+            
+            fetch(selectedPatch.file)
+                .then(r => r.arrayBuffer())
+                .then(patchData => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const romData = new Uint8Array(e.target.result);
+                            const patch = new Uint8Array(patchData);
+                            
+                            let result;
+                            switch(selectedPatch.type) {
+                                case 'ips': result = RomPatcher.applyIPS(patch, romData); break;
+                                case 'bps': result = RomPatcher.applyBPS(patch, romData); break;
+                                case 'ups': result = RomPatcher.applyUPS(patch, romData); break;
+                                default: throw new Error('Unsupported patch type');
+                            }
+                            
+                            const blob = new Blob([result], {type: 'application/octet-stream'});
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = romFile.name.replace(/\.[^.]+$/, '_patched$&');
+                            a.click();
+                            
+                            document.getElementById('status').textContent = 'Patch applied successfully!';
+                        } catch (err) {
+                            document.getElementById('status').textContent = 'Error: ' + err.message;
+                        }
+                    };
+                    reader.readAsArrayBuffer(romFile);
+                });
+        });
+        
+        function updatePatchButton() {
+            const hasRom = document.getElementById('romFile').files.length > 0;
+            const hasPatch = selectedPatch !== null;
+            document.getElementById('patchButton').disabled = !(hasRom && hasPatch);
+        }
+    </script>
+</body>
+</html>

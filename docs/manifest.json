@@ -1,0 +1,10 @@
+[
+  {
+    "id": "mario-kaizo",
+    "name": "Mario Kaizo",
+    "file": "../patches/Mario Kaizo [A2B4C6D8].bps",
+    "type": "bps",
+    "crc32": "A2B4C6D8",
+    "changelog": "# Mario Kaizo Hack\n\n## v1.0 - Initial Release\n\n- Added 8 new challenging levels\n- Fixed jump physics bug\n- Improved graphics for World 1-1\n\n## Features\n\n- **Difficulty**: Expert level\n- **New Mechanics**: Wall jumping, precise timing\n- **Graphics**: Enhanced sprites and backgrounds\n\n## Installation Notes\n\nMake sure you're using the correct base ROM with CRC32: `A2B4C6D8`"
+  }
+]
