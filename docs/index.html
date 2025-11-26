@@ -6,8 +6,14 @@
     <title>ROM Patcher</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        // Apply dark mode immediately to prevent flash
+        if (localStorage.getItem('darkMode') === null) {
+            localStorage.setItem('darkMode', 'true');
+        }
+    </script>
 </head>
-<body>
+<body class="dark-mode">
     <div class="theme-toggle">
         <button id="themeToggle">🌙</button>
     </div>
@@ -199,14 +205,13 @@
             localStorage.setItem('darkMode', isDark);
         });
         
-        // Set dark mode as default
-        if (localStorage.getItem('darkMode') === null) {
-            localStorage.setItem('darkMode', 'true');
-        }
-        
-        if (localStorage.getItem('darkMode') === 'true') {
+        // Ensure dark mode is applied on load
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (isDarkMode) {
             document.body.classList.add('dark-mode');
             document.getElementById('themeToggle').textContent = '☀️';
+        } else {
+            document.body.classList.remove('dark-mode');
         }
     </script>
 </body>
