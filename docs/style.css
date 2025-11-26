@@ -216,6 +216,9 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .filter-options {
@@ -308,6 +311,10 @@ body {
     color: white;
     border-color: var(--error);
     transform: translateY(-1px);
+}
+
+body.dark-mode .clear-btn {
+    color: var(--text-primary);
 }
 
 /* Hack Grid */
@@ -446,6 +453,7 @@ body {
 .status-completed { background: var(--success); }
 .status-beta { background: var(--warning); }
 .status-alpha { background: var(--error); }
+.status-perpetual-beta { background: var(--warning); }
 
 .loading {
     text-align: center;
@@ -492,6 +500,58 @@ body {
 
 .detail-panel.open {
     right: 0;
+}
+
+.detail-panel.collapsed {
+    right: -50%;
+    width: 80px;
+}
+
+.collapsed-content {
+    display: none;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.detail-panel.collapsed .collapsed-content {
+    display: block;
+}
+
+.detail-panel.collapsed .detail-content {
+    display: none;
+}
+
+.collapsed-header {
+    text-align: center;
+}
+
+.collapsed-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 8px;
+}
+
+.collapsed-info h4 {
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.collapsed-info p {
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.star-filled {
+    color: #fbbf24;
+    fill: currentColor;
+}
+
+.star-empty {
+    color: var(--border);
 }
 
 .detail-content {
@@ -555,6 +615,13 @@ body {
     color: var(--text-secondary);
     margin-bottom: 24px;
     flex-wrap: wrap;
+    align-items: center;
+}
+
+.detail-meta > span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .detail-tabs {
@@ -573,6 +640,9 @@ body {
     border-bottom: 3px solid transparent;
     transition: all 0.2s ease;
     color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .tab-btn.active {
@@ -630,6 +700,9 @@ body {
     font-weight: 600;
     color: var(--text-secondary);
     width: 40%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .patch-interface {
@@ -700,6 +773,10 @@ body {
     text-align: center;
     transition: all 0.2s ease;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .link-btn:hover {
@@ -735,10 +812,19 @@ body.dark-mode {
     --bg-secondary: #111827;
     --border: #374151;
     --shadow: rgba(0, 0, 0, 0.3);
+    background: #0f172a;
 }
 
-body.dark-mode {
-    background: #0f172a;
+body.dark-mode .search-input {
+    color: var(--text-primary);
+}
+
+body.dark-mode .search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .close-btn {
+    color: var(--text-primary);
 }
 
 /* Responsive */

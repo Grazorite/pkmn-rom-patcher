@@ -17,11 +17,11 @@ class ROMHackStore {
     }
     
     async init() {
-        Utils.initTheme();
         await this.loadHacks();
         this.setupEventListeners();
         this.generateFilters();
         this.renderHacks();
+        Utils.initTheme();
         this.initializeIcons();
     }
     
@@ -71,6 +71,25 @@ class ROMHackStore {
         if (closeBtn) {
             closeBtn.addEventListener('click', () => this.closeDetailPanel());
         }
+        
+        // Click outside to collapse
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('detailPanel');
+            const isClickInside = panel && panel.contains(e.target);
+            const isHackCard = e.target.closest('.hack-card');
+            
+            if (!isClickInside && !isHackCard && panel && panel.classList.contains('open')) {
+                this.uiManager.collapseDetailPanel();
+            }
+        });
+        
+        // Click collapsed panel to expand
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('detailPanel');
+            if (panel && panel.classList.contains('collapsed') && panel.contains(e.target)) {
+                this.uiManager.expandDetailPanel();
+            }
+        });
         
         // Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -180,7 +199,16 @@ class ROMHackStore {
     }
 }
 
-// Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.app = new ROMHackStore();
-});
+// Initialize the app when DOM and scripts are loaded
+function initializeApp() {
+    // Check if RomPatcher dependencies are loaded
+    if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
+        window.app = new ROMHackStore();
+    } else {
+        // Retry after a short delay
+        setTimeout(initializeApp, 100);
+    }
+}
+
+// Start initialization when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeApp);

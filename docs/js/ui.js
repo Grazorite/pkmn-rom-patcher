@@ -21,12 +21,13 @@ export class UIManager {
     }
 
     createHackCard(hack) {
-        const imageUrl = hack.meta?.images?.boxArt;
+        // Use banner image for cards, fallback to boxArt, then title
+        const imageUrl = hack.meta?.images?.banner || hack.meta?.images?.boxArt;
         const imageHtml = imageUrl ? 
             `<img src="${imageUrl}" alt="${hack.title}" onerror="this.style.display='none'">` : 
             hack.title;
             
-        const statusClass = hack.meta?.status ? `status-${hack.meta.status.toLowerCase()}` : 'status-completed';
+        const statusClass = hack.meta?.status ? `status-${hack.meta.status.toLowerCase().replace(' ', '-')}` : 'status-completed';
         
         return `
             <div class="hack-card" data-hack-id="${hack.id}">
@@ -105,11 +106,13 @@ export class UIManager {
         }
         if (playtimeEl) playtimeEl.innerHTML = hack.meta?.playtime ? `<i data-lucide="clock" width="16" height="16"></i> ${hack.meta.playtime}` : '';
 
-        // Banner
+        // Banner with boxArt background
         const banner = document.getElementById('detailBanner');
         if (banner) {
             if (hack.meta?.images?.banner) {
-                banner.innerHTML = `<img src="${hack.meta.images.banner}" alt="${hack.title}">`;
+                const boxArtStyle = hack.meta?.images?.boxArt ? 
+                    `background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${hack.meta.images.boxArt}'); background-size: cover; background-position: center;` : '';
+                banner.innerHTML = `<img src="${hack.meta.images.banner}" alt="${hack.title}" style="${boxArtStyle}">`;
             } else {
                 banner.innerHTML = hack.title;
             }
@@ -127,11 +130,57 @@ export class UIManager {
 
         // Links
         this.renderLinksTab(hack.meta?.links);
+        
+        // Populate collapsed panel
+        this.populateCollapsedPanel(hack);
+        
+        // Re-initialize icons
+        if (typeof lucide !== 'undefined') {
+            setTimeout(() => lucide.createIcons(), 50);
+        }
+    }
+    
+    populateCollapsedPanel(hack) {
+        const collapsedImage = document.getElementById('collapsedImage');
+        const collapsedTitle = document.getElementById('collapsedTitle');
+        const collapsedAuthor = document.getElementById('collapsedAuthor');
+        const collapsedRating = document.getElementById('collapsedRating');
+        
+        if (collapsedImage && hack.meta?.images?.boxArt) {
+            collapsedImage.src = hack.meta.images.boxArt;
+        }
+        
+        if (collapsedTitle) {
+            collapsedTitle.textContent = hack.title;
+        }
+        
+        if (collapsedAuthor) {
+            collapsedAuthor.textContent = hack.meta?.author || 'Unknown';
+        }
+        
+        if (collapsedRating && hack.meta?.rating) {
+            collapsedRating.innerHTML = this.renderStarRating(hack.meta.rating);
+        }
     }
 
     renderMetadataTable(meta) {
         const table = document.getElementById('metadataTable');
         if (!table || !meta) return;
+        
+        const fieldIcons = {
+            'Base ROM': 'disc',
+            'System': 'cpu',
+            'Difficulty': 'trending-up',
+            'Graphics': 'image',
+            'Story': 'book-open',
+            'Maps': 'map',
+            'Postgame': 'plus-circle',
+            'Mechanics': 'settings',
+            'Fakemons': 'star',
+            'Tags': 'tag',
+            'Released': 'calendar',
+            'Rating': 'award'
+        };
         
         const fields = [
             ['Base ROM', meta.baseRom],
@@ -145,15 +194,30 @@ export class UIManager {
             ['Fakemons', meta.fakemons],
             ['Tags', Array.isArray(meta.tags) ? meta.tags.join(', ') : meta.tags],
             ['Released', meta.released],
-            ['Rating', meta.rating ? `${meta.rating}/5` : null]
+            ['Rating', meta.rating ? this.renderStarRating(meta.rating) : null]
         ].filter(([_, value]) => value);
         
         table.innerHTML = fields.map(([label, value]) => `
             <tr>
-                <td>${label}</td>
+                <td>
+                    <i data-lucide="${fieldIcons[label] || 'info'}" width="14" height="14"></i>
+                    ${label}
+                </td>
                 <td>${value}</td>
             </tr>
         `).join('');
+    }
+    
+    renderStarRating(rating) {
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars.push('<i data-lucide="star" class="star-filled" width="16" height="16"></i>');
+            } else {
+                stars.push('<i data-lucide="star" class="star-empty" width="16" height="16"></i>');
+            }
+        }
+        return stars.join('');
     }
 
     renderLinksTab(links) {
@@ -165,8 +229,20 @@ export class UIManager {
             return;
         }
         
-        const linkButtons = Object.entries(links).map(([type, url]) => `
+        const linkIcons = {
+            website: 'globe',
+            discord: 'message-circle',
+            documentation: 'file-text'
+        };
+        
+        // Order links: website, discord, documentation
+        const orderedLinks = ['website', 'discord', 'documentation']
+            .filter(type => links[type])
+            .map(type => [type, links[type]]);
+        
+        const linkButtons = orderedLinks.map(([type, url]) => `
             <a href="${url}" target="_blank" class="link-btn">
+                <i data-lucide="${linkIcons[type] || 'external-link'}" width="16" height="16"></i>
                 ${type.charAt(0).toUpperCase() + type.slice(1)}
             </a>
         `).join('');
@@ -192,12 +268,33 @@ export class UIManager {
 
     openDetailPanel() {
         const panel = document.getElementById('detailPanel');
-        if (panel) panel.classList.add('open');
+        if (panel) {
+            panel.classList.add('open');
+            panel.classList.remove('collapsed');
+        }
     }
 
     closeDetailPanel() {
         const panel = document.getElementById('detailPanel');
-        if (panel) panel.classList.remove('open');
+        if (panel) {
+            panel.classList.remove('open', 'collapsed');
+        }
+    }
+    
+    collapseDetailPanel() {
+        const panel = document.getElementById('detailPanel');
+        if (panel) {
+            panel.classList.add('collapsed');
+            panel.classList.remove('open');
+        }
+    }
+    
+    expandDetailPanel() {
+        const panel = document.getElementById('detailPanel');
+        if (panel) {
+            panel.classList.add('open');
+            panel.classList.remove('collapsed');
+        }
     }
 
     clearAllFilterCheckboxes() {

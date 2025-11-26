@@ -47,23 +47,23 @@
                 <div class="filter-section">
                     <h3>Filters</h3>
                     <div class="filter-group">
-                        <h4>Base ROM</h4>
+                        <h4><i data-lucide="disc" width="14" height="14"></i> Base ROM</h4>
                         <div id="baseRomFilters" class="filter-options"></div>
                     </div>
                     <div class="filter-group">
-                        <h4>System</h4>
+                        <h4><i data-lucide="cpu" width="14" height="14"></i> System</h4>
                         <div id="systemFilters" class="filter-options"></div>
                     </div>
                     <div class="filter-group">
-                        <h4>Status</h4>
+                        <h4><i data-lucide="activity" width="14" height="14"></i> Status</h4>
                         <div id="statusFilters" class="filter-options"></div>
                     </div>
                     <div class="filter-group">
-                        <h4>Difficulty</h4>
+                        <h4><i data-lucide="trending-up" width="14" height="14"></i> Difficulty</h4>
                         <div id="difficultyFilters" class="filter-options"></div>
                     </div>
                     <div class="filter-group">
-                        <h4>Tags</h4>
+                        <h4><i data-lucide="hash" width="14" height="14"></i> Tags</h4>
                         <div id="tagFilters" class="filter-options"></div>
                     </div>
                 </div>
@@ -92,6 +92,16 @@
     
     <!-- Detail Panel -->
     <div id="detailPanel" class="detail-panel">
+        <div class="collapsed-content">
+            <div class="collapsed-header">
+                <img id="collapsedImage" class="collapsed-image" alt="">
+                <div class="collapsed-info">
+                    <h4 id="collapsedTitle"></h4>
+                    <p id="collapsedAuthor"></p>
+                    <div id="collapsedRating"></div>
+                </div>
+            </div>
+        </div>
         <div class="detail-content">
             <button class="close-btn" id="closeDetail">
                 <i data-lucide="x" width="24" height="24"></i>
@@ -110,9 +120,18 @@
             </div>
             
             <div class="detail-tabs">
-                <button class="tab-btn active" data-tab="info">Info</button>
-                <button class="tab-btn" data-tab="patch">Patch</button>
-                <button class="tab-btn" data-tab="links">Links</button>
+                <button class="tab-btn active" data-tab="info">
+                    <i data-lucide="info" width="16" height="16"></i>
+                    Info
+                </button>
+                <button class="tab-btn" data-tab="patch">
+                    <i data-lucide="zap" width="16" height="16"></i>
+                    Patch
+                </button>
+                <button class="tab-btn" data-tab="links">
+                    <i data-lucide="external-link" width="16" height="16"></i>
+                    Links
+                </button>
             </div>
             
             <div class="tab-content">
