@@ -15,7 +15,7 @@
 </head>
 <body class="dark-mode">
     <div class="theme-toggle">
-        <button id="themeToggle">🌙</button>
+        <button id="themeToggle">Dark</button>
     </div>
     
     <div class="app-container">
@@ -24,7 +24,7 @@
         </nav>
         
         <header class="app-header">
-            <h1>🎮 ROM Hack Store</h1>
+            <h1>ROM Hack Store</h1>
             <p>Discover and patch your favorite ROM hacks</p>
         </header>
         
@@ -116,7 +116,7 @@
                             <input type="file" id="romFileInput" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64">
                             <div id="romValidationDetail"></div>
                         </div>
-                        <button id="applyPatchBtn" class="patch-btn" disabled>🚀 Apply Patch</button>
+                        <button id="applyPatchBtn" class="patch-btn" disabled>Apply Patch</button>
                         <div id="patchStatus"></div>
                     </div>
                 </div>
@@ -130,6 +130,6 @@
     
     <script src="js/rompatcher.min.js"></script>
     <script src="js/RomPatcher.webapp.js"></script>
-    <script src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
