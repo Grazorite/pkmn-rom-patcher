@@ -12,6 +12,9 @@
         <button id="themeToggle">🌙</button>
     </div>
     <div class="container">
+        <nav class="breadcrumb">
+            <a href="../">← Home</a>
+        </nav>
         <h1>🎮 ROM Patcher</h1>
         
         <div class="section">
@@ -196,7 +199,11 @@
             localStorage.setItem('darkMode', isDark);
         });
         
-        // Load saved theme
+        // Set dark mode as default
+        if (localStorage.getItem('darkMode') === null) {
+            localStorage.setItem('darkMode', 'true');
+        }
+        
         if (localStorage.getItem('darkMode') === 'true') {
             document.body.classList.add('dark-mode');
             document.getElementById('themeToggle').textContent = '☀️';

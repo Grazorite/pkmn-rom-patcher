@@ -15,25 +15,27 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 1000;
+    z-index: 9999;
 }
 
 .theme-toggle button {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    border: none;
+    border: 2px solid #ddd;
     background: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     cursor: pointer;
     font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .theme-toggle button:hover {
     transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
 .container {
@@ -43,6 +45,21 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+}
+
+.breadcrumb a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+    color: #007cba;
 }
 
 h1 {
@@ -202,4 +219,13 @@ body.dark-mode .patch-crc {
 body.dark-mode .theme-toggle button {
     background: #3d3d3d;
     color: #e0e0e0;
+    border-color: #555;
+}
+
+body.dark-mode .breadcrumb a {
+    color: #ccc;
+}
+
+body.dark-mode .breadcrumb a:hover {
+    color: #007cba;
 }
