@@ -8,16 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
     <script>
-        if (localStorage.getItem('darkMode') === null) {
-            localStorage.setItem('darkMode', 'true');
+        // Initialize theme on page load
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
         }
     </script>
 </head>
-<body class="dark-mode">
-    <div class="theme-toggle">
-        <button id="themeToggle">Dark</button>
-    </div>
-    
+<body>
     <div class="theme-toggle" id="themeToggle">
         <i data-lucide="sun" width="24" height="24"></i>
     </div>
@@ -168,9 +166,8 @@
         </div>
     </div>
     
-    <script src="js/rompatcher.min.js"></script>
-    <script src="js/RomPatcher.webapp.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="js/rompatcher.min.js"></script>
     <script type="module" src="js/app.js"></script>
 </body>
 </html>

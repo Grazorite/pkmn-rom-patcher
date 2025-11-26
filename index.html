@@ -33,7 +33,7 @@
             transition: all 0.3s ease;
         }
 
-        body.dark {
+        body.dark-mode {
             background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
         }
 
@@ -372,13 +372,13 @@
         // Load saved theme
         const savedTheme = localStorage.getItem('theme') || 'light';
         if (savedTheme === 'dark') {
-            body.classList.add('dark');
+            body.classList.add('dark-mode');
             themeToggle.innerHTML = '<i data-lucide="moon" width="24" height="24"></i>';
         }
         
         themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark');
-            const isDark = body.classList.contains('dark');
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
             
             themeToggle.innerHTML = isDark 
                 ? '<i data-lucide="moon" width="24" height="24"></i>'

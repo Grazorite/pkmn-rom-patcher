@@ -17,12 +17,14 @@ class ROMHackStore {
     }
     
     async init() {
+        // Initialize theme first
+        Utils.initTheme();
+        this.initializeIcons();
+        
         await this.loadHacks();
         this.setupEventListeners();
         this.generateFilters();
         this.renderHacks();
-        Utils.initTheme();
-        this.initializeIcons();
     }
     
     initializeIcons() {
@@ -201,14 +203,13 @@ class ROMHackStore {
 
 // Initialize the app when DOM and scripts are loaded
 function initializeApp() {
-    // Check if RomPatcher dependencies are loaded
-    if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
-        window.app = new ROMHackStore();
-    } else {
-        // Retry after a short delay
-        setTimeout(initializeApp, 100);
-    }
+    // Initialize without waiting for RomPatcher since we're not using it for the store interface
+    window.app = new ROMHackStore();
 }
 
 // Start initialization when DOM is loaded
-document.addEventListener('DOMContentLoaded', initializeApp);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}
