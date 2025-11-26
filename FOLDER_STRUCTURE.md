@@ -1,0 +1,98 @@
+# Project Folder Structure
+
+## Overview
+
+The project is organized by base ROM to support scalability with thousands of patches.
+
+## Directory Structure
+
+```
+├── patches/                    # ROM patch files organized by base ROM
+│   ├── crystal/               # Pokemon Crystal patches
+│   ├── emerald/               # Pokemon Emerald patches
+│   ├── firered/               # Pokemon FireRed patches
+│   └── ...                    # Other base ROMs
+├── metadata/                   # Metadata files (YAML frontmatter + markdown)
+│   ├── crystal/               # Metadata for Crystal patches
+│   ├── emerald/               # Metadata for Emerald patches
+│   └── ...                    # Matching base ROM structure
+├── images/                     # Static images (optional, URLs preferred)
+│   ├── crystal/               # Images for Crystal patches
+│   └── ...                    # Matching base ROM structure
+└── docs/                      # Web application files
+    ├── js/                    # Modular JavaScript
+    │   ├── app.js            # Main application
+    │   ├── search.js         # Search and filtering
+    │   ├── ui.js             # UI rendering
+    │   ├── patcher.js        # ROM patching
+    │   └── utils.js          # Utilities
+    └── manifest.json         # Auto-generated from patches + metadata
+```
+
+## Adding New Patches
+
+1. **Create base ROM folder** (if it doesn't exist):
+   ```
+   patches/[baserom]/
+   metadata/[baserom]/
+   ```
+
+2. **Add patch file**:
+   ```
+   patches/[baserom]/PatchName.ips
+   ```
+
+3. **Add metadata file**:
+   ```
+   metadata/[baserom]/PatchName.md
+   ```
+
+4. **Run manifest generator**:
+   ```bash
+   node scripts/generate-manifest.js
+   ```
+
+## Metadata Format
+
+Each patch requires a corresponding `.md` file with YAML frontmatter:
+
+```yaml
+---
+title: "Patch Name"
+baseRom: "Crystal"
+system: "GBC"
+status: "Completed"
+author: "Author Name"
+website: "https://example.com"
+released: "2024-01-01"
+hackType: "New"
+tags: ["Tag1", "Tag2"]
+graphics: "Enhanced"
+story: "Enhanced"
+maps: "Enhanced"
+postgame: "Yes"
+difficulty: "Hard"
+mechanics: ["Mechanic1"]
+fakemons: "None"
+variants: ["None"]
+typeChanges: ["None"]
+physicalSpecialSplit: false
+antiCheat: false
+boxArt: "https://example.com/image.jpg"
+bannerImage: "https://example.com/banner.jpg"
+discord: "https://discord.gg/example"
+documentation: "https://docs.example.com"
+---
+
+# Patch Description
+
+Markdown content describing the patch...
+```
+
+## Benefits
+
+- **Scalability**: Supports thousands of patches organized by base ROM
+- **Maintainability**: Clear separation of patches, metadata, and images
+- **Automation**: GitHub Actions automatically updates manifest
+- **Performance**: Efficient filtering and search by base ROM
+- **Modularity**: JavaScript code split into focused modules

@@ -9,91 +9,102 @@ const REQUIRED_FIELDS = [
   'physicalSpecialSplit', 'antiCheat'
 ];
 
-const VALID_SYSTEMS = ['GBA', 'NDS', 'GBC', 'GB', 'N64', 'SNES', 'NES'];
-const VALID_STATUS = ['Completed', 'Beta', 'Alpha', 'Demo', 'Cancelled'];
-const VALID_HACK_TYPES = ['New', 'Improvement'];
-const VALID_ENUMS = ['New', 'Enhanced', 'Same'];
-const VALID_POSTGAME = ['Yes', 'No', 'N/A'];
-const VALID_DIFFICULTY = ['Easy', 'Normal', 'Hard', 'Kaizo', 'Extreme'];
-const VALID_FAKEMONS = ['All', 'Majority', 'Some', 'None'];
+// Map YAML field names to required field names
+const FIELD_MAPPING = {
+  'antiCheat': 'antiCheat'
+};
 
 function validateMetadata(meta, filename) {
   const warnings = [];
-  const missing = REQUIRED_FIELDS.filter(field => !meta[field]);
+  const essentialFields = ['baseRom', 'system', 'status', 'author'];
+  const missing = essentialFields.filter(field => !meta[field]);
   
   if (missing.length > 0) {
-    warnings.push(`Missing required fields in ${filename}: ${missing.join(', ')}`);
-  }
-  
-  if (meta.system && !VALID_SYSTEMS.includes(meta.system)) {
-    warnings.push(`Invalid system in ${filename}: ${meta.system}`);
+    warnings.push(`Missing essential fields in ${filename}: ${missing.join(', ')}`);
   }
   
   return { isValid: missing.length === 0, warnings };
 }
 
-function scanPatches(dir) {
+function scanPatchesDirectory(patchesDir, metadataDir) {
   const patches = [];
-  const files = fs.readdirSync(dir, { withFileTypes: true });
-  const patchFiles = new Map();
   
-  // First pass: collect all files
-  for (const file of files) {
-    const fullPath = path.join(dir, file.name);
-    
-    if (file.isDirectory()) {
-      patches.push(...scanPatches(fullPath));
-    } else if (file.isFile()) {
-      const ext = path.extname(file.name).toLowerCase().slice(1);
-      const baseName = path.basename(file.name, path.extname(file.name));
-      
-      if (['ips', 'bps', 'ups', 'xdelta'].includes(ext)) {
-        patchFiles.set(baseName, { ...patchFiles.get(baseName), patchFile: file.name, fullPath, ext });
-      } else if (ext === 'md') {
-        patchFiles.set(baseName, { ...patchFiles.get(baseName), mdFile: file.name, mdPath: fullPath });
-      }
-    }
+  if (!fs.existsSync(patchesDir)) {
+    console.warn(`Patches directory not found: ${patchesDir}`);
+    return patches;
   }
   
-  // Second pass: build patch objects
-  for (const [baseName, files] of patchFiles) {
-    if (files.patchFile) {
-      const crc32Match = baseName.match(/\[([A-Fa-f0-9]{8})\]/);
-      const cleanName = baseName.replace(/\s*\[([A-Fa-f0-9]{8})\]\s*/, '');
-      const id = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-      const relativePath = path.relative(path.join(__dirname, '..', 'docs'), files.fullPath).replace(/\\/g, '/');
+  // Scan base ROM directories
+  const baseRomDirs = fs.readdirSync(patchesDir, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+  
+  for (const baseRom of baseRomDirs) {
+    const baseRomPatchDir = path.join(patchesDir, baseRom);
+    const baseRomMetadataDir = path.join(metadataDir, baseRom);
+    
+    if (!fs.existsSync(baseRomMetadataDir)) {
+      console.warn(`Metadata directory not found for ${baseRom}: ${baseRomMetadataDir}`);
+      continue;
+    }
+    
+    // Get all patch files in this base ROM directory
+    const patchFiles = fs.readdirSync(baseRomPatchDir, { withFileTypes: true })
+      .filter(dirent => dirent.isFile())
+      .filter(dirent => {
+        const ext = path.extname(dirent.name).toLowerCase().slice(1);
+        return ['ips', 'bps', 'ups', 'xdelta'].includes(ext);
+      });
+    
+    for (const patchFile of patchFiles) {
+      const patchPath = path.join(baseRomPatchDir, patchFile.name);
+      const baseName = path.basename(patchFile.name, path.extname(patchFile.name));
+      const metadataPath = path.join(baseRomMetadataDir, `${baseName}.md`);
       
       let meta = {};
       let changelog = null;
       let isIncomplete = false;
       
-      if (files.mdFile && files.mdPath) {
+      // Try to load metadata
+      if (fs.existsSync(metadataPath)) {
         try {
-          const mdContent = fs.readFileSync(files.mdPath, 'utf8');
+          const mdContent = fs.readFileSync(metadataPath, 'utf8');
           const parsed = matter(mdContent);
           meta = parsed.data;
           changelog = parsed.content.trim();
           
-          const validation = validateMetadata(meta, files.mdFile);
+          const validation = validateMetadata(meta, `${baseRom}/${baseName}.md`);
           if (validation.warnings.length > 0) {
             validation.warnings.forEach(warning => console.warn(warning));
           }
           isIncomplete = !validation.isValid;
         } catch (e) {
-          console.warn(`Error parsing ${files.mdFile}: ${e.message}`);
+          console.warn(`Error parsing ${baseRom}/${baseName}.md: ${e.message}`);
           isIncomplete = true;
         }
       } else {
-        console.warn(`No metadata file found for ${files.patchFile}`);
+        console.warn(`No metadata file found for ${baseRom}/${patchFile.name}`);
         isIncomplete = true;
       }
       
-      // Structure metadata
+      // Extract CRC32 from filename if present
+      const crc32Match = baseName.match(/\[([A-Fa-f0-9]{8})\]/);
+      const cleanName = baseName.replace(/\s*\[([A-Fa-f0-9]{8})\]\s*/, '');
+      const id = `${baseRom.toLowerCase()}-${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+      
+      // Create relative path from docs directory
+      const relativePath = path.relative(
+        path.join(__dirname, '..', 'docs'), 
+        patchPath
+      ).replace(/\\/g, '/');
+      
+      // Build patch entry
       const patchEntry = {
         id,
         title: meta.title || cleanName,
         file: relativePath,
-        type: files.ext,
+        type: path.extname(patchFile.name).toLowerCase().slice(1),
+        baseRom: baseRom,
         ...(crc32Match && { crc32: crc32Match[1].toUpperCase() }),
         ...(isIncomplete && { incomplete: true }),
         meta: {
@@ -130,14 +141,20 @@ function scanPatches(dir) {
   return patches;
 }
 
+// Main execution
 const patchesDir = path.join(__dirname, '..', 'patches');
+const metadataDir = path.join(__dirname, '..', 'metadata');
 const outputFile = path.join(__dirname, '..', 'docs', 'manifest.json');
 
+// Ensure directories exist
 if (!fs.existsSync(patchesDir)) {
   fs.mkdirSync(patchesDir, { recursive: true });
 }
+if (!fs.existsSync(metadataDir)) {
+  fs.mkdirSync(metadataDir, { recursive: true });
+}
 
-const patches = fs.existsSync(patchesDir) ? scanPatches(patchesDir) : [];
+const patches = scanPatchesDirectory(patchesDir, metadataDir);
 const incompleteCount = patches.filter(p => p.incomplete).length;
 
 fs.writeFileSync(outputFile, JSON.stringify(patches, null, 2));

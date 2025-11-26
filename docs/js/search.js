@@ -40,6 +40,9 @@ export class SearchManager {
                         return hack.meta.tags && hack.meta.tags.some(tag => 
                             this.activeFilters[filterType].has(tag)
                         );
+                    } else if (filterType === 'baseRom') {
+                        const baseRom = hack.baseRom || hack.meta?.baseRom;
+                        return this.activeFilters[filterType].has(baseRom);
                     } else {
                         return this.activeFilters[filterType].has(hack.meta[filterType]);
                     }
@@ -74,8 +77,11 @@ export class SearchManager {
         };
         
         data.forEach(hack => {
+            // Use baseRom from top level or meta
+            const baseRom = hack.baseRom || hack.meta?.baseRom;
+            if (baseRom) filters.baseRom.set(baseRom, (filters.baseRom.get(baseRom) || 0) + 1);
+            
             if (hack.meta) {
-                if (hack.meta.baseRom) filters.baseRom.set(hack.meta.baseRom, (filters.baseRom.get(hack.meta.baseRom) || 0) + 1);
                 if (hack.meta.system) filters.system.set(hack.meta.system, (filters.system.get(hack.meta.system) || 0) + 1);
                 if (hack.meta.status) filters.status.set(hack.meta.status, (filters.status.get(hack.meta.status) || 0) + 1);
                 if (hack.meta.difficulty) filters.difficulty.set(hack.meta.difficulty, (filters.difficulty.get(hack.meta.difficulty) || 0) + 1);
