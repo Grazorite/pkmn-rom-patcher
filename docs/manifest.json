@@ -38,6 +38,6 @@
         "website": "https://example.com/mario-kaizo"
       }
     },
-    "changelog": "# Mario Kaizo Hack\n\n## v1.0 - Initial Release\n\n- Added 8 new challenging levels\n- Fixed jump physics bug\n- Improved graphics for World 1-1\n\n## Features\n\n- **Difficulty**: Expert level\n- **New Mechanics**: Wall jumping, precise timing\n- **Graphics**: Enhanced sprites and backgrounds\n\n## Installation Notes\n\nMake sure you're using the correct base ROM with CRC32: `A2B4C6D8`"
+    "changelog": "# Mario Kaizo Hack\r\n\r\n## v1.0 - Initial Release\r\n\r\n- Added 8 new challenging levels\r\n- Fixed jump physics bug\r\n- Improved graphics for World 1-1\r\n\r\n## Features\r\n\r\n- **Difficulty**: Expert level\r\n- **New Mechanics**: Wall jumping, precise timing\r\n- **Graphics**: Enhanced sprites and backgrounds\r\n\r\n## Installation Notes\r\n\r\nMake sure you're using the correct base ROM with CRC32: `A2B4C6D8`"
   }
 ]

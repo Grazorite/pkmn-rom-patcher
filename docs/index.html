@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROM Patcher</title>
+    <title>ROM Hack Store</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
     <script>
-        // Apply dark mode immediately to prevent flash
         if (localStorage.getItem('darkMode') === null) {
             localStorage.setItem('darkMode', 'true');
         }
@@ -17,202 +17,119 @@
     <div class="theme-toggle">
         <button id="themeToggle">🌙</button>
     </div>
-    <div class="container">
+    
+    <div class="app-container">
         <nav class="breadcrumb">
             <a href="../">← Home</a>
         </nav>
-        <h1>🎮 ROM Patcher</h1>
         
-        <div class="section">
-            <h2>📦 Select Patch</h2>
-            <select id="patchSelect">
-                <option value="">Loading patches...</option>
-            </select>
-            <div id="patchInfo" class="patch-info"></div>
+        <header class="app-header">
+            <h1>🎮 ROM Hack Store</h1>
+            <p>Discover and patch your favorite ROM hacks</p>
+        </header>
+        
+        <div class="app-layout">
+            <aside class="sidebar">
+                <div class="search-section">
+                    <input type="text" id="searchInput" placeholder="Search hacks..." class="search-input">
+                </div>
+                
+                <div class="filter-section">
+                    <h3>Filters</h3>
+                    <div class="filter-group">
+                        <h4>Base ROM</h4>
+                        <div id="baseRomFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>System</h4>
+                        <div id="systemFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>Status</h4>
+                        <div id="statusFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>Difficulty</h4>
+                        <div id="difficultyFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>Tags</h4>
+                        <div id="tagFilters" class="filter-options"></div>
+                    </div>
+                </div>
+            </aside>
+            
+            <main class="main-content">
+                <div class="results-header">
+                    <span id="resultsCount">Loading...</span>
+                    <button id="clearFilters" class="clear-btn">Clear Filters</button>
+                </div>
+                
+                <div id="hackGrid" class="hack-grid">
+                    <div class="loading">Loading ROM hacks...</div>
+                </div>
+                
+                <button id="loadMore" class="load-more" style="display:none">Load More</button>
+            </main>
         </div>
-        
-        <div class="section">
-            <h2>💾 Select ROM File</h2>
-            <input type="file" id="romFile" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64">
-            <div id="romValidation"></div>
+    </div>
+    
+    <!-- Detail Panel -->
+    <div id="detailPanel" class="detail-panel">
+        <div class="detail-content">
+            <button class="close-btn" id="closeDetail">×</button>
+            
+            <div class="detail-header">
+                <div id="detailBanner" class="detail-banner"></div>
+                <div class="detail-title">
+                    <h2 id="detailTitle"></h2>
+                    <div class="detail-meta">
+                        <span id="detailAuthor"></span>
+                        <span id="detailStatus"></span>
+                        <span id="detailPlaytime"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-tabs">
+                <button class="tab-btn active" data-tab="info">Info</button>
+                <button class="tab-btn" data-tab="patch">Patch</button>
+                <button class="tab-btn" data-tab="links">Links</button>
+            </div>
+            
+            <div class="tab-content">
+                <div id="infoTab" class="tab-panel active">
+                    <div class="info-grid">
+                        <div class="info-description">
+                            <div id="detailDescription"></div>
+                        </div>
+                        <div class="info-metadata">
+                            <table id="metadataTable"></table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="patchTab" class="tab-panel">
+                    <div class="patch-interface">
+                        <h3>Apply Patch</h3>
+                        <div class="file-input-section">
+                            <input type="file" id="romFileInput" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64">
+                            <div id="romValidationDetail"></div>
+                        </div>
+                        <button id="applyPatchBtn" class="patch-btn" disabled>🚀 Apply Patch</button>
+                        <div id="patchStatus"></div>
+                    </div>
+                </div>
+                
+                <div id="linksTab" class="tab-panel">
+                    <div id="detailLinks" class="links-grid"></div>
+                </div>
+            </div>
         </div>
-        
-        <div id="changelogSection" class="section" style="display:none">
-            <h2>📋 Patch Information</h2>
-            <div id="changelogContent"></div>
-        </div>
-        
-        <div class="section">
-            <button id="patchButton" disabled>🚀 Apply Patch</button>
-        </div>
-        
-        <div id="status"></div>
     </div>
     
     <script src="js/rompatcher.min.js"></script>
     <script src="js/RomPatcher.webapp.js"></script>
-    <script>
-        let patches = [];
-        let selectedPatch = null;
-        
-        // CRC32 calculation
-        function crc32(data) {
-            const table = new Uint32Array(256);
-            for (let i = 0; i < 256; i++) {
-                let c = i;
-                for (let j = 0; j < 8; j++) {
-                    c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
-                }
-                table[i] = c;
-            }
-            let crc = 0xFFFFFFFF;
-            for (let i = 0; i < data.length; i++) {
-                crc = table[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
-            }
-            return ((crc ^ 0xFFFFFFFF) >>> 0).toString(16).toUpperCase().padStart(8, '0');
-        }
-        
-        // Load manifest
-        fetch('manifest.json')
-            .then(r => r.json())
-            .then(data => {
-                patches = data;
-                const select = document.getElementById('patchSelect');
-                select.innerHTML = '<option value="">Choose a patch...</option>';
-                patches.forEach(patch => {
-                    const option = document.createElement('option');
-                    option.value = patch.id;
-                    option.textContent = patch.name;
-                    select.appendChild(option);
-                });
-            });
-        
-        document.getElementById('patchSelect').addEventListener('change', function(e) {
-            selectedPatch = patches.find(p => p.id === e.target.value);
-            
-            // Show patch info
-            const patchInfo = document.getElementById('patchInfo');
-            const changelogSection = document.getElementById('changelogSection');
-            const changelogContent = document.getElementById('changelogContent');
-            
-            if (selectedPatch) {
-                patchInfo.innerHTML = `
-                    <div class="patch-details">
-                        <span class="patch-type">${selectedPatch.type.toUpperCase()}</span>
-                        ${selectedPatch.crc32 ? `<span class="patch-crc">CRC32: ${selectedPatch.crc32}</span>` : ''}
-                    </div>
-                `;
-                
-                if (selectedPatch.changelog) {
-                    changelogContent.innerHTML = marked.parse(selectedPatch.changelog);
-                    changelogSection.style.display = 'block';
-                } else {
-                    changelogSection.style.display = 'none';
-                }
-            } else {
-                patchInfo.innerHTML = '';
-                changelogSection.style.display = 'none';
-            }
-            
-            validateRom();
-            updatePatchButton();
-        });
-        
-        document.getElementById('romFile').addEventListener('change', function() {
-            validateRom();
-            updatePatchButton();
-        });
-        
-        function validateRom() {
-            const romFile = document.getElementById('romFile').files[0];
-            const validation = document.getElementById('romValidation');
-            
-            if (!romFile || !selectedPatch || !selectedPatch.crc32) {
-                validation.innerHTML = '';
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const romData = new Uint8Array(e.target.result);
-                const calculatedCrc = crc32(romData);
-                
-                if (calculatedCrc === selectedPatch.crc32) {
-                    validation.innerHTML = '<div class="validation-success">✓ ROM validated</div>';
-                } else {
-                    validation.innerHTML = '<div class="validation-error">⚠ ROM CRC32 mismatch. Expected: ' + selectedPatch.crc32 + ', Got: ' + calculatedCrc + '</div>';
-                }
-            };
-            reader.readAsArrayBuffer(romFile);
-        }
-        
-        document.getElementById('patchButton').addEventListener('click', function() {
-            const romFile = document.getElementById('romFile').files[0];
-            if (!romFile || !selectedPatch) return;
-            
-            document.getElementById('status').textContent = 'Patching...';
-            
-            fetch(selectedPatch.file)
-                .then(r => r.arrayBuffer())
-                .then(patchData => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const romBinFile = new BinFile(new Uint8Array(e.target.result));
-                            romBinFile.fileName = romFile.name;
-                            
-                            const patchBinFile = new BinFile(new Uint8Array(patchData));
-                            const patch = RomPatcher.parsePatchFile(patchBinFile);
-                            
-                            if (!patch) {
-                                throw new Error('Invalid patch file format');
-                            }
-                            
-                            const patchedRom = RomPatcher.applyPatch(romBinFile, patch);
-                            
-                            const blob = new Blob([patchedRom.getBytes()], {type: 'application/octet-stream'});
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = patchedRom.fileName;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                            
-                            document.getElementById('status').textContent = '✅ Patch applied successfully!';
-                        } catch (err) {
-                            document.getElementById('status').textContent = '❌ Error: ' + err.message;
-                            console.error('Patching error:', err);
-                        }
-                    };
-                    reader.readAsArrayBuffer(romFile);
-                })
-                .catch(err => {
-                    document.getElementById('status').textContent = '❌ Error loading patch: ' + err.message;
-                });
-        });
-        
-        function updatePatchButton() {
-            const hasRom = document.getElementById('romFile').files.length > 0;
-            const hasPatch = selectedPatch !== null;
-            document.getElementById('patchButton').disabled = !(hasRom && hasPatch);
-        }
-        
-        // Dark mode toggle
-        document.getElementById('themeToggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            this.textContent = isDark ? '☀️' : '🌙';
-            localStorage.setItem('darkMode', isDark);
-        });
-        
-        // Ensure dark mode is applied on load
-        const isDarkMode = localStorage.getItem('darkMode') === 'true';
-        if (isDarkMode) {
-            document.body.classList.add('dark-mode');
-            document.getElementById('themeToggle').textContent = '☀️';
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
-    </script>
+    <script src="js/app.js"></script>
 </body>
 </html>
