@@ -1,3 +1,28 @@
+---
+title: "Mario Kaizo"
+baseRom: "Super Mario World"
+system: "SNES"
+status: "Completed"
+author: "KaizoMaker"
+website: "https://example.com/mario-kaizo"
+released: "2024-01-15"
+hackType: "New"
+tags: ["Kaizo", "Difficulty", "Platformer"]
+graphics: "Enhanced"
+story: "Same"
+maps: "New"
+postgame: "No"
+difficulty: "Kaizo"
+mechanics: ["Wall Jumping", "Precise Timing"]
+fakemons: "N/A"
+variants: []
+typeChanges: []
+physicalSpecialSplit: false
+antiCheat: false
+rating: 4
+playtime: "8 Hours"
+---
+
 # Mario Kaizo Hack
 
 ## v1.0 - Initial Release
