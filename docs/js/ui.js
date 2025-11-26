@@ -38,7 +38,7 @@ export class UIManager {
                     <div class="hack-card-title">${hack.title}</div>
                     <div class="hack-card-author">by ${hack.meta?.author || 'Unknown'}</div>
                     <div class="hack-card-badges">
-                        ${hack.meta?.system ? `<span class="badge badge-system">${hack.meta.system}</span>` : ''}
+                        ${hack.meta?.system ? `<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>` : ''}
                         ${hack.meta?.difficulty ? `<span class="badge badge-difficulty">${hack.meta.difficulty}</span>` : ''}
                     </div>
                     <div class="status-indicator">
@@ -116,6 +116,16 @@ export class UIManager {
             } else {
                 banner.innerHTML = hack.title;
             }
+        }
+
+        // Set translucent boxArt background for detail content
+        const detailContent = document.querySelector('.detail-content');
+        if (detailContent && hack.meta?.images?.boxArt) {
+            detailContent.classList.add('has-boxart');
+            detailContent.style.setProperty('--boxart-bg', `url('${hack.meta.images.boxArt}')`);
+        } else if (detailContent) {
+            detailContent.classList.remove('has-boxart');
+            detailContent.style.removeProperty('--boxart-bg');
         }
 
         // Description

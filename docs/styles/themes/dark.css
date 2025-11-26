@@ -1,0 +1,26 @@
+/* Dark theme overrides */
+body.dark-mode {
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --bg-primary: #1f2937;
+    --bg-secondary: #111827;
+    --border: #374151;
+    --shadow: rgba(0, 0, 0, 0.3);
+    background: #0f172a;
+}
+
+body.dark-mode .search-input {
+    color: var(--text-primary);
+}
+
+body.dark-mode .search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .close-btn {
+    color: var(--text-primary);
+}
+
+body.dark-mode .clear-btn {
+    color: var(--text-primary);
+}

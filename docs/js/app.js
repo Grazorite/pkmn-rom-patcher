@@ -104,7 +104,24 @@ class ROMHackStore {
         const themeBtn = document.getElementById('themeToggle');
         if (themeBtn) {
             themeBtn.addEventListener('click', () => {
+                const wasDetailOpen = document.getElementById('detailPanel')?.classList.contains('open');
+                const wasDetailCollapsed = document.getElementById('detailPanel')?.classList.contains('collapsed');
+                
                 Utils.toggleTheme();
+                
+                // Preserve detail panel state after theme change
+                if (wasDetailOpen || wasDetailCollapsed) {
+                    const panel = document.getElementById('detailPanel');
+                    if (panel) {
+                        if (wasDetailOpen) {
+                            panel.classList.add('open');
+                        }
+                        if (wasDetailCollapsed) {
+                            panel.classList.add('collapsed');
+                        }
+                    }
+                }
+                
                 // Re-initialize icons after theme change
                 setTimeout(() => this.initializeIcons(), 100);
             });
@@ -137,6 +154,11 @@ class ROMHackStore {
                 const filterId = e.target.closest('.filter-options').id;
                 const filterType = filterId.replace('Filters', '');
                 this.handleFilterChange(filterType, e.target.value, e.target.checked);
+                
+                // Update filter counts after change
+                setTimeout(() => {
+                    this.updateFilterCounts();
+                }, 100);
             }
         });
     }
@@ -154,14 +176,37 @@ class ROMHackStore {
     }
     
     handleSearch(query) {
-        this.filteredHacks = this.searchManager.search(query, this.hacks);
         this.applyFilters();
     }
     
     applyFilters() {
-        this.filteredHacks = this.searchManager.applyFilters(this.filteredHacks);
+        // Start with all hacks, then apply search if there's a query
+        const searchInput = document.getElementById('searchInput');
+        const query = searchInput ? searchInput.value.trim() : '';
+        
+        let baseHacks = query ? this.searchManager.search(query, this.hacks) : [...this.hacks];
+        this.filteredHacks = this.searchManager.applyFilters(baseHacks);
         this.uiManager.resetPagination();
         this.renderHacks();
+    }
+    
+    updateFilterCounts() {
+        const filters = this.searchManager.generateFilterOptions(this.filteredHacks);
+        Object.keys(filters).forEach(filterType => {
+            const container = document.getElementById(`${filterType}Filters`);
+            if (container) {
+                const options = container.querySelectorAll('.filter-option');
+                options.forEach(option => {
+                    const checkbox = option.querySelector('input[type="checkbox"]');
+                    const countSpan = option.querySelector('.filter-count');
+                    if (checkbox && countSpan) {
+                        const count = filters[filterType].get(checkbox.value) || 0;
+                        countSpan.textContent = `(${count})`;
+                        option.style.opacity = count > 0 ? '1' : '0.5';
+                    }
+                });
+            }
+        });
     }
     
     clearAllFilters() {
@@ -203,8 +248,24 @@ class ROMHackStore {
 
 // Initialize the app when DOM and scripts are loaded
 function initializeApp() {
-    // Initialize without waiting for RomPatcher since we're not using it for the store interface
+    // Initialize app immediately for UI, check RomPatcher separately for patching functionality
     window.app = new ROMHackStore();
+    
+    // Check RomPatcher availability for patching functionality
+    if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
+        console.log('RomPatcher dependencies loaded - patching functionality available');
+        window.app.patchManager.setRomPatcherAvailable(true);
+    } else {
+        console.warn('RomPatcher dependencies not loaded - patching functionality disabled');
+        window.app.patchManager.setRomPatcherAvailable(false);
+        // Retry loading after a delay
+        setTimeout(() => {
+            if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
+                console.log('RomPatcher dependencies loaded (delayed) - patching functionality available');
+                window.app.patchManager.setRomPatcherAvailable(true);
+            }
+        }, 2000);
+    }
 }
 
 // Start initialization when DOM is loaded

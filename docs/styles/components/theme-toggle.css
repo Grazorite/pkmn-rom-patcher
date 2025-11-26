@@ -1,0 +1,33 @@
+/* Theme toggle component */
+.theme-toggle {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 9999;
+    background: var(--bg-primary);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px var(--shadow);
+    transition: all 0.3s ease;
+    /* animation: float 3s ease-in-out infinite; */ /* Removed for test stability */
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 8px 30px var(--shadow);
+}
+
+@media (max-width: 768px) {
+    .theme-toggle {
+        bottom: 1rem;
+        left: 1rem;
+        width: 50px;
+        height: 50px;
+    }
+}

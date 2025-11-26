@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROM Hack Store</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/main.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
     <script>
@@ -123,7 +123,7 @@
                     Info
                 </button>
                 <button class="tab-btn" data-tab="patch">
-                    <i data-lucide="zap" width="16" height="16"></i>
+                    <i data-lucide="download" width="16" height="16"></i>
                     Patch
                 </button>
                 <button class="tab-btn" data-tab="links">
@@ -146,13 +146,12 @@
                 
                 <div id="patchTab" class="tab-panel">
                     <div class="patch-interface">
-                        <h3>Apply Patch</h3>
                         <div class="file-input-section">
                             <input type="file" id="romFileInput" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64">
                             <div id="romValidationDetail"></div>
                         </div>
                         <button id="applyPatchBtn" class="patch-btn" disabled>
-                            <i data-lucide="zap" width="20" height="20"></i>
+                            <i data-lucide="download" width="20" height="20"></i>
                             Apply Patch
                         </button>
                         <div id="patchStatus"></div>

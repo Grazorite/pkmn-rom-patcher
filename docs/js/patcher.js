@@ -4,13 +4,47 @@ import { Utils } from './utils.js';
 export class PatchManager {
     constructor() {
         this.selectedHack = null;
-        // Ensure RomPatcher globals are available
+        this.romPatcherAvailable = false;
         this.checkDependencies();
     }
     
     checkDependencies() {
-        if (typeof BinFile === 'undefined' || typeof RomPatcher === 'undefined') {
-            console.error('RomPatcher dependencies not loaded');
+        this.romPatcherAvailable = (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined');
+        if (!this.romPatcherAvailable) {
+            console.warn('RomPatcher dependencies not loaded - patching functionality disabled');
+        }
+    }
+    
+    setRomPatcherAvailable(available) {
+        this.romPatcherAvailable = available;
+        this.updatePatchingUI();
+    }
+    
+    updatePatchingUI() {
+        const patchBtn = document.getElementById('applyPatchBtn');
+        const status = document.getElementById('patchStatus');
+        
+        if (!this.romPatcherAvailable) {
+            if (patchBtn) {
+                patchBtn.disabled = true;
+                patchBtn.innerHTML = '<i data-lucide="alert-triangle" width="20" height="20"></i> RomPatcher Loading...';
+            }
+            if (status) {
+                status.innerHTML = '<i data-lucide="info" width="16" height="16"></i> Loading patching dependencies...';
+                status.className = 'validation-info';
+            }
+        } else {
+            if (patchBtn) {
+                patchBtn.innerHTML = '<i data-lucide="download" width="20" height="20"></i> Apply Patch';
+            }
+            if (status) {
+                status.innerHTML = '';
+                status.className = '';
+            }
+        }
+        
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
         }
     }
 
@@ -53,6 +87,15 @@ export class PatchManager {
     }
 
     async applyPatch() {
+        if (!this.romPatcherAvailable) {
+            const status = document.getElementById('patchStatus');
+            if (status) {
+                status.innerHTML = '<i data-lucide="alert-triangle" width="16" height="16"></i> RomPatcher dependencies not loaded';
+                status.className = 'validation-error';
+            }
+            return;
+        }
+        
         const romFile = document.getElementById('romFileInput')?.files[0];
         const status = document.getElementById('patchStatus');
         

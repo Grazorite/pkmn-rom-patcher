@@ -1,0 +1,19 @@
+/* Main CSS entry point - imports all modules */
+
+/* Base styles */
+@import 'base/variables.css';
+@import 'base/reset.css';
+@import 'base/animations.css';
+
+/* Layout */
+@import 'layout/app.css';
+
+/* Components */
+@import 'components/theme-toggle.css';
+@import 'components/sidebar.css';
+@import 'components/hack-grid.css';
+@import 'components/detail-panel.css';
+@import 'components/ui-elements.css';
+
+/* Themes */
+@import 'themes/dark.css';

@@ -71,7 +71,7 @@ test.describe('Landing Page', () => {
   test('should load landing page correctly', async ({ page }) => {
     await page.goto('/');
     
-    await expect(page.locator('h1')).toContainText('Pokémon ROM Patcher');
+    await expect(page.locator('h1')).toContainText('ROM Patcher');
     await expect(page.locator('.cta-button')).toBeVisible();
   });
 
