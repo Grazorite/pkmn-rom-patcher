@@ -22,6 +22,14 @@ class ROMHackStore {
         this.setupEventListeners();
         this.generateFilters();
         this.renderHacks();
+        this.initializeIcons();
+    }
+    
+    initializeIcons() {
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
     
     async loadHacks() {
@@ -74,7 +82,11 @@ class ROMHackStore {
         // Theme toggle
         const themeBtn = document.getElementById('themeToggle');
         if (themeBtn) {
-            themeBtn.addEventListener('click', () => Utils.toggleTheme());
+            themeBtn.addEventListener('click', () => {
+                Utils.toggleTheme();
+                // Re-initialize icons after theme change
+                setTimeout(() => this.initializeIcons(), 100);
+            });
         }
         
         // ROM file input
@@ -156,6 +168,9 @@ class ROMHackStore {
         this.patchManager.setSelectedHack(this.selectedHack);
         this.uiManager.renderDetailPanel(this.selectedHack);
         this.uiManager.openDetailPanel();
+        
+        // Re-initialize icons in the detail panel
+        setTimeout(() => this.initializeIcons(), 100);
     }
     
     closeDetailPanel() {

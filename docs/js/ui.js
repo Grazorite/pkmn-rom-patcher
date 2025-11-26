@@ -98,9 +98,12 @@ export class UIManager {
         const playtimeEl = document.getElementById('detailPlaytime');
         
         if (titleEl) titleEl.textContent = hack.title;
-        if (authorEl) authorEl.textContent = `by ${hack.meta?.author || 'Unknown'}`;
-        if (statusEl) statusEl.textContent = hack.meta?.status || 'Completed';
-        if (playtimeEl) playtimeEl.textContent = hack.meta?.playtime || '';
+        if (authorEl) authorEl.innerHTML = `<i data-lucide="user" width="16" height="16"></i> ${hack.meta?.author || 'Unknown'}`;
+        if (statusEl) {
+            const statusIcon = hack.meta?.status === 'Completed' ? 'check-circle' : 'clock';
+            statusEl.innerHTML = `<i data-lucide="${statusIcon}" width="16" height="16"></i> ${hack.meta?.status || 'Completed'}`;
+        }
+        if (playtimeEl) playtimeEl.innerHTML = hack.meta?.playtime ? `<i data-lucide="clock" width="16" height="16"></i> ${hack.meta.playtime}` : '';
 
         // Banner
         const banner = document.getElementById('detailBanner');

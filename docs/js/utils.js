@@ -19,21 +19,34 @@ export const Utils = {
 
     // Theme management
     initTheme() {
-        if (localStorage.getItem('darkMode') === null) {
-            localStorage.setItem('darkMode', 'true');
-        }
-        const isDarkMode = localStorage.getItem('darkMode') === 'true';
-        if (isDarkMode) {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
-            document.getElementById('themeToggle').textContent = 'Light';
+            this.updateThemeIcon(true);
+        } else {
+            this.updateThemeIcon(false);
         }
     },
 
     toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
-        document.getElementById('themeToggle').textContent = isDark ? 'Light' : 'Dark';
-        localStorage.setItem('darkMode', isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        this.updateThemeIcon(isDark);
+    },
+    
+    updateThemeIcon(isDark) {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.innerHTML = isDark 
+                ? '<i data-lucide="moon" width="24" height="24"></i>'
+                : '<i data-lucide="sun" width="24" height="24"></i>';
+            
+            // Re-initialize icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
     },
 
     // DOM helpers

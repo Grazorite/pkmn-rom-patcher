@@ -18,9 +18,16 @@
         <button id="themeToggle">Dark</button>
     </div>
     
+    <div class="theme-toggle" id="themeToggle">
+        <i data-lucide="sun" width="24" height="24"></i>
+    </div>
+    
     <div class="app-container">
         <nav class="breadcrumb">
-            <a href="../">← Home</a>
+            <a href="../" class="breadcrumb-link">
+                <i data-lucide="arrow-left" width="16" height="16"></i>
+                Home
+            </a>
         </nav>
         
         <header class="app-header">
@@ -31,7 +38,10 @@
         <div class="app-layout">
             <aside class="sidebar">
                 <div class="search-section">
-                    <input type="text" id="searchInput" placeholder="Search hacks..." class="search-input">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="search-icon" width="20" height="20"></i>
+                        <input type="text" id="searchInput" placeholder="Search hacks..." class="search-input">
+                    </div>
                 </div>
                 
                 <div class="filter-section">
@@ -62,14 +72,20 @@
             <main class="main-content">
                 <div class="results-header">
                     <span id="resultsCount">Loading...</span>
-                    <button id="clearFilters" class="clear-btn">Clear Filters</button>
+                    <button id="clearFilters" class="clear-btn">
+                        <i data-lucide="x" width="16" height="16"></i>
+                        Clear Filters
+                    </button>
                 </div>
                 
                 <div id="hackGrid" class="hack-grid">
                     <div class="loading">Loading ROM hacks...</div>
                 </div>
                 
-                <button id="loadMore" class="load-more" style="display:none">Load More</button>
+                <button id="loadMore" class="load-more" style="display:none">
+                    <i data-lucide="chevron-down" width="20" height="20"></i>
+                    Load More
+                </button>
             </main>
         </div>
     </div>
@@ -77,7 +93,9 @@
     <!-- Detail Panel -->
     <div id="detailPanel" class="detail-panel">
         <div class="detail-content">
-            <button class="close-btn" id="closeDetail">×</button>
+            <button class="close-btn" id="closeDetail">
+                <i data-lucide="x" width="24" height="24"></i>
+            </button>
             
             <div class="detail-header">
                 <div id="detailBanner" class="detail-banner"></div>
@@ -116,7 +134,10 @@
                             <input type="file" id="romFileInput" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64">
                             <div id="romValidationDetail"></div>
                         </div>
-                        <button id="applyPatchBtn" class="patch-btn" disabled>Apply Patch</button>
+                        <button id="applyPatchBtn" class="patch-btn" disabled>
+                            <i data-lucide="zap" width="20" height="20"></i>
+                            Apply Patch
+                        </button>
                         <div id="patchStatus"></div>
                     </div>
                 </div>
@@ -130,6 +151,7 @@
     
     <script src="js/rompatcher.min.js"></script>
     <script src="js/RomPatcher.webapp.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script type="module" src="js/app.js"></script>
 </body>
 </html>

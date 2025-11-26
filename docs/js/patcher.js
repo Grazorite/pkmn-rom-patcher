@@ -4,6 +4,14 @@ import { Utils } from './utils.js';
 export class PatchManager {
     constructor() {
         this.selectedHack = null;
+        // Ensure RomPatcher globals are available
+        this.checkDependencies();
+    }
+    
+    checkDependencies() {
+        if (typeof BinFile === 'undefined' || typeof RomPatcher === 'undefined') {
+            console.error('RomPatcher dependencies not loaded');
+        }
     }
 
     setSelectedHack(hack) {
@@ -29,11 +37,16 @@ export class PatchManager {
             const calculatedCrc = Utils.crc32(romData);
             
             if (calculatedCrc === this.selectedHack.crc32) {
-                validation.innerHTML = '<div class="validation-success">ROM validated</div>';
+                validation.innerHTML = '<div class="validation-success"><i data-lucide="check-circle" width="16" height="16"></i> ROM validated</div>';
                 patchBtn.disabled = false;
             } else {
-                validation.innerHTML = `<div class="validation-error">ROM CRC32 mismatch. Expected: ${this.selectedHack.crc32}, Got: ${calculatedCrc}</div>`;
+                validation.innerHTML = `<div class="validation-error"><i data-lucide="alert-triangle" width="16" height="16"></i> ROM CRC32 mismatch. Expected: ${this.selectedHack.crc32}, Got: ${calculatedCrc}</div>`;
                 patchBtn.disabled = false; // Allow patching anyway
+            }
+            
+            // Re-initialize icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
             }
         };
         reader.readAsArrayBuffer(romFile);
@@ -74,15 +87,26 @@ export class PatchManager {
                     a.click();
                     URL.revokeObjectURL(url);
                     
-                    status.textContent = 'Patch applied successfully!';
+                    status.innerHTML = '<i data-lucide="check-circle" width="16" height="16"></i> Patch applied successfully!';
+                    status.className = 'validation-success';
                 } catch (err) {
-                    status.textContent = `Error: ${err.message}`;
+                    status.innerHTML = `<i data-lucide="x-circle" width="16" height="16"></i> Error: ${err.message}`;
+                    status.className = 'validation-error';
                     console.error('Patching error:', err);
+                }
+                
+                // Re-initialize icons
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
                 }
             };
             reader.readAsArrayBuffer(romFile);
         } catch (err) {
-            status.textContent = `Error loading patch: ${err.message}`;
+            status.innerHTML = `<i data-lucide="x-circle" width="16" height="16"></i> Error loading patch: ${err.message}`;
+            status.className = 'validation-error';
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
     }
 }
