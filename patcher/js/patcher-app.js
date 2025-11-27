@@ -1,6 +1,7 @@
 // ROM Patcher App - Dedicated patching interface
 import { Utils } from '../../docs/js/utils.js';
 import { PatchManager } from '../../docs/js/patcher.js';
+import { PatchEngine } from '../../docs/js/modules/PatchEngine.js';
 
 class ROMPatcherApp {
     constructor() {
@@ -291,17 +292,46 @@ class ROMPatcherApp {
     async applyPatch() {
         if (!this.selectedPatch) return;
         
-        // Override checksum validation in creator mode
-        if (this.creatorMode) {
-            const originalValidate = this.patchManager.validateROM;
-            this.patchManager.validateROM = () => {
-                const btn = document.getElementById('applyPatchBtn');
-                const romFile = document.getElementById('romFileInput')?.files[0];
-                if (btn) btn.disabled = !romFile;
-            };
+        const romFile = document.getElementById('romFileInput')?.files[0];
+        const status = document.getElementById('patchStatus');
+        
+        if (!romFile || !status) return;
+        
+        if (!this.patchManager.romPatcherAvailable) {
+            status.innerHTML = '<i data-lucide="alert-circle" width="16" height="16"></i> Patcher Engine not ready';
+            status.className = 'validation-error';
+            return;
         }
         
-        await this.patchManager.applyPatch();
+        status.innerHTML = '<i data-lucide="loader" width="16" height="16"></i> Applying patch...';
+        status.className = 'validation-info';
+        
+        try {
+            const patchResponse = await fetch(this.selectedPatch.file);
+            if (!patchResponse.ok) throw new Error('Failed to download patch');
+            
+            const patchFile = new File([await patchResponse.arrayBuffer()], 'patch.bps');
+            const patchedRom = await PatchEngine.applyPatch(romFile, patchFile);
+            
+            const blob = new Blob([patchedRom.getBytes()], {type: 'application/octet-stream'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = patchedRom.fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            status.innerHTML = '<i data-lucide="check-circle" width="16" height="16"></i> Patch applied successfully!';
+            status.className = 'validation-success';
+        } catch (error) {
+            status.innerHTML = `<i data-lucide="x-circle" width="16" height="16"></i> Error: ${error.message}`;
+            status.className = 'validation-error';
+            console.error('Patching error:', error);
+        }
+        
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
     
     handleThemeToggle() {

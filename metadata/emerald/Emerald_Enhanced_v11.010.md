@@ -20,7 +20,7 @@ typeChanges: ["Base Types", "Added OG types: Fairy"]
 physicalSpecialSplit: true
 antiCheat: false
 version: "v11.010"
-rating: 4
+rating: 0
 playtime: "8 gyms + E4"
 totalCatchable: 684
 pokedexIncludes: "VII"

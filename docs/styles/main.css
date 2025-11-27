@@ -17,6 +17,7 @@
 @import 'components/ui-elements.css';
 @import 'components/links.css';
 @import 'components/patcher.css';
+@import 'components/loading.css';
 
 /* Themes */
 @import 'themes/dark.css';

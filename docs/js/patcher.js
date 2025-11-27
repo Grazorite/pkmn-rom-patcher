@@ -1,5 +1,6 @@
 // ROM patching functionality
 import { Utils } from './utils.js';
+import { PatchEngine } from './modules/PatchEngine.js';
 
 export class PatchManager {
     constructor() {
@@ -9,29 +10,18 @@ export class PatchManager {
     }
     
     async initializeRomPatcher() {
-        // Wait for RomPatcher to be ready
-        if (window.romPatcherReady) {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.style.display = 'flex';
+        
+        try {
+            await PatchEngine.init();
             this.setRomPatcherAvailable(true);
-        } else {
-            window.addEventListener('rompatcher-ready', () => {
-                this.setRomPatcherAvailable(true);
-            });
-            
-            // Fallback check
-            setTimeout(() => {
-                if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
-                    this.setRomPatcherAvailable(true);
-                } else {
-                    this.setRomPatcherAvailable(false);
-                }
-            }, 3000);
-        }
-    }
-    
-    checkDependencies() {
-        this.romPatcherAvailable = (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined');
-        if (!this.romPatcherAvailable) {
-            console.warn('RomPatcher dependencies not loaded - patching functionality disabled');
+        } catch (error) {
+            console.error('PatchEngine failed to initialize:', error);
+            this.setRomPatcherAvailable(false);
+            this.showCriticalError('Patcher Engine failed to load. Please refresh.');
+        } finally {
+            if (overlay) overlay.style.display = 'none';
         }
     }
     
@@ -40,18 +30,22 @@ export class PatchManager {
         this.updatePatchingUI();
     }
     
-    updatePatchingUI() {
+    updatePatchingUI(message = null) {
         const patchBtn = document.getElementById('applyPatchBtn');
         const status = document.getElementById('patchStatus');
+        
+        if (message) {
+            if (status) {
+                status.innerHTML = `<i data-lucide="loader" width="16" height="16"></i> ${message}`;
+                status.className = 'validation-info';
+            }
+            return;
+        }
         
         if (!this.romPatcherAvailable) {
             if (patchBtn) {
                 patchBtn.disabled = true;
-                patchBtn.innerHTML = '<i data-lucide="alert-triangle" width="20" height="20"></i> RomPatcher Loading...';
-            }
-            if (status) {
-                status.innerHTML = '<i data-lucide="info" width="16" height="16"></i> Loading patching dependencies...';
-                status.className = 'validation-info';
+                patchBtn.innerHTML = '<i data-lucide="alert-triangle" width="20" height="20"></i> Engine Failed';
             }
         } else {
             if (patchBtn) {
@@ -67,12 +61,24 @@ export class PatchManager {
             lucide.createIcons();
         }
     }
+    
+    showCriticalError(message) {
+        const status = document.getElementById('patchStatus');
+        if (status) {
+            status.innerHTML = `<i data-lucide="alert-circle" width="16" height="16"></i> ${message}`;
+            status.className = 'validation-error';
+        }
+        
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
 
     setSelectedHack(hack) {
         this.selectedHack = hack;
     }
 
-    validateROM() {
+    async validateROM() {
         const romFile = document.getElementById('romFileInput')?.files[0];
         const validation = document.getElementById('romValidationDetail');
         const patchBtn = document.getElementById('applyPatchBtn');
@@ -81,14 +87,18 @@ export class PatchManager {
         
         if (!romFile || !this.selectedHack?.crc32) {
             validation.innerHTML = '';
-            patchBtn.disabled = !romFile;
+            patchBtn.disabled = !romFile || !this.romPatcherAvailable;
             return;
         }
         
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const romData = new Uint8Array(e.target.result);
-            const calculatedCrc = Utils.crc32(romData);
+        if (!this.romPatcherAvailable) {
+            validation.innerHTML = '<div class="validation-error"><i data-lucide="alert-triangle" width="16" height="16"></i> Patcher Engine not ready</div>';
+            patchBtn.disabled = true;
+            return;
+        }
+        
+        try {
+            const calculatedCrc = await PatchEngine.calculateCRC32(romFile);
             
             if (calculatedCrc === this.selectedHack.crc32) {
                 validation.innerHTML = '<div class="validation-success"><i data-lucide="check-circle" width="16" height="16"></i> ROM validated</div>';
@@ -97,22 +107,19 @@ export class PatchManager {
                 validation.innerHTML = `<div class="validation-error"><i data-lucide="alert-triangle" width="16" height="16"></i> ROM CRC32 mismatch. Expected: ${this.selectedHack.crc32}, Got: ${calculatedCrc}</div>`;
                 patchBtn.disabled = false; // Allow patching anyway
             }
-            
-            // Re-initialize icons
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        };
-        reader.readAsArrayBuffer(romFile);
+        } catch (error) {
+            validation.innerHTML = '<div class="validation-error"><i data-lucide="x-circle" width="16" height="16"></i> ROM validation failed</div>';
+            patchBtn.disabled = true;
+        }
+        
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
 
     async applyPatch() {
         if (!this.romPatcherAvailable) {
-            const status = document.getElementById('patchStatus');
-            if (status) {
-                status.innerHTML = '<i data-lucide="alert-triangle" width="16" height="16"></i> RomPatcher dependencies not loaded';
-                status.className = 'validation-error';
-            }
+            this.showCriticalError('Patcher Engine not ready');
             return;
         }
         
@@ -121,55 +128,34 @@ export class PatchManager {
         
         if (!romFile || !this.selectedHack || !status) return;
         
-        status.textContent = 'Patching...';
+        status.innerHTML = '<i data-lucide="loader" width="16" height="16"></i> Applying patch...';
+        status.className = 'validation-info';
         
         try {
             const patchResponse = await fetch(this.selectedHack.file);
-            const patchData = await patchResponse.arrayBuffer();
+            if (!patchResponse.ok) throw new Error('Failed to download patch');
             
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const romBinFile = new BinFile(new Uint8Array(e.target.result));
-                    romBinFile.fileName = romFile.name;
-                    
-                    const patchBinFile = new BinFile(new Uint8Array(patchData));
-                    const patch = RomPatcher.parsePatchFile(patchBinFile);
-                    
-                    if (!patch) {
-                        throw new Error('Invalid patch file format');
-                    }
-                    
-                    const patchedRom = RomPatcher.applyPatch(romBinFile, patch);
-                    
-                    const blob = new Blob([patchedRom.getBytes()], {type: 'application/octet-stream'});
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = patchedRom.fileName;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    
-                    status.innerHTML = '<i data-lucide="check-circle" width="16" height="16"></i> Patch applied successfully!';
-                    status.className = 'validation-success';
-                } catch (err) {
-                    status.innerHTML = `<i data-lucide="x-circle" width="16" height="16"></i> Error: ${err.message}`;
-                    status.className = 'validation-error';
-                    console.error('Patching error:', err);
-                }
-                
-                // Re-initialize icons
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-            };
-            reader.readAsArrayBuffer(romFile);
-        } catch (err) {
-            status.innerHTML = `<i data-lucide="x-circle" width="16" height="16"></i> Error loading patch: ${err.message}`;
+            const patchFile = new File([await patchResponse.arrayBuffer()], 'patch.bps');
+            const patchedRom = await PatchEngine.applyPatch(romFile, patchFile);
+            
+            const blob = new Blob([patchedRom.getBytes()], {type: 'application/octet-stream'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = patchedRom.fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            status.innerHTML = '<i data-lucide="check-circle" width="16" height="16"></i> Patch applied successfully!';
+            status.className = 'validation-success';
+        } catch (error) {
+            status.innerHTML = `<i data-lucide="x-circle" width="16" height="16"></i> Error: ${error.message}`;
             status.className = 'validation-error';
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
+            console.error('Patching error:', error);
+        }
+        
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
         }
     }
 }
