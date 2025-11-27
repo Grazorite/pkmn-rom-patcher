@@ -104,8 +104,16 @@ class ROMHackStore {
         const navToggle = document.getElementById('navToggle');
         const navSidebar = document.getElementById('navSidebar');
         if (navToggle && navSidebar) {
-            navToggle.addEventListener('click', () => {
+            navToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
                 navSidebar.classList.toggle('open');
+            });
+            
+            // Prevent sidebar clicks from closing detail panel unless switching pages
+            navSidebar.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-link')) {
+                    e.stopPropagation();
+                }
             });
         }
         

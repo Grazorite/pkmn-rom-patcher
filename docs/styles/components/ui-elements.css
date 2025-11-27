@@ -120,6 +120,320 @@
     color: #4b0082;
 }
 
+/* Pokemon game version colors */
+.badge-rom[data-rom*="Red"] {
+    background: rgba(220, 20, 60, 0.1);
+    color: #dc143c;
+}
+
+.badge-rom[data-rom*="Blue"] {
+    background: rgba(30, 144, 255, 0.1);
+    color: #1e90ff;
+}
+
+.badge-rom[data-rom*="Yellow"] {
+    background: rgba(255, 215, 0, 0.1);
+    color: #daa520;
+}
+
+.badge-rom[data-rom*="Green"] {
+    background: rgba(34, 139, 34, 0.1);
+    color: #228b22;
+}
+
+.badge-rom[data-rom*="Gold"] {
+    background: rgba(255, 215, 0, 0.1);
+    color: #b8860b;
+}
+
+.badge-rom[data-rom*="Silver"] {
+    background: rgba(192, 192, 192, 0.1);
+    color: #708090;
+}
+
+.badge-rom[data-rom*="Crystal"] {
+    background: rgba(64, 224, 208, 0.1);
+    color: #20b2aa;
+}
+
+.badge-rom[data-rom*="Ruby"] {
+    background: rgba(220, 20, 60, 0.1);
+    color: #dc143c;
+}
+
+.badge-rom[data-rom*="Sapphire"] {
+    background: rgba(30, 144, 255, 0.1);
+    color: #1e90ff;
+}
+
+.badge-rom[data-rom*="Emerald"] {
+    background: rgba(50, 205, 50, 0.1);
+    color: #228b22;
+}
+
+.badge-rom[data-rom*="FireRed"] {
+    background: rgba(255, 69, 0, 0.1);
+    color: #ff4500;
+}
+
+.badge-rom[data-rom*="LeafGreen"] {
+    background: rgba(124, 252, 0, 0.1);
+    color: #7cfc00;
+}
+
+.badge-rom[data-rom*="Diamond"] {
+    background: rgba(135, 206, 235, 0.1);
+    color: #4682b4;
+}
+
+.badge-rom[data-rom*="Pearl"] {
+    background: rgba(255, 192, 203, 0.1);
+    color: #db7093;
+}
+
+.badge-rom[data-rom*="Platinum"] {
+    background: rgba(169, 169, 169, 0.1);
+    color: #696969;
+}
+
+.badge-rom[data-rom*="HeartGold"] {
+    background: rgba(255, 215, 0, 0.1);
+    color: #daa520;
+}
+
+.badge-rom[data-rom*="SoulSilver"] {
+    background: rgba(192, 192, 192, 0.1);
+    color: #708090;
+}
+
+.badge-rom[data-rom*="Black"] {
+    background: rgba(47, 79, 79, 0.1);
+    color: #2f4f4f;
+}
+
+.badge-rom[data-rom*="White"] {
+    background: rgba(248, 248, 255, 0.1);
+    color: #4682b4;
+    border: 1px solid var(--border);
+}
+
+.badge-rom[data-rom*="Black 2"] {
+    background: rgba(25, 25, 112, 0.1);
+    color: #191970;
+}
+
+.badge-rom[data-rom*="White 2"] {
+    background: rgba(255, 250, 250, 0.1);
+    color: #4682b4;
+    border: 1px solid var(--border);
+}
+
+.badge-rom[data-rom*="X"] {
+    background: rgba(30, 144, 255, 0.1);
+    color: #1e90ff;
+}
+
+.badge-rom[data-rom*="Y"] {
+    background: rgba(220, 20, 60, 0.1);
+    color: #dc143c;
+}
+
+.badge-rom[data-rom*="Omega Ruby"] {
+    background: rgba(255, 69, 0, 0.1);
+    color: #ff4500;
+}
+
+.badge-rom[data-rom*="Alpha Sapphire"] {
+    background: rgba(70, 130, 180, 0.1);
+    color: #4682b4;
+}
+
+.badge-rom[data-rom*="Moon"] {
+    background: rgba(75, 0, 130, 0.1);
+    color: #4b0082;
+}
+
+.badge-rom[data-rom*="Ultra Moon"] {
+    background: rgba(72, 61, 139, 0.1);
+    color: #483d8b;
+}
+
+.badge-rom[data-rom*="Ultra Sun"] {
+    background: rgba(255, 140, 0, 0.1);
+    color: #ff8c00;
+}
+
+.badge-rom[data-rom*="Sword"] {
+    background: rgba(70, 130, 180, 0.1);
+    color: #4682b4;
+}
+
+.badge-rom[data-rom*="Brilliant Diamond"] {
+    background: rgba(135, 206, 235, 0.1);
+    color: #87ceeb;
+}
+
+.badge-rom[data-rom*="Scarlet"] {
+    background: rgba(220, 20, 60, 0.1);
+    color: #dc143c;
+}
+
+.badge-rom[data-rom*="Let's Go"] {
+    background: rgba(255, 215, 0, 0.1);
+    color: #daa520;
+}
+
+.badge-rom[data-rom*="Colosseum"] {
+    background: rgba(138, 43, 226, 0.1);
+    color: #8a2be2;
+}
+
+.badge-rom[data-rom*="XD"] {
+    background: rgba(75, 0, 130, 0.1);
+    color: #4b0082;
+}
+
+.badge-rom[data-rom*="Mystery Dungeon"] {
+    background: rgba(255, 165, 0, 0.1);
+    color: #ff8c00;
+}
+
+.badge-rom[data-rom*="Trading Card Game"] {
+    background: rgba(255, 20, 147, 0.1);
+    color: #ff1493;
+}
+
+.badge-rom[data-rom*="Pinball"] {
+    background: rgba(255, 105, 180, 0.1);
+    color: #ff69b4;
+}
+
+.badge-rom[data-rom*="Conquest"] {
+    background: rgba(128, 0, 128, 0.1);
+    color: #800080;
+}
+
+.badge-rom[data-rom*="Rumble"] {
+    background: rgba(255, 99, 71, 0.1);
+    color: #ff6347;
+}
+
+.badge-rom[data-rom*="Fire Emblem"] {
+    background: rgba(178, 34, 34, 0.1);
+    color: #b22222;
+}
+
+/* Exact base ROM name matches */
+.badge-rom[data-rom="Alpha Sapphire"] {
+    background: rgba(70, 130, 180, 0.1);
+    color: #4682b4;
+}
+
+.badge-rom[data-rom="Black 2"] {
+    background: rgba(25, 25, 112, 0.1);
+    color: #191970;
+}
+
+.badge-rom[data-rom="Brilliant Diamond"] {
+    background: rgba(135, 206, 235, 0.1);
+    color: #87ceeb;
+}
+
+.badge-rom[data-rom="Fire Emblem: The Sacred Stones"] {
+    background: rgba(178, 34, 34, 0.1);
+    color: #b22222;
+}
+
+.badge-rom[data-rom="Let's Go! Eevee"] {
+    background: rgba(255, 215, 0, 0.1);
+    color: #daa520;
+}
+
+.badge-rom[data-rom="Omega Ruby"] {
+    background: rgba(255, 69, 0, 0.1);
+    color: #ff4500;
+}
+
+.badge-rom[data-rom="Pokemon Mystery Dungeon: Explorers of Sky"] {
+    background: rgba(255, 165, 0, 0.1);
+    color: #ff8c00;
+}
+
+.badge-rom[data-rom="Pokemon Mystery Dungeon: Go For It! Light Adventure Squad!"] {
+    background: rgba(255, 165, 0, 0.1);
+    color: #ff8c00;
+}
+
+.badge-rom[data-rom="Pokemon Mystery Dungeon: Red Rescue Team"] {
+    background: rgba(220, 20, 60, 0.1);
+    color: #dc143c;
+}
+
+.badge-rom[data-rom="Pokemon Mystery Dungeon: Rescue Team DX"] {
+    background: rgba(255, 165, 0, 0.1);
+    color: #ff8c00;
+}
+
+.badge-rom[data-rom="Super Mystery Dungeon"] {
+    background: rgba(255, 165, 0, 0.1);
+    color: #ff8c00;
+}
+
+.badge-rom[data-rom="Trading Card Game 2: The Invasion of Team GR!"] {
+    background: rgba(255, 20, 147, 0.1);
+    color: #ff1493;
+}
+
+.badge-rom[data-rom="Ultra Moon"] {
+    background: rgba(72, 61, 139, 0.1);
+    color: #483d8b;
+}
+
+.badge-rom[data-rom="Ultra Sun"] {
+    background: rgba(255, 140, 0, 0.1);
+    color: #ff8c00;
+}
+
+.badge-rom[data-rom="White 2"] {
+    background: rgba(255, 250, 250, 0.1);
+    color: #4682b4;
+    border: 1px solid var(--border);
+}
+
+.badge-rom[data-rom="XD: Gale of Darkness"] {
+    background: rgba(75, 0, 130, 0.1);
+    color: #4b0082;
+}
+
+/* Sun version (missing from partial matches) */
+.badge-rom[data-rom="Sun"] {
+    background: rgba(255, 140, 0, 0.1);
+    color: #ff8c00;
+}
+
+/* Violet version (missing from partial matches) */
+.badge-rom[data-rom="Violet"] {
+    background: rgba(138, 43, 226, 0.1);
+    color: #8a2be2;
+}
+
+/* Shield version (missing from partial matches) */
+.badge-rom[data-rom="Shield"] {
+    background: rgba(255, 20, 147, 0.1);
+    color: #ff1493;
+}
+
+/* Shining Pearl (missing from partial matches) */
+.badge-rom[data-rom="Shining Pearl"] {
+    background: rgba(255, 192, 203, 0.1);
+    color: #db7093;
+}
+
+.badge-rom {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--primary);
+}
+
 .badge-difficulty {
     background: rgba(245, 158, 11, 0.1);
     color: var(--warning);
@@ -208,7 +522,11 @@
     margin: 24px 0;
 }
 
-.file-input-section input[type="file"] {
+.file-input-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     width: 100%;
     padding: 20px;
     border: 3px dashed var(--border);
@@ -220,37 +538,29 @@
     font-weight: 500;
     color: var(--text-primary);
     text-align: center;
-    position: relative;
 }
 
-.file-input-section input[type="file"]:hover {
+.file-input-label:hover {
     border-color: var(--primary);
     background: var(--bg-primary);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px var(--shadow);
 }
 
-.file-input-section input[type="file"]:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+.file-selected {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-top: 8px;
 }
 
-.file-input-section input[type="file"]::file-selector-button {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: 600;
-    margin-right: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.file-input-section input[type="file"]::file-selector-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+.file-selected small {
+    color: var(--text-secondary);
+    margin-left: auto;
 }
 
 .patch-btn {

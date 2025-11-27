@@ -87,8 +87,13 @@ class ROMPatcherApp {
         const navToggle = document.getElementById('navToggle');
         const navSidebar = document.getElementById('navSidebar');
         if (navToggle && navSidebar) {
-            navToggle.addEventListener('click', () => {
+            navToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
                 navSidebar.classList.toggle('open');
+            });
+            
+            navSidebar.addEventListener('click', (e) => {
+                e.stopPropagation();
             });
         }
         
@@ -172,11 +177,21 @@ class ROMPatcherApp {
     }
     
     selectPatch(patchId) {
+        // If clicking the same patch, deselect it
+        if (this.selectedPatch && this.selectedPatch.id === patchId) {
+            this.selectedPatch = null;
+            this.patchManager.setSelectedHack(null);
+            this.hideSelectedPatch();
+            this.showAllResults();
+            return;
+        }
+        
         this.selectedPatch = this.patches.find(p => p.id === patchId);
         if (!this.selectedPatch) return;
         
         this.patchManager.setSelectedHack(this.selectedPatch);
         this.renderSelectedPatch();
+        this.hideOtherResults(patchId);
         this.validateCurrentROM();
         this.updatePatchButton();
     }
@@ -190,13 +205,37 @@ class ROMPatcherApp {
         if (description) {
             // Clean markdown formatting from description
             const cleanDescription = this.selectedPatch.changelog ? 
-                this.selectedPatch.changelog.replace(/[#*`]/g, '') : 
+                this.selectedPatch.changelog.replace(/[#*`]/g, '').substring(0, 300) + '...' : 
                 'No description available.';
             description.textContent = cleanDescription;
         }
         
         container.style.display = 'block';
         this.initializeIcons();
+    }
+    
+    hideSelectedPatch() {
+        const container = document.getElementById('selectedPatch');
+        if (container) container.style.display = 'none';
+    }
+    
+    hideOtherResults(selectedId) {
+        const results = document.querySelectorAll('.patch-result');
+        results.forEach(result => {
+            if (result.dataset.patchId !== selectedId) {
+                result.style.display = 'none';
+            } else {
+                result.classList.add('selected');
+            }
+        });
+    }
+    
+    showAllResults() {
+        const results = document.querySelectorAll('.patch-result');
+        results.forEach(result => {
+            result.style.display = 'block';
+            result.classList.remove('selected');
+        });
     }
     
     handleROMFile(event) {

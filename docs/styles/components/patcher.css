@@ -114,6 +114,12 @@ input:checked + .toggle-slider:before {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.patch-result.selected {
+    border-color: var(--accent);
+    background: rgba(240, 147, 251, 0.05);
+    box-shadow: 0 4px 12px rgba(240, 147, 251, 0.2);
+}
+
 .patch-result-content h4 {
     margin: 0 0 0.5rem 0;
     color: var(--text-primary);

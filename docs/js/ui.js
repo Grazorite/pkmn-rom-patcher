@@ -38,6 +38,7 @@ export class UIManager {
                     <div class="hack-card-title">${hack.title}</div>
                     <div class="hack-card-author">by ${hack.meta?.author || 'Unknown'}</div>
                     <div class="hack-card-badges">
+                        ${hack.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${hack.meta.baseRom}">${hack.meta.baseRom}</span>` : ''}
                         ${hack.meta?.system ? `<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>` : ''}
                         ${hack.meta?.difficulty ? `<span class="badge badge-difficulty">${hack.meta.difficulty}</span>` : ''}
                     </div>
