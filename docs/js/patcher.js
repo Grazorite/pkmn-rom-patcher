@@ -10,9 +10,8 @@ export class PatchManager {
     }
     
     async initializeRomPatcher() {
-        // PatchEngine is now initialized by the main app
-        // Check if bundled library is available
-        if (window.RomPatcher && (window.MarcFile || window.BinFile)) {
+        // Check if RomPatcher is available
+        if (window.RomPatcher && window.BinFile) {
             this.setRomPatcherAvailable(true);
         } else {
             this.setRomPatcherAvailable(false);

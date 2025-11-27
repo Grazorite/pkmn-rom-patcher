@@ -7,9 +7,9 @@ test.describe('Landing Page', () => {
   });
 
   test('should load landing page with correct content', async ({ page }) => {
-    await expect(page).toHaveTitle(/ROM Patcher/);
-    await expect(page.locator('h1')).toContainText('ROM Patcher');
-    await expect(page.locator('.hero p')).toContainText('Apply ROM hacks and patches to your favorite games');
+    await expect(page).toHaveTitle(/Universal ROM Management/);
+    await expect(page.locator('h1')).toContainText('Universal ROM Management');
+    await expect(page.locator('.hero p')).toContainText('Apply patches to your favorite games with ease');
   });
 
   test('should display all feature cards', async ({ page }) => {
@@ -31,14 +31,20 @@ test.describe('Landing Page', () => {
     await expect(features.nth(3).locator('h3')).toContainText('Organized');
   });
 
-  test('should have working CTA button', async ({ page }) => {
-    const ctaButton = page.locator('.cta-button');
-    await expect(ctaButton).toBeVisible();
-    await expect(ctaButton).toContainText("Let's Go!");
-    await expect(ctaButton).toHaveAttribute('href', 'docs/');
+  test('should have working CTA buttons', async ({ page }) => {
+    const patcherButton = page.locator('.cta-button').first();
+    const libraryButton = page.locator('.cta-button.cta-secondary');
     
-    // Test navigation
-    await ctaButton.click();
+    await expect(patcherButton).toBeVisible();
+    await expect(patcherButton).toContainText('ROM Patcher');
+    await expect(patcherButton).toHaveAttribute('href', 'patcher/');
+    
+    await expect(libraryButton).toBeVisible();
+    await expect(libraryButton).toContainText('ROM Library');
+    await expect(libraryButton).toHaveAttribute('href', 'docs/');
+    
+    // Test library navigation
+    await libraryButton.click();
     await expect(page).toHaveURL(/.*docs/);
     await expect(page.locator('h1')).toContainText('ROM Library');
   });
@@ -108,9 +114,11 @@ test.describe('Landing Page', () => {
     // Wait for Lucide to initialize
     await page.waitForTimeout(1000);
     
-    // Check CTA button icon
-    const ctaIcon = page.locator('.cta-button i[data-lucide="play"]');
-    await expect(ctaIcon).toBeVisible();
+    // Check CTA button icons
+    const patcherIcon = page.locator('.cta-button i[data-lucide="download"]');
+    const libraryIcon = page.locator('.cta-button i[data-lucide="book-open"]');
+    await expect(patcherIcon).toBeVisible();
+    await expect(libraryIcon).toBeVisible();
     
     // Check feature icons
     const featureIcons = page.locator('.feature-icon');

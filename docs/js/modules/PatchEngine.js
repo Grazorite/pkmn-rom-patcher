@@ -4,41 +4,33 @@ export default class PatchEngine {
     }
 
     /**
-     * Loads the bundled RomPatcher webapp and initializes the engine.
+     * Loads RomPatcher.webapp.js and initializes the engine.
      * @returns {Promise<void>}
      */
     static async init() {
-        if (window.RomPatcher && (window.MarcFile || window.BinFile)) {
+        if (window.RomPatcher && window.BinFile) {
             console.log('PatchEngine already initialized.');
             return;
         }
 
         try {
-            console.log('Initializing PatchEngine with bundled library...');
+            console.log('Initializing PatchEngine with RomPatcher.webapp.js...');
             
-            // Set worker path before loading
-            window.CRC32_WORKER_PATH = './js/vendor/worker_crc.js';
+            // Set the ROM_PATCHER_JS_PATH for the webapp
+            window.ROM_PATCHER_JS_PATH = '../docs/js/vendor/';
             
-            // Load the bundled library
-            await this._loadScript('./js/vendor/RomPatcher.webapp.js');
+            // Load the webapp which will handle all dependencies
+            await this._loadScript('../docs/js/vendor/RomPatcher.webapp.js');
 
-            // Verify bundled objects are available
-            if (typeof window.RomPatcher === 'undefined' || (typeof window.MarcFile === 'undefined' && typeof window.BinFile === 'undefined')) {
-                throw new Error("Bundled library loaded but required objects are missing.");
+            // Verify required objects are available
+            if (!window.RomPatcher || !window.BinFile) {
+                throw new Error("RomPatcher.webapp.js failed to load required objects");
             }
 
-            console.log('PatchEngine initialized successfully with bundled library.');
+            console.log('PatchEngine initialized successfully with full RomPatcher functionality.');
 
         } catch (error) {
             console.error('PatchEngine Initialization Failed:', error);
-            console.error('Error details:', {
-                message: error.message,
-                stack: error.stack,
-                windowRomPatcher: typeof window.RomPatcher,
-                windowMarcFile: typeof window.MarcFile,
-                windowBinFile: typeof window.BinFile,
-                scripts: Array.from(document.querySelectorAll('script')).map(s => s.src)
-            });
             throw error;
         }
     }
@@ -65,17 +57,16 @@ export default class PatchEngine {
     }
 
     /**
-     * Calculate CRC32 using MarcFile
+     * Calculate CRC32 using BinFile
      * @param {File} file 
      * @returns {Promise<string>} Hex string of CRC32
      */
     static async calculateCRC32(file) {
-        const FileClass = window.MarcFile || window.BinFile;
-        if (!FileClass) throw new Error("MarcFile/BinFile not loaded");
+        if (!window.BinFile) throw new Error("BinFile not loaded");
         
         return new Promise((resolve, reject) => {
             try {
-                const binFile = new FileClass(file, (loadedFile) => {
+                const binFile = new BinFile(file, (loadedFile) => {
                     try {
                         const crc = loadedFile.hashCRC32();
                         resolve(crc.toString(16).toUpperCase().padStart(8, '0'));
@@ -90,26 +81,23 @@ export default class PatchEngine {
     }
 
     /**
-     * Apply patch to ROM file using bundled RomPatcher
+     * Apply patch to ROM file using RomPatcher
      * @param {File} romFile 
      * @param {File} patchFile 
      * @returns {Promise<Object>} Patched ROM
      */
     static async applyPatch(romFile, patchFile) {
-        if (!window.RomPatcher) throw new Error("RomPatcher not loaded");
-        
-        const FileClass = window.MarcFile || window.BinFile;
-        if (!FileClass) throw new Error("MarcFile/BinFile not loaded");
+        if (!window.RomPatcher || !window.BinFile) throw new Error("Required libraries not loaded");
         
         return new Promise((resolve, reject) => {
             try {
-                const romBinFile = new FileClass(romFile, (loadedRom) => {
-                    const patchBinFile = new FileClass(patchFile, (loadedPatch) => {
+                const romBinFile = new BinFile(romFile, (loadedRom) => {
+                    const patchBinFile = new BinFile(patchFile, (loadedPatch) => {
                         try {
-                            const patch = window.RomPatcher.parsePatchFile(loadedPatch);
+                            const patch = RomPatcher.parsePatchFile(loadedPatch);
                             if (!patch) throw new Error('Invalid patch file format');
                             
-                            const patchedRom = window.RomPatcher.applyPatch(loadedRom, patch);
+                            const patchedRom = RomPatcher.applyPatch(loadedRom, patch);
                             resolve(patchedRom);
                         } catch (error) {
                             reject(error);

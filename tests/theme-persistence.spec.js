@@ -13,8 +13,8 @@ test.describe('Theme Persistence Across Pages', () => {
     await page.locator('#themeToggle').click();
     await expect(page.locator('body')).toHaveClass(/dark-mode/);
     
-    // Navigate to ROM store
-    await page.locator('.cta-button').click();
+    // Navigate to ROM library using the correct button
+    await page.locator('.cta-button.cta-secondary').click();
     await page.waitForLoadState('networkidle');
     
     // Verify dark mode is preserved
@@ -26,15 +26,15 @@ test.describe('Theme Persistence Across Pages', () => {
     await expect(icon).toHaveAttribute('data-lucide', 'moon');
   });
 
-  test('should preserve theme state when navigating from store to landing', async ({ page }) => {
-    // Start on ROM store page
+  test('should preserve theme state when navigating from library to landing', async ({ page }) => {
+    // Start on ROM library page
     await page.goto('/docs/');
     await page.waitForLoadState('networkidle');
     
     // Verify initial light mode
     await expect(page.locator('body')).not.toHaveClass(/dark-mode/);
     
-    // Toggle to dark mode on store page
+    // Toggle to dark mode on library page
     await page.locator('#themeToggle').click();
     await expect(page.locator('body')).toHaveClass(/dark-mode/);
     
@@ -83,14 +83,14 @@ test.describe('Theme Persistence Across Pages', () => {
     await page.locator('#themeToggle').click();
     await expect(page.locator('body')).toHaveClass(/dark-mode/);
     
-    // Navigate to store page
+    // Navigate to library page
     await page.goto('/docs/');
     await page.waitForLoadState('networkidle');
     
     // Should be dark mode
     await expect(page.locator('body')).toHaveClass(/dark-mode/);
     
-    // Toggle back to light mode on store page
+    // Toggle back to light mode on library page
     await page.locator('#themeToggle').click();
     await expect(page.locator('body')).not.toHaveClass(/dark-mode/);
     
@@ -140,7 +140,7 @@ test.describe('Theme Persistence Across Pages', () => {
   });
 
   test('should maintain theme consistency across multiple page loads', async ({ page }) => {
-    const pages = ['/', '/docs/'];
+    const pages = ['/', '/docs/', '/patcher/'];
     
     // Set dark mode on first page
     await page.goto(pages[0]);
@@ -149,7 +149,7 @@ test.describe('Theme Persistence Across Pages', () => {
     await expect(page.locator('body')).toHaveClass(/dark-mode/);
     
     // Test theme persistence across multiple page navigations
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
       for (const pagePath of pages) {
         await page.goto(pagePath);
         await page.waitForLoadState('networkidle');

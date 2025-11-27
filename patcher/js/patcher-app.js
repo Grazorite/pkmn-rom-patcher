@@ -326,7 +326,7 @@ class ROMPatcherApp {
         
         if (!romFile || !status) return;
         
-        if (!this.patchManager.romPatcherAvailable) {
+        if (!this.romPatcherAvailable) {
             status.innerHTML = '<i data-lucide="alert-circle" width="16" height="16"></i> Patcher Engine not ready';
             status.className = 'validation-error';
             return;

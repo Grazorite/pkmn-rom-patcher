@@ -15,7 +15,12 @@ test.describe('ROM Library - Detailed UI Tests', () => {
     await expect(page.locator('.app-header p')).toContainText('Discover and patch your favorite ROM hacks');
   });
 
-  test('should display breadcrumb navigation', async ({ page }) => {
+  test('should display navigation sidebar and breadcrumb', async ({ page }) => {
+    // Check sidebar navigation
+    const sidebar = page.locator('.nav-sidebar');
+    await expect(sidebar).toBeVisible();
+    
+    // Check breadcrumb navigation
     const breadcrumb = page.locator('.breadcrumb-link');
     await expect(breadcrumb).toBeVisible();
     await expect(breadcrumb).toContainText('Home');
@@ -230,7 +235,7 @@ test.describe('ROM Library - Detailed UI Tests', () => {
     await expect(page.locator('#linksTab')).toHaveClass(/active/);
   });
 
-  test('should display theme toggle and work correctly', async ({ page }) => {
+  test('should display theme toggle in sidebar and work correctly', async ({ page }) => {
     const themeToggle = page.locator('#themeToggle');
     await expect(themeToggle).toBeVisible();
     
