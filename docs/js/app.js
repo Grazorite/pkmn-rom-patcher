@@ -161,6 +161,18 @@ class ROMHackStore {
                 }, 100);
             }
         });
+        
+        // Collapsible filter groups
+        document.addEventListener('click', (e) => {
+            const filterHeader = e.target.closest('.filter-group h4');
+            if (filterHeader) {
+                const filterGroup = filterHeader.closest('.filter-group');
+                filterGroup.classList.toggle('collapsed');
+                
+                // Re-initialize icons after state change
+                setTimeout(() => this.initializeIcons(), 100);
+            }
+        });
     }
     
     generateFilters() {
@@ -251,21 +263,29 @@ function initializeApp() {
     // Initialize app immediately for UI, check RomPatcher separately for patching functionality
     window.app = new ROMHackStore();
     
-    // Check RomPatcher availability for patching functionality
-    if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
-        console.log('RomPatcher dependencies loaded - patching functionality available');
-        window.app.patchManager.setRomPatcherAvailable(true);
-    } else {
-        console.warn('RomPatcher dependencies not loaded - patching functionality disabled');
-        window.app.patchManager.setRomPatcherAvailable(false);
-        // Retry loading after a delay
-        setTimeout(() => {
-            if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
-                console.log('RomPatcher dependencies loaded (delayed) - patching functionality available');
-                window.app.patchManager.setRomPatcherAvailable(true);
-            }
-        }, 2000);
+    // Enhanced RomPatcher loading with multiple retry attempts
+    function checkRomPatcher(attempt = 0) {
+        if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
+            console.log('RomPatcher dependencies loaded - patching functionality available');
+            window.app.patchManager.setRomPatcherAvailable(true);
+            return;
+        }
+        
+        if (typeof RomPatcherWeb !== 'undefined' && RomPatcherWeb.isInitialized && RomPatcherWeb.isInitialized()) {
+            console.log('RomPatcherWeb initialized - patching functionality available');
+            window.app.patchManager.setRomPatcherAvailable(true);
+            return;
+        }
+        
+        if (attempt < 15) { // Try up to 15 times
+            setTimeout(() => checkRomPatcher(attempt + 1), 500);
+        } else {
+            console.error('RomPatcher dependencies failed to load after multiple attempts');
+            window.app.patchManager.setRomPatcherAvailable(false);
+        }
     }
+    
+    checkRomPatcher();
 }
 
 // Start initialization when DOM is loaded

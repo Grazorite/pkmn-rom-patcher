@@ -62,13 +62,50 @@
     font-weight: 600;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 6px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+}
+
+.filter-group h4:hover {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.filter-group h4 .filter-header-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-group h4 .collapse-icon {
+    transition: transform 0.2s ease;
+}
+
+.filter-group.collapsed h4 .collapse-icon {
+    transform: rotate(-90deg);
 }
 
 .filter-options {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.filter-group.collapsed .filter-options {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
 }
 
 .filter-option {

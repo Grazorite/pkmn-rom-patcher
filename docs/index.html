@@ -16,6 +16,14 @@
     </script>
 </head>
 <body>
+    <div class="background-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
     <div class="theme-toggle" id="themeToggle">
         <i data-lucide="sun" width="24" height="24"></i>
     </div>
@@ -45,23 +53,103 @@
                 <div class="filter-section">
                     <h3>Filters</h3>
                     <div class="filter-group">
-                        <h4><i data-lucide="disc" width="14" height="14"></i> Base ROM</h4>
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="disc" width="14" height="14"></i>
+                                Base ROM
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
                         <div id="baseRomFilters" class="filter-options"></div>
                     </div>
                     <div class="filter-group">
-                        <h4><i data-lucide="cpu" width="14" height="14"></i> System</h4>
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="cpu" width="14" height="14"></i>
+                                System
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
                         <div id="systemFilters" class="filter-options"></div>
                     </div>
                     <div class="filter-group">
-                        <h4><i data-lucide="activity" width="14" height="14"></i> Status</h4>
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="activity" width="14" height="14"></i>
+                                Status
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
                         <div id="statusFilters" class="filter-options"></div>
                     </div>
                     <div class="filter-group">
-                        <h4><i data-lucide="trending-up" width="14" height="14"></i> Difficulty</h4>
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="trending-up" width="14" height="14"></i>
+                                Difficulty
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
                         <div id="difficultyFilters" class="filter-options"></div>
                     </div>
                     <div class="filter-group">
-                        <h4><i data-lucide="hash" width="14" height="14"></i> Tags</h4>
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="user" width="14" height="14"></i>
+                                Author
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
+                        <div id="authorFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="image" width="14" height="14"></i>
+                                Graphics
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
+                        <div id="graphicsFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="book-open" width="14" height="14"></i>
+                                Story
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
+                        <div id="storyFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="settings" width="14" height="14"></i>
+                                Mechanics
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
+                        <div id="mechanicsFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="star" width="14" height="14"></i>
+                                Rating
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
+                        <div id="ratingFilters" class="filter-options"></div>
+                    </div>
+                    <div class="filter-group">
+                        <h4>
+                            <div class="filter-header-content">
+                                <i data-lucide="hash" width="14" height="14"></i>
+                                Tags
+                            </div>
+                            <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                        </h4>
                         <div id="tagFilters" class="filter-options"></div>
                     </div>
                 </div>
@@ -166,7 +254,28 @@
     </div>
     
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="js/rompatcher.min.js"></script>
+    <script>
+        // Load RomPatcher dependencies in correct order
+        const scripts = [
+            'js/RomPatcher.webapp.js'
+        ];
+        
+        let loadedScripts = 0;
+        scripts.forEach((src, index) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => {
+                loadedScripts++;
+                if (loadedScripts === scripts.length) {
+                    // Initialize RomPatcher after all scripts load
+                    if (typeof RomPatcherWeb !== 'undefined') {
+                        RomPatcherWeb.initialize();
+                    }
+                }
+            };
+            document.head.appendChild(script);
+        });
+    </script>
     <script type="module" src="js/app.js"></script>
 </body>
 </html>

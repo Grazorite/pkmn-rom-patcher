@@ -6,7 +6,11 @@ body.dark-mode {
     --bg-secondary: #111827;
     --border: #374151;
     --shadow: rgba(0, 0, 0, 0.3);
-    background: #0f172a;
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+}
+
+body.dark-mode .shape {
+    background: rgba(255, 255, 255, 0.03);
 }
 
 body.dark-mode .search-input {

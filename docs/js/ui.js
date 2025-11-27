@@ -106,16 +106,10 @@ export class UIManager {
         }
         if (playtimeEl) playtimeEl.innerHTML = hack.meta?.playtime ? `<i data-lucide="clock" width="16" height="16"></i> ${hack.meta.playtime}` : '';
 
-        // Banner with boxArt background
+        // Hide banner
         const banner = document.getElementById('detailBanner');
         if (banner) {
-            if (hack.meta?.images?.banner) {
-                const boxArtStyle = hack.meta?.images?.boxArt ? 
-                    `background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${hack.meta.images.boxArt}'); background-size: cover; background-position: center;` : '';
-                banner.innerHTML = `<img src="${hack.meta.images.banner}" alt="${hack.title}" style="${boxArtStyle}">`;
-            } else {
-                banner.innerHTML = hack.title;
-            }
+            banner.style.display = 'none';
         }
 
         // Set translucent boxArt background for detail content
@@ -220,7 +214,7 @@ export class UIManager {
     
     renderStarRating(rating) {
         const stars = [];
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= 6; i++) {
             if (i <= rating) {
                 stars.push('<i data-lucide="star" class="star-filled" width="16" height="16"></i>');
             } else {

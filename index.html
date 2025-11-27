@@ -133,6 +133,13 @@
             }
         }
 
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .cta-button {
             display: inline-flex;
             align-items: center;
@@ -150,6 +157,15 @@
             animation: scaleIn 1s ease-out 0.6s both;
             position: relative;
             overflow: hidden;
+        }
+
+        .cta-secondary {
+            background: rgba(240, 147, 251, 0.15);
+            border-color: rgba(240, 147, 251, 0.4);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(240, 147, 251, 0.25);
         }
 
         @keyframes scaleIn {
@@ -301,6 +317,11 @@
                 padding: 1rem;
             }
             
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
             .features {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
@@ -331,10 +352,16 @@
             <h1>ROM Patcher</h1>
             <p>Apply ROM hacks and patches to your favorite games with ease. No downloads required - everything runs securely in your browser!</p>
             
-            <a href="docs/" class="cta-button">
-                <i data-lucide="play" width="20" height="20"></i>
-                Let's Go!
-            </a>
+            <div class="cta-buttons">
+                <a href="docs/" class="cta-button">
+                    <i data-lucide="store" width="20" height="20"></i>
+                    ROM Hack Store
+                </a>
+                <a href="patcher/" class="cta-button cta-secondary">
+                    <i data-lucide="download" width="20" height="20"></i>
+                    ROM Patcher
+                </a>
+            </div>
             
             <div class="features">
                 <div class="feature">

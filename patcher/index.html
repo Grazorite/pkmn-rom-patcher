@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROM Patcher</title>
+    <link rel="stylesheet" href="../docs/styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
+    <script>
+        // Initialize theme on page load
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <div class="theme-toggle" id="themeToggle">
+        <i data-lucide="sun" width="24" height="24"></i>
+    </div>
+    
+    <div class="app-container">
+        <nav class="breadcrumb">
+            <a href="../" class="breadcrumb-link">
+                <i data-lucide="arrow-left" width="16" height="16"></i>
+                Home
+            </a>
+        </nav>
+        
+        <header class="app-header">
+            <h1>ROM Patcher</h1>
+            <p>Search and apply patches directly to your ROM files</p>
+        </header>
+        
+        <div class="patcher-layout">
+            <div class="patcher-main">
+                <div class="search-section">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="search-icon" width="20" height="20"></i>
+                        <input type="text" id="patchSearch" placeholder="Search for patches..." class="search-input">
+                    </div>
+                    <div class="creator-mode">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="creatorMode">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="creator-mode-info">
+                            <span class="creator-mode-label">Creator Mode</span>
+                            <small>Bypass checksum validation for testing</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="patch-results" id="patchResults">
+                    <div class="loading">Start typing to search for patches...</div>
+                </div>
+                
+                <div class="selected-patch" id="selectedPatch" style="display: none;">
+                    <div class="patch-info">
+                        <h3 id="selectedPatchTitle"></h3>
+                        <p id="selectedPatchDescription"></p>
+                        <div class="patch-meta" id="selectedPatchMeta"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="patcher-sidebar">
+                <div class="patch-interface">
+                    <div class="file-input-section">
+                        <label for="romFileInput" class="file-input-label">
+                            <i data-lucide="upload" width="24" height="24"></i>
+                            <span>Select ROM File</span>
+                        </label>
+                        <input type="file" id="romFileInput" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64" style="display: none;">
+                        <div id="romFileInfo" class="file-info"></div>
+                        <div id="romValidationDetail"></div>
+                    </div>
+                    
+                    <button id="applyPatchBtn" class="patch-btn" disabled>
+                        <i data-lucide="download" width="20" height="20"></i>
+                        Apply Patch
+                    </button>
+                    
+                    <div id="patchStatus"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="../docs/js/rompatcher.min.js"></script>
+    <script type="module" src="js/patcher-app.js"></script>
+</body>
+</html>

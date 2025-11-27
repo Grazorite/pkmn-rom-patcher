@@ -14,6 +14,8 @@
 @import 'components/hack-grid.css';
 @import 'components/detail-panel.css';
 @import 'components/ui-elements.css';
+@import 'components/links.css';
+@import 'components/patcher.css';
 
 /* Themes */
 @import 'themes/dark.css';
