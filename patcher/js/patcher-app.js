@@ -156,7 +156,7 @@ class ROMPatcherApp {
                         <p class="patch-description">${description}</p>
                         <div class="patch-badges">
                             ${patch.meta?.system ? `<span class="badge badge-system" data-system="${patch.meta.system}">${patch.meta.system}</span>` : ''}
-                            ${patch.meta?.baseRom ? `<span class="badge badge-rom">${patch.meta.baseRom}</span>` : ''}
+                            ${patch.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${patch.meta.baseRom}">${patch.meta.baseRom}</span>` : ''}
                         </div>
                     </div>
                 </div>

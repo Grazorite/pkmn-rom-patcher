@@ -21,8 +21,8 @@ export class UIManager {
     }
 
     createHackCard(hack) {
-        // Use banner image for cards, fallback to boxArt, then title
-        const imageUrl = hack.meta?.images?.banner || hack.meta?.images?.boxArt;
+        // Use boxArt for cards, fallback to banner, then title
+        const imageUrl = hack.meta?.images?.boxArt || hack.meta?.images?.banner;
         const imageHtml = imageUrl ? 
             `<img src="${imageUrl}" alt="${hack.title}" onerror="this.style.display='none'">` : 
             hack.title;
@@ -106,16 +106,16 @@ export class UIManager {
         }
         if (playtimeEl) playtimeEl.innerHTML = hack.meta?.playtime ? `<i data-lucide="clock" width="16" height="16"></i> ${hack.meta.playtime}` : '';
 
-        // Show banner with boxart
+        // Show banner with bannerImage
         const banner = document.getElementById('detailBanner');
         if (banner) {
-            if (hack.meta?.images?.boxArt) {
-                banner.classList.add('has-boxart');
-                banner.style.setProperty('--boxart-bg', `url('${hack.meta.images.boxArt}')`);
+            if (hack.meta?.images?.banner) {
+                banner.classList.add('has-banner');
+                banner.style.setProperty('--banner-bg', `url('${hack.meta.images.banner}')`);
                 banner.innerHTML = '';
             } else {
-                banner.classList.remove('has-boxart');
-                banner.style.removeProperty('--boxart-bg');
+                banner.classList.remove('has-banner');
+                banner.style.removeProperty('--banner-bg');
                 banner.innerHTML = hack.title;
             }
             banner.style.display = 'flex';
