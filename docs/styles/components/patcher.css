@@ -139,7 +139,8 @@ input:checked + .toggle-slider:before {
 }
 
 .selected-patch {
-    background: var(--bg-primary);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
     border: 2px solid var(--accent);
     border-radius: 16px;
     padding: 2rem;
@@ -218,13 +219,15 @@ input:checked + .toggle-slider:before {
 }
 
 .patcher-sidebar {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     padding: 2rem;
     height: fit-content;
     position: sticky;
     top: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .patch-interface {

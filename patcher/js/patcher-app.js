@@ -204,7 +204,12 @@ class ROMPatcherApp {
         if (title) title.textContent = this.selectedPatch.title;
         if (description) {
             if (this.selectedPatch.changelog && typeof marked !== 'undefined') {
-                description.innerHTML = marked.parse(this.selectedPatch.changelog);
+                // Remove title from markdown if it appears at the beginning
+                let cleanedChangelog = this.selectedPatch.changelog;
+                const titlePattern = new RegExp(`^#\s*${this.selectedPatch.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*\n`, 'i');
+                cleanedChangelog = cleanedChangelog.replace(titlePattern, '');
+                
+                description.innerHTML = marked.parse(cleanedChangelog);
             } else {
                 description.textContent = this.selectedPatch.changelog || 'No description available.';
             }

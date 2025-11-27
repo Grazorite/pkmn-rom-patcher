@@ -28,6 +28,17 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+}
+
+.app-header h1 i {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .app-header p {

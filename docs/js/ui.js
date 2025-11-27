@@ -106,20 +106,19 @@ export class UIManager {
         }
         if (playtimeEl) playtimeEl.innerHTML = hack.meta?.playtime ? `<i data-lucide="clock" width="16" height="16"></i> ${hack.meta.playtime}` : '';
 
-        // Hide banner
+        // Show banner with boxart
         const banner = document.getElementById('detailBanner');
         if (banner) {
-            banner.style.display = 'none';
-        }
-
-        // Set translucent boxArt background for detail content
-        const detailContent = document.querySelector('.detail-content');
-        if (detailContent && hack.meta?.images?.boxArt) {
-            detailContent.classList.add('has-boxart');
-            detailContent.style.setProperty('--boxart-bg', `url('${hack.meta.images.boxArt}')`);
-        } else if (detailContent) {
-            detailContent.classList.remove('has-boxart');
-            detailContent.style.removeProperty('--boxart-bg');
+            if (hack.meta?.images?.boxArt) {
+                banner.classList.add('has-boxart');
+                banner.style.setProperty('--boxart-bg', `url('${hack.meta.images.boxArt}')`);
+                banner.innerHTML = '';
+            } else {
+                banner.classList.remove('has-boxart');
+                banner.style.removeProperty('--boxart-bg');
+                banner.innerHTML = hack.title;
+            }
+            banner.style.display = 'flex';
         }
 
         // Description
@@ -207,7 +206,7 @@ export class UIManager {
                     <i data-lucide="${fieldIcons[label] || 'info'}" width="14" height="14"></i>
                     ${label}
                 </td>
-                <td>${value}</td>
+                <td${label === 'Base ROM' ? ' style="white-space: nowrap;"' : ''}>${value}</td>
             </tr>
         `).join('');
     }
