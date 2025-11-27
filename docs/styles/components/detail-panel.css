@@ -256,11 +256,11 @@
 .info-metadata td:first-child {
     font-weight: 600;
     color: var(--text-secondary);
-    width: 40%;
+    width: 50%;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-right: 16px;
+    padding-right: 8px;
 }
 
 .info-metadata tr:last-child td {

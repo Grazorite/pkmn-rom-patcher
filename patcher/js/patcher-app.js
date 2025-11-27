@@ -377,7 +377,21 @@ class ROMPatcherApp {
     showEngineError() {
         const resultsContainer = document.getElementById('patchResults');
         if (resultsContainer) {
-            resultsContainer.innerHTML = '<div class="loading error">Patch Engine failed to load. Check browser console for details.</div>';
+            const debugInfo = `
+                <div class="loading error">
+                    <h3>Patch Engine Failed to Load</h3>
+                    <p><strong>Window Objects:</strong></p>
+                    <ul>
+                        <li>RomPatcher: ${typeof window.RomPatcher}</li>
+                        <li>BinFile: ${typeof window.BinFile}</li>
+                    </ul>
+                    <p><strong>Scripts Loaded:</strong></p>
+                    <ul>
+                        ${Array.from(document.querySelectorAll('script')).map(s => `<li>${s.src || 'inline'}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            resultsContainer.innerHTML = debugInfo;
         }
     }
     

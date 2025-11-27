@@ -219,14 +219,13 @@ input:checked + .toggle-slider:before {
 }
 
 .patcher-sidebar {
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
+    background: transparent;
+    border: none;
     border-radius: 12px;
     padding: 2rem;
     height: fit-content;
     position: sticky;
     top: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .patch-interface {

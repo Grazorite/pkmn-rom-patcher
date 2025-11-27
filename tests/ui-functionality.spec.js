@@ -1,12 +1,12 @@
 const { test, expect } = require('@playwright/test');
 
-test.describe('ROM Hack Store UI', () => {
+test.describe('ROM Library UI', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/docs/');
   });
 
-  test('should load the ROM hack store page', async ({ page }) => {
-    await expect(page.locator('h1')).toContainText('ROM Hack Store');
+  test('should load the ROM library page', async ({ page }) => {
+    await expect(page.locator('h1')).toContainText('ROM Library');
     await expect(page.locator('.search-input')).toBeVisible();
   });
 

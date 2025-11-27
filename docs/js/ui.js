@@ -124,8 +124,16 @@ export class UIManager {
         // Description
         const descEl = document.getElementById('detailDescription');
         if (descEl) {
-            descEl.innerHTML = hack.changelog ? 
-                marked.parse(hack.changelog) : '<p>No description available.</p>';
+            if (hack.changelog) {
+                // Remove title from markdown if it appears at the beginning
+                let cleanedChangelog = hack.changelog;
+                const titlePattern = new RegExp(`^#\s*${hack.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*\n`, 'i');
+                cleanedChangelog = cleanedChangelog.replace(titlePattern, '');
+                
+                descEl.innerHTML = marked.parse(cleanedChangelog);
+            } else {
+                descEl.innerHTML = '<p>No description available.</p>';
+            }
         }
 
         // Metadata table

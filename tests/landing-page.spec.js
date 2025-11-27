@@ -40,7 +40,7 @@ test.describe('Landing Page', () => {
     // Test navigation
     await ctaButton.click();
     await expect(page).toHaveURL(/.*docs/);
-    await expect(page.locator('h1')).toContainText('ROM Hack Store');
+    await expect(page.locator('h1')).toContainText('ROM Library');
   });
 
   test('should display theme toggle', async ({ page }) => {

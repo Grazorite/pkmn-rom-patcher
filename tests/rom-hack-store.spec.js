@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test.describe('ROM Hack Store - Detailed UI Tests', () => {
+test.describe('ROM Library - Detailed UI Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/docs/');
     // Wait for page to fully load with longer timeout for Firefox
@@ -10,8 +10,8 @@ test.describe('ROM Hack Store - Detailed UI Tests', () => {
   });
 
   test('should load page with correct title and header', async ({ page }) => {
-    await expect(page).toHaveTitle(/ROM Hack Store/);
-    await expect(page.locator('h1')).toContainText('ROM Hack Store');
+    await expect(page).toHaveTitle(/ROM Library/);
+    await expect(page.locator('h1')).toContainText('ROM Library');
     await expect(page.locator('.app-header p')).toContainText('Discover and patch your favorite ROM hacks');
   });
 

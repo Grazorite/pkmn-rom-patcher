@@ -25,7 +25,7 @@ class ROMHackStore {
         // Initialize PatchEngine first
         try {
             await PatchEngine.init();
-            console.log('PatchEngine ready for ROM Hack Store');
+            console.log('PatchEngine ready for ROM Library');
         } catch (error) {
             console.error('Failed to initialize PatchEngine:', error);
             console.error('ROM Library App - PatchEngine init failed:', {
@@ -345,7 +345,21 @@ class ROMHackStore {
     showEngineError() {
         const grid = document.getElementById('hackGrid');
         if (grid) {
-            grid.innerHTML = '<div class="loading error">Patch Engine failed to load. Check browser console for details.</div>';
+            const debugInfo = `
+                <div class="loading error">
+                    <h3>Patch Engine Failed to Load</h3>
+                    <p><strong>Window Objects:</strong></p>
+                    <ul>
+                        <li>RomPatcher: ${typeof window.RomPatcher}</li>
+                        <li>BinFile: ${typeof window.BinFile}</li>
+                    </ul>
+                    <p><strong>Scripts Loaded:</strong></p>
+                    <ul>
+                        ${Array.from(document.querySelectorAll('script')).map(s => `<li>${s.src || 'inline'}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            grid.innerHTML = debugInfo;
         }
     }
     

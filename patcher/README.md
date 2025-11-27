@@ -20,13 +20,14 @@ A dedicated ROM patching interface that allows users to search for and apply pat
 ## Creator Mode
 
 Toggle creator mode to bypass checksum validation. This is useful for:
+
 - Testing patches during development
 - Working with modified ROMs
 - Experimental patching
 
 ## File Structure
 
-```
+```text
 patcher/
 ├── index.html          # Main patcher interface
 ├── js/
