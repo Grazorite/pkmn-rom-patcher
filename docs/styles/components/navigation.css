@@ -19,27 +19,89 @@
     transform: translateX(0);
 }
 
-.nav-toggle {
+.nav-sidebar-collapsed {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    gap: 20px;
+}
+
+.nav-sidebar:not(.open) .nav-links,
+.nav-sidebar:not(.open) .nav-header,
+.nav-sidebar:not(.open) .nav-footer {
+    display: none;
+}
+
+.nav-sidebar:not(.open) {
+    width: 60px;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.nav-collapsed-icons {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.nav-sidebar:not(.open) .nav-collapsed-icons {
+    display: flex;
+}
+
+.nav-collapsed-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.nav-collapsed-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.nav-collapsed-icon.active {
+    background: rgba(240, 147, 251, 0.2);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.nav-toggle {
+    position: absolute;
     top: 20px;
-    left: 60px;
-    z-index: 1002;
+    right: 20px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
     color: var(--text-primary);
-}
-
-.nav-sidebar.open + .nav-toggle {
-    left: 300px;
 }
 
 .nav-toggle:hover {

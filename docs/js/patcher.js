@@ -9,13 +9,22 @@ export class PatchManager {
     }
     
     async initializeRomPatcher() {
-        if (window.romPatcherLoader) {
-            window.romPatcherLoader.onReady((success) => {
-                this.setRomPatcherAvailable(success);
-            });
-            await window.romPatcherLoader.initialize();
+        // Wait for RomPatcher to be ready
+        if (window.romPatcherReady) {
+            this.setRomPatcherAvailable(true);
         } else {
-            this.checkDependencies();
+            window.addEventListener('rompatcher-ready', () => {
+                this.setRomPatcherAvailable(true);
+            });
+            
+            // Fallback check
+            setTimeout(() => {
+                if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
+                    this.setRomPatcherAvailable(true);
+                } else {
+                    this.setRomPatcherAvailable(false);
+                }
+            }, 3000);
         }
     }
     

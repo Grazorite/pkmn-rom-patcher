@@ -139,22 +139,82 @@ input:checked + .toggle-slider:before {
 }
 
 .selected-patch {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
+    background: var(--bg-primary);
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    padding: 2rem;
     margin-top: 2rem;
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.selected-patch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--primary));
 }
 
 .selected-patch h3 {
     margin: 0 0 1rem 0;
     color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
 }
 
 .selected-patch p {
-    color: var(--text-secondary);
-    line-height: 1.6;
+    color: var(--text-primary);
+    line-height: 1.7;
     margin: 0;
+}
+
+.selected-patch ul,
+.selected-patch ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+.selected-patch li {
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.selected-patch h1,
+.selected-patch h2,
+.selected-patch h3,
+.selected-patch h4,
+.selected-patch h5,
+.selected-patch h6 {
+    color: var(--text-primary);
+    margin: 1.5rem 0 1rem 0;
+}
+
+.selected-patch code {
+    background: var(--bg-secondary);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.selected-patch pre {
+    background: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.selected-patch blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: var(--text-secondary);
 }
 
 .patcher-sidebar {

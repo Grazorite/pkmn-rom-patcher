@@ -7,18 +7,23 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     text-decoration: none;
     font-size: 14px;
-    padding: 8px 16px;
-    border-radius: 8px;
+    font-weight: 500;
+    padding: 10px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 8px var(--shadow);
 }
 
 .breadcrumb-link:hover {
     color: var(--primary);
-    background: var(--bg-primary);
-    transform: translateX(-2px);
+    background: var(--bg-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow);
 }
 
 .main-content {

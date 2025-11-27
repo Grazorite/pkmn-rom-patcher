@@ -97,20 +97,19 @@ class ROMPatcherApp {
             });
         }
         
-        // Theme toggle
+        // Theme toggle (expanded)
         const themeBtn = document.getElementById('themeToggle');
         if (themeBtn) {
             themeBtn.addEventListener('click', () => {
-                Utils.toggleTheme();
-                
-                // Update theme toggle text
-                const isDark = document.body.classList.contains('dark-mode');
-                const themeText = themeBtn.querySelector('span');
-                if (themeText) {
-                    themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-                }
-                
-                setTimeout(() => this.initializeIcons(), 100);
+                this.handleThemeToggle();
+            });
+        }
+        
+        // Theme toggle (collapsed)
+        const themeCollapsed = document.getElementById('themeToggleCollapsed');
+        if (themeCollapsed) {
+            themeCollapsed.addEventListener('click', () => {
+                this.handleThemeToggle();
             });
         }
     }
@@ -203,11 +202,11 @@ class ROMPatcherApp {
         
         if (title) title.textContent = this.selectedPatch.title;
         if (description) {
-            // Clean markdown formatting from description
-            const cleanDescription = this.selectedPatch.changelog ? 
-                this.selectedPatch.changelog.replace(/[#*`]/g, '').substring(0, 300) + '...' : 
-                'No description available.';
-            description.textContent = cleanDescription;
+            if (this.selectedPatch.changelog && typeof marked !== 'undefined') {
+                description.innerHTML = marked.parse(this.selectedPatch.changelog);
+            } else {
+                description.textContent = this.selectedPatch.changelog || 'No description available.';
+            }
         }
         
         container.style.display = 'block';
@@ -303,6 +302,24 @@ class ROMPatcherApp {
         }
         
         await this.patchManager.applyPatch();
+    }
+    
+    handleThemeToggle() {
+        Utils.toggleTheme();
+        
+        // Update both theme toggles
+        const isDark = document.body.classList.contains('dark-mode');
+        const themeBtn = document.getElementById('themeToggle');
+        const themeCollapsed = document.getElementById('themeToggleCollapsed');
+        
+        if (themeBtn) {
+            const themeText = themeBtn.querySelector('span');
+            if (themeText) {
+                themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+            }
+        }
+        
+        setTimeout(() => this.initializeIcons(), 100);
     }
     
     formatFileSize(bytes) {

@@ -6,7 +6,7 @@ The project is organized by base ROM to support scalability with thousands of pa
 
 ## Directory Structure
 
-```
+```text
 ├── patches/                    # ROM patch files organized by base ROM
 │   ├── crystal/               # Pokemon Crystal patches
 │   ├── emerald/               # Pokemon Emerald patches
@@ -32,22 +32,26 @@ The project is organized by base ROM to support scalability with thousands of pa
 ## Adding New Patches
 
 1. **Create base ROM folder** (if it doesn't exist):
-   ```
+
+   ```bash
    patches/[baserom]/
    metadata/[baserom]/
    ```
 
 2. **Add patch file**:
-   ```
+
+   ```bash
    patches/[baserom]/PatchName.ips
    ```
 
 3. **Add metadata file**:
-   ```
+
+   ```bash
    metadata/[baserom]/PatchName.md
    ```
 
 4. **Run manifest generator**:
+
    ```bash
    node scripts/generate-manifest.js
    ```

@@ -117,37 +117,19 @@ class ROMHackStore {
             });
         }
         
-        // Theme toggle
+        // Theme toggle (expanded)
         const themeBtn = document.getElementById('themeToggle');
         if (themeBtn) {
             themeBtn.addEventListener('click', () => {
-                const wasDetailOpen = document.getElementById('detailPanel')?.classList.contains('open');
-                const wasDetailCollapsed = document.getElementById('detailPanel')?.classList.contains('collapsed');
-                
-                Utils.toggleTheme();
-                
-                // Update theme toggle text
-                const isDark = document.body.classList.contains('dark-mode');
-                const themeText = themeBtn.querySelector('span');
-                if (themeText) {
-                    themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-                }
-                
-                // Preserve detail panel state after theme change
-                if (wasDetailOpen || wasDetailCollapsed) {
-                    const panel = document.getElementById('detailPanel');
-                    if (panel) {
-                        if (wasDetailOpen) {
-                            panel.classList.add('open');
-                        }
-                        if (wasDetailCollapsed) {
-                            panel.classList.add('collapsed');
-                        }
-                    }
-                }
-                
-                // Re-initialize icons after theme change
-                setTimeout(() => this.initializeIcons(), 100);
+                this.handleThemeToggle();
+            });
+        }
+        
+        // Theme toggle (collapsed)
+        const themeCollapsed = document.getElementById('themeToggleCollapsed');
+        if (themeCollapsed) {
+            themeCollapsed.addEventListener('click', () => {
+                this.handleThemeToggle();
             });
         }
         
@@ -305,6 +287,41 @@ class ROMHackStore {
             `;
             this.initializeIcons();
         }
+    }
+    
+    handleThemeToggle() {
+        const wasDetailOpen = document.getElementById('detailPanel')?.classList.contains('open');
+        const wasDetailCollapsed = document.getElementById('detailPanel')?.classList.contains('collapsed');
+        
+        Utils.toggleTheme();
+        
+        // Update both theme toggles
+        const isDark = document.body.classList.contains('dark-mode');
+        const themeBtn = document.getElementById('themeToggle');
+        const themeCollapsed = document.getElementById('themeToggleCollapsed');
+        
+        if (themeBtn) {
+            const themeText = themeBtn.querySelector('span');
+            if (themeText) {
+                themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+            }
+        }
+        
+        // Preserve detail panel state after theme change
+        if (wasDetailOpen || wasDetailCollapsed) {
+            const panel = document.getElementById('detailPanel');
+            if (panel) {
+                if (wasDetailOpen) {
+                    panel.classList.add('open');
+                }
+                if (wasDetailCollapsed) {
+                    panel.classList.add('collapsed');
+                }
+            }
+        }
+        
+        // Re-initialize icons after theme change
+        setTimeout(() => this.initializeIcons(), 100);
     }
     
     formatFileSize(bytes) {

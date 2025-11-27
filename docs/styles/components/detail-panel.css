@@ -91,9 +91,9 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 400px;
+    bottom: 0;
     background-image: var(--boxart-bg);
-    background-size: contain;
+    background-size: cover;
     background-position: top center;
     background-repeat: no-repeat;
     opacity: 0;

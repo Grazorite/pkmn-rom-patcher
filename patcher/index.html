@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ROM Patcher</title>
     <link rel="stylesheet" href="../docs/styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
     <script>
-        // Initialize theme on page load
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
+        // Initialize theme immediately to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+                document.body.classList.add('dark-mode');
+            }
+        })();
     </script>
 </head>
 <body>
@@ -24,6 +28,9 @@
     </div>
     
     <nav class="nav-sidebar" id="navSidebar">
+        <div class="nav-toggle" id="navToggle">
+            <i data-lucide="menu" width="20" height="20"></i>
+        </div>
         <div class="nav-header">
             <h3>ROM Patcher</h3>
         </div>
@@ -47,11 +54,21 @@
                 <span>Light Mode</span>
             </div>
         </div>
+        <div class="nav-collapsed-icons">
+            <a href="../" class="nav-collapsed-icon">
+                <i data-lucide="home" width="20" height="20"></i>
+            </a>
+            <a href="./" class="nav-collapsed-icon active">
+                <i data-lucide="download" width="20" height="20"></i>
+            </a>
+            <a href="../docs/" class="nav-collapsed-icon">
+                <i data-lucide="store" width="20" height="20"></i>
+            </a>
+            <div class="nav-collapsed-icon" id="themeToggleCollapsed">
+                <i data-lucide="sun" width="20" height="20"></i>
+            </div>
+        </div>
     </nav>
-    
-    <div class="nav-toggle" id="navToggle">
-        <i data-lucide="menu" width="24" height="24"></i>
-    </div>
     
     <div class="app-container">
         <nav class="breadcrumb">
@@ -121,9 +138,31 @@
     </div>
     
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/marcrobledo/BinFileJS@master/binfile.min.js"></script>
-    <script src="../docs/js/rompatcher.min.js"></script>
-    <script type="module" src="../docs/js/rompatcher-loader.js"></script>
+    <script>
+        // Load BinFile and RomPatcher in correct order
+        const loadScript = (src) => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        };
+        
+        // Load dependencies sequentially
+        loadScript('https://cdn.jsdelivr.net/gh/marcrobledo/BinFileJS@master/binfile.min.js')
+            .then(() => loadScript('../docs/js/rompatcher.min.js'))
+            .then(() => {
+                console.log('RomPatcher dependencies loaded successfully');
+                window.romPatcherReady = true;
+                window.dispatchEvent(new Event('rompatcher-ready'));
+            })
+            .catch(error => {
+                console.error('Failed to load RomPatcher dependencies:', error);
+                window.romPatcherReady = false;
+            });
+    </script>
     <script type="module" src="js/patcher-app.js"></script>
 </body>
 </html>
