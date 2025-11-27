@@ -19,10 +19,16 @@ export default class PatchEngine {
             // Set the ROM_PATCHER_JS_PATH for the webapp
             window.ROM_PATCHER_JS_PATH = '../docs/js/vendor/';
             
-            // Load the webapp which will handle all dependencies
+            // Load the webapp which handles all dependencies automatically
             await this._loadScript('../docs/js/vendor/RomPatcher.webapp.js');
 
-            // Verify required objects are available
+            // Wait for RomPatcher to initialize
+            let attempts = 0;
+            while ((!window.RomPatcher || !window.BinFile) && attempts < 50) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+            
             if (!window.RomPatcher || !window.BinFile) {
                 throw new Error("RomPatcher.webapp.js failed to load required objects");
             }
