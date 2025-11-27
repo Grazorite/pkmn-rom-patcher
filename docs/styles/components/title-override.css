@@ -1,0 +1,31 @@
+/* Title gradient override - highest specificity */
+.app-header h1,
+h1.app-header,
+header .app-header h1,
+.app-container .app-header h1 {
+    font-size: 2.5rem !important;
+    margin-bottom: 10px !important;
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    color: transparent !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.app-header h1 i,
+h1.app-header i,
+header .app-header h1 i,
+.app-container .app-header h1 i {
+    color: #667eea !important;
+    flex-shrink: 0 !important;
+    -webkit-text-fill-color: #667eea !important;
+    background: none !important;
+    background-clip: initial !important;
+    -webkit-background-clip: initial !important;
+}

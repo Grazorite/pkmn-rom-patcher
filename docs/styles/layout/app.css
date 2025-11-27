@@ -21,22 +21,26 @@
 }
 
 .app-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+    font-size: 2.5rem !important;
+    margin-bottom: 10px !important;
     background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    justify-content: center;
+    color: transparent !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    justify-content: center !important;
+    text-align: center !important;
 }
 
 .app-header h1 i {
-    color: var(--primary);
+    color: var(--primary) !important;
     flex-shrink: 0;
+    -webkit-text-fill-color: var(--primary) !important;
+    background: none !important;
 }
 
 .app-header p {

@@ -245,22 +245,30 @@
 .info-metadata table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .info-metadata td {
-    padding: 16px 0;
+    padding: 12px 8px;
     border-bottom: 1px solid var(--border);
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 .info-metadata td:first-child {
     font-weight: 600;
     color: var(--text-secondary);
-    width: 50%;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-right: 8px;
+    width: 60%;
+    border-right: 1px solid var(--border);
+}
+
+.info-metadata td:first-child i {
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.info-metadata td:last-child {
+    width: 40%;
+    padding-left: 12px;
 }
 
 .info-metadata tr:last-child td {

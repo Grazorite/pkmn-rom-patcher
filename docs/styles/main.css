@@ -18,6 +18,7 @@
 @import 'components/links.css';
 @import 'components/patcher.css';
 @import 'components/loading.css';
+@import 'components/title-override.css';
 
 /* Themes */
 @import 'themes/dark.css';

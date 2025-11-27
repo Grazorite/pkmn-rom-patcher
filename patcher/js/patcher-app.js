@@ -133,13 +133,20 @@ class ROMPatcherApp {
     }
     
     setupSearch() {
-        // Show initial message
-        document.getElementById('patchResults').innerHTML = 
-            '<div class="loading">Start typing to search for patches...</div>';
+        // Don't override debug messages - only show initial message if no error present
+        const resultsContainer = document.getElementById('patchResults');
+        if (resultsContainer && !resultsContainer.innerHTML.includes('Patch Engine Failed')) {
+            resultsContainer.innerHTML = '<div class="loading">Start typing to search for patches...</div>';
+        }
     }
     
     handleSearch(query) {
         const resultsContainer = document.getElementById('patchResults');
+        
+        // Don't override debug error messages
+        if (resultsContainer.innerHTML.includes('Patch Engine Failed')) {
+            return;
+        }
         
         if (!query.trim()) {
             resultsContainer.innerHTML = '<div class="loading">Start typing to search for patches...</div>';
