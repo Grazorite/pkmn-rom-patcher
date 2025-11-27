@@ -310,6 +310,10 @@
         </div>
     </div>
     
+    <script>
+        // Tell RomPatcher where the worker lives relative to the HTML file
+        window.CRC32_WORKER_PATH = './js/vendor/worker_crc.js';
+    </script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <!-- PatchEngine will handle dependency loading -->
     <script type="module" src="js/app.js"></script>

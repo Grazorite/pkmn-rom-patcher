@@ -33,8 +33,6 @@ discord: "https://discord.gg/pmTA8jN8EK"
 documentation: "https://drive.google.com/drive/folders/1UKVQ5BEgyXRC-6zTWk5VRYnzAMaXocup"
 ---
 
-# Emerald Enhanced
-
 ## Overview
 
 Emerald Enhanced is currently a BETA game. This game is an open world themepark variant of pokémon Emerald.

@@ -1,6 +1,6 @@
 // ROM patching functionality
 import { Utils } from './utils.js';
-import { PatchEngine } from './modules/PatchEngine.js';
+import PatchEngine from './modules/PatchEngine.js';
 
 export class PatchManager {
     constructor() {
@@ -10,18 +10,13 @@ export class PatchManager {
     }
     
     async initializeRomPatcher() {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) overlay.style.display = 'flex';
-        
-        try {
-            await PatchEngine.init();
+        // PatchEngine is now initialized by the main app
+        // Just check if it's available
+        if (window.RomPatcher && window.BinFile) {
             this.setRomPatcherAvailable(true);
-        } catch (error) {
-            console.error('PatchEngine failed to initialize:', error);
+        } else {
             this.setRomPatcherAvailable(false);
-            this.showCriticalError('Patcher Engine failed to load. Please refresh.');
-        } finally {
-            if (overlay) overlay.style.display = 'none';
+            this.showCriticalError('Patcher Engine not ready. Please refresh.');
         }
     }
     

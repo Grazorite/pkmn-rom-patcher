@@ -3,6 +3,7 @@ import { Utils } from './utils.js';
 import { SearchManager } from './search.js';
 import { UIManager } from './ui.js';
 import { PatchManager } from './patcher.js';
+import PatchEngine from './modules/PatchEngine.js';
 
 class ROMHackStore {
     constructor() {
@@ -20,6 +21,15 @@ class ROMHackStore {
         // Initialize theme first
         Utils.initTheme();
         this.initializeIcons();
+        
+        // Initialize PatchEngine first
+        try {
+            await PatchEngine.init();
+            console.log('PatchEngine ready for ROM Hack Store');
+        } catch (error) {
+            console.error('Failed to initialize PatchEngine:', error);
+            this.showEngineError();
+        }
         
         await this.loadHacks();
         this.setupEventListeners();
@@ -322,6 +332,13 @@ class ROMHackStore {
         
         // Re-initialize icons after theme change
         setTimeout(() => this.initializeIcons(), 100);
+    }
+    
+    showEngineError() {
+        const grid = document.getElementById('hackGrid');
+        if (grid) {
+            grid.innerHTML = '<div class="loading error">Patch Engine failed to load. Please refresh the page.</div>';
+        }
     }
     
     formatFileSize(bytes) {

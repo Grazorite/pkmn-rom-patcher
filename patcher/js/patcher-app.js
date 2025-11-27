@@ -1,7 +1,7 @@
 // ROM Patcher App - Dedicated patching interface
 import { Utils } from '../../docs/js/utils.js';
 import { PatchManager } from '../../docs/js/patcher.js';
-import { PatchEngine } from '../../docs/js/modules/PatchEngine.js';
+import PatchEngine from '../../docs/js/modules/PatchEngine.js';
 
 class ROMPatcherApp {
     constructor() {
@@ -17,6 +17,15 @@ class ROMPatcherApp {
     async init() {
         Utils.initTheme();
         this.initializeIcons();
+        
+        // Initialize PatchEngine first
+        try {
+            await PatchEngine.init();
+            console.log('PatchEngine ready for ROM Patcher app');
+        } catch (error) {
+            console.error('Failed to initialize PatchEngine:', error);
+            this.showEngineError();
+        }
         
         await this.loadPatches();
         this.setupEventListeners();
@@ -355,6 +364,13 @@ class ROMPatcherApp {
         }
         
         setTimeout(() => this.initializeIcons(), 100);
+    }
+    
+    showEngineError() {
+        const resultsContainer = document.getElementById('patchResults');
+        if (resultsContainer) {
+            resultsContainer.innerHTML = '<div class="loading error">Patch Engine failed to load. Please refresh the page.</div>';
+        }
     }
     
     formatFileSize(bytes) {
