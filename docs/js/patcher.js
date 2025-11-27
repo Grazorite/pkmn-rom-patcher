@@ -11,8 +11,8 @@ export class PatchManager {
     
     async initializeRomPatcher() {
         // PatchEngine is now initialized by the main app
-        // Just check if it's available
-        if (window.RomPatcher && window.BinFile) {
+        // Check if bundled library is available
+        if (window.RomPatcher && (window.MarcFile || window.BinFile)) {
             this.setRomPatcherAvailable(true);
         } else {
             this.setRomPatcherAvailable(false);
@@ -133,7 +133,7 @@ export class PatchManager {
             const patchFile = new File([await patchResponse.arrayBuffer()], 'patch.bps');
             const patchedRom = await PatchEngine.applyPatch(romFile, patchFile);
             
-            const blob = new Blob([patchedRom.getBytes()], {type: 'application/octet-stream'});
+            const blob = new Blob([patchedRom._u8array], {type: 'application/octet-stream'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
