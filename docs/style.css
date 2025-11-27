@@ -694,22 +694,43 @@ body.dark-mode .clear-btn {
 
 .info-metadata table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
 }
 
 .info-metadata td {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--bg-secondary);
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     vertical-align: top;
+}
+
+.info-metadata tr:last-child td {
+    border-bottom: none;
 }
 
 .info-metadata td:first-child {
     font-weight: 600;
     color: var(--text-secondary);
-    width: 40%;
+    width: 25%;
     display: flex;
     align-items: center;
     gap: 8px;
+    padding-right: 0;
+}
+
+.info-metadata td:nth-child(2) {
+    width: 8%;
+    padding: 0;
+    border-bottom: none;
+}
+
+.info-metadata td:last-child {
+    padding-left: 0;
 }
 
 .patch-interface {

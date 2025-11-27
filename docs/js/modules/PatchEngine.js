@@ -8,7 +8,7 @@ export default class PatchEngine {
      * @returns {Promise<void>}
      */
     static async init() {
-        if (window.RomPatcher && window.BinFile) {
+        if (window.RomPatcher && window.BinFile && window.HashCalculator) {
             console.log('PatchEngine already initialized.');
             return;
         }
@@ -16,24 +16,23 @@ export default class PatchEngine {
         try {
             console.log('Initializing PatchEngine with RomPatcher.webapp.js...');
             
-            // Set the ROM_PATCHER_JS_PATH for the webapp
-            window.ROM_PATCHER_JS_PATH = '../docs/js/vendor/';
+            // Set the correct path for RomPatcher dependencies
+            const ROM_PATCHER_JS_PATH = '../docs/js/vendor/';
             
-            // Load the webapp which handles all dependencies automatically
-            await this._loadScript('../docs/js/vendor/RomPatcher.webapp.js');
+            // Load dependencies manually in correct order
+            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/BinFile.js');
+            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/HashCalculator.js');
+            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.ips.js');
+            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.bps.js');
+            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.ups.js');
+            await this._loadScript(ROM_PATCHER_JS_PATH + 'RomPatcher.js');
 
-            // Wait for RomPatcher to initialize
-            let attempts = 0;
-            while ((!window.RomPatcher || !window.BinFile) && attempts < 50) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-                attempts++;
-            }
-            
-            if (!window.RomPatcher || !window.BinFile) {
-                throw new Error("RomPatcher.webapp.js failed to load required objects");
+            // Verify all required objects are loaded
+            if (!window.RomPatcher || !window.BinFile || !window.HashCalculator) {
+                throw new Error("Failed to load required RomPatcher dependencies");
             }
 
-            console.log('PatchEngine initialized successfully with full RomPatcher functionality.');
+            console.log('PatchEngine initialized successfully with manual dependency loading.');
 
         } catch (error) {
             console.error('PatchEngine Initialization Failed:', error);

@@ -11,7 +11,7 @@ export class PatchManager {
     
     async initializeRomPatcher() {
         // Check if RomPatcher is available
-        if (window.RomPatcher && window.BinFile) {
+        if (window.RomPatcher && window.BinFile && window.HashCalculator) {
             this.setRomPatcherAvailable(true);
         } else {
             this.setRomPatcherAvailable(false);
