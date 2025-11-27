@@ -19,10 +19,7 @@ export default class PatchEngine {
             // 1. Load BinFile (Base dependency)
             await this._loadScript('./js/vendor/BinFile.js');
 
-            // 2. Load CRC (Required for validation)
-            await this._loadScript('./js/vendor/crc.js');
-
-            // 3. Load RomPatcher (Dependent on BinFile)
+            // 2. Load RomPatcher (Dependent on BinFile)
             await this._loadScript('./js/vendor/RomPatcher.js');
 
             // 4. Verify Global Injection
@@ -34,6 +31,13 @@ export default class PatchEngine {
 
         } catch (error) {
             console.error('PatchEngine Initialization Failed:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                windowRomPatcher: typeof window.RomPatcher,
+                windowBinFile: typeof window.BinFile,
+                scripts: Array.from(document.querySelectorAll('script')).map(s => s.src)
+            });
             throw error; // Propagate to UI
         }
     }
@@ -61,24 +65,55 @@ export default class PatchEngine {
     }
 
     /**
-     * Wrapper for CRC32 calculation
+     * Wrapper for CRC32 calculation using BinFile's built-in method
      * @param {File} file 
      * @returns {Promise<string>} Hex string of CRC32
      */
     static async calculateCRC32(file) {
-        if (!window.RomPatcher) throw new Error("Engine not loaded");
+        if (!window.BinFile) throw new Error("BinFile not loaded");
         
         return new Promise((resolve, reject) => {
-            const romFile = new window.BinFile(file);
-            
             try {
-                // Using the specific RomPatcher CRC logic:
-                const osCrc = window.CRC32.fromFile(file, (crcValue) => {
-                    // Convert integer to Hex string
-                    resolve((crcValue >>> 0).toString(16).toUpperCase().padStart(8, '0'));
+                const binFile = new window.BinFile(file, (loadedFile) => {
+                    try {
+                        const crc = loadedFile.hashCRC32();
+                        resolve(crc.toString(16).toUpperCase().padStart(8, '0'));
+                    } catch (error) {
+                        reject(error);
+                    }
                 });
-            } catch (e) {
-                reject(e);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+    
+    /**
+     * Apply patch to ROM file
+     * @param {File} romFile 
+     * @param {File} patchFile 
+     * @returns {Promise<BinFile>} Patched ROM
+     */
+    static async applyPatch(romFile, patchFile) {
+        if (!window.RomPatcher || !window.BinFile) throw new Error("Engine not loaded");
+        
+        return new Promise((resolve, reject) => {
+            try {
+                const romBinFile = new window.BinFile(romFile, (loadedRom) => {
+                    const patchBinFile = new window.BinFile(patchFile, (loadedPatch) => {
+                        try {
+                            const patch = window.RomPatcher.parsePatchFile(loadedPatch);
+                            if (!patch) throw new Error('Invalid patch file format');
+                            
+                            const patchedRom = window.RomPatcher.applyPatch(loadedRom, patch);
+                            resolve(patchedRom);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    });
+                });
+            } catch (error) {
+                reject(error);
             }
         });
     }

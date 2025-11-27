@@ -139,6 +139,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    color: transparent;
 }
 
 .detail-title h2 {

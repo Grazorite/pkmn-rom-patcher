@@ -33,8 +33,6 @@ discord: "https://discord.gg/EzbXamVZXh"
 documentation: "https://docs.google.com/spreadsheets/d/1YSW6vEl4YAMdRoV8x5GuRZm7OShrmlnugF_8eeto504/edit#gid=1869153773"
 ---
 
-# Gold 97: Reforged
-
 ## Latest Changes (v6.1e)
 
 - Adjusted Shiny DVs to allow a better chance of female shinies being spawned

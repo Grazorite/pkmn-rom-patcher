@@ -28,6 +28,14 @@ class ROMHackStore {
             console.log('PatchEngine ready for ROM Hack Store');
         } catch (error) {
             console.error('Failed to initialize PatchEngine:', error);
+            console.error('ROM Library App - PatchEngine init failed:', {
+                error: error.message,
+                stack: error.stack,
+                windowObjects: {
+                    RomPatcher: typeof window.RomPatcher,
+                    BinFile: typeof window.BinFile
+                }
+            });
             this.showEngineError();
         }
         
@@ -337,7 +345,7 @@ class ROMHackStore {
     showEngineError() {
         const grid = document.getElementById('hackGrid');
         if (grid) {
-            grid.innerHTML = '<div class="loading error">Patch Engine failed to load. Please refresh the page.</div>';
+            grid.innerHTML = '<div class="loading error">Patch Engine failed to load. Check browser console for details.</div>';
         }
     }
     

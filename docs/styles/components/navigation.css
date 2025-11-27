@@ -9,7 +9,7 @@
     backdrop-filter: blur(20px);
     border-right: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 1001;
-    transform: translateX(-220px);
+    transform: translateX(-200px);
     transition: transform 0.3s ease;
     display: flex;
     flex-direction: column;

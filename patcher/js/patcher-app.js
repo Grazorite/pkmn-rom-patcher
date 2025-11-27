@@ -24,6 +24,14 @@ class ROMPatcherApp {
             console.log('PatchEngine ready for ROM Patcher app');
         } catch (error) {
             console.error('Failed to initialize PatchEngine:', error);
+            console.error('ROM Patcher App - PatchEngine init failed:', {
+                error: error.message,
+                stack: error.stack,
+                windowObjects: {
+                    RomPatcher: typeof window.RomPatcher,
+                    BinFile: typeof window.BinFile
+                }
+            });
             this.showEngineError();
         }
         
@@ -327,7 +335,7 @@ class ROMPatcherApp {
             const patchFile = new File([await patchResponse.arrayBuffer()], 'patch.bps');
             const patchedRom = await PatchEngine.applyPatch(romFile, patchFile);
             
-            const blob = new Blob([patchedRom.getBytes()], {type: 'application/octet-stream'});
+            const blob = new Blob([patchedRom._u8array], {type: 'application/octet-stream'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -369,7 +377,7 @@ class ROMPatcherApp {
     showEngineError() {
         const resultsContainer = document.getElementById('patchResults');
         if (resultsContainer) {
-            resultsContainer.innerHTML = '<div class="loading error">Patch Engine failed to load. Please refresh the page.</div>';
+            resultsContainer.innerHTML = '<div class="loading error">Patch Engine failed to load. Check browser console for details.</div>';
         }
     }
     
