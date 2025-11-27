@@ -16,4 +16,10 @@
     /* Landing page consistency */
     --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+    
+    /* Mobile breakpoints */
+    --mobile-sm: 480px;
+    --mobile-md: 768px;
+    --tablet: 1024px;
+    --desktop: 1200px;
 }

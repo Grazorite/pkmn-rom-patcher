@@ -1,40 +1,32 @@
 /* ROM Patcher specific styles */
+
 .patcher-layout {
     display: grid;
     grid-template-columns: 1fr 400px;
-    gap: 30px;
-    align-items: start;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-.patcher-main {
-    background: var(--bg-primary);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 20px var(--shadow);
-}
-
-.patcher-sidebar {
-    background: var(--bg-primary);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 20px var(--shadow);
-    position: sticky;
-    top: 20px;
+.patcher-main.narrow {
+    max-width: none;
 }
 
 .search-section {
-    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .creator-mode {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    padding: 16px;
-    background: var(--bg-secondary);
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    border: 1px solid var(--border);
 }
 
 .toggle-switch {
@@ -57,7 +49,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--border);
+    background-color: var(--border-color);
     transition: 0.3s;
     border-radius: 24px;
 }
@@ -75,7 +67,7 @@
 }
 
 input:checked + .toggle-slider {
-    background-color: var(--primary);
+    background-color: var(--primary-color);
 }
 
 input:checked + .toggle-slider:before {
@@ -83,209 +75,227 @@ input:checked + .toggle-slider:before {
 }
 
 .creator-mode-info {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .creator-mode-label {
     font-weight: 600;
     color: var(--text-primary);
-    display: block;
-    margin-bottom: 2px;
 }
 
 .creator-mode-info small {
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 0.875rem;
 }
 
 .patch-results {
-    max-height: 500px;
-    overflow-y: auto;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .patch-result {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    border-bottom: 1px solid var(--border);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
     transition: all 0.2s ease;
 }
 
-.patch-result:last-child {
-    border-bottom: none;
+.patch-result.clickable {
+    cursor: pointer;
 }
 
-.patch-result:hover {
-    background: var(--bg-primary);
+.patch-result.clickable:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .patch-result-content h4 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 4px;
+    margin: 0 0 0.5rem 0;
     color: var(--text-primary);
+    font-size: 1.125rem;
 }
 
-.patch-author {
-    font-size: 14px;
+.patch-description {
     color: var(--text-secondary);
-    margin-bottom: 8px;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
 }
 
 .patch-badges {
     display: flex;
-    gap: 6px;
+    gap: 0.5rem;
     flex-wrap: wrap;
 }
 
-.badge-rom {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--success);
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.select-btn {
-    padding: 8px 16px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.2s ease;
-}
-
-.select-btn:hover {
-    background: var(--secondary);
-    transform: translateY(-1px);
-}
-
 .selected-patch {
-    margin-top: 24px;
-    padding: 20px;
-    background: var(--bg-secondary);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    border: 2px solid var(--primary);
+    padding: 1.5rem;
+    margin-top: 2rem;
 }
 
 .selected-patch h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    margin: 0 0 1rem 0;
     color: var(--text-primary);
 }
 
 .selected-patch p {
     color: var(--text-secondary);
-    margin-bottom: 12px;
-    line-height: 1.5;
+    line-height: 1.6;
+    margin: 0;
 }
 
-.patch-meta {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
+.patcher-sidebar {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
 }
 
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    color: var(--text-secondary);
-}
-
-.file-input-label {
+.patch-interface {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 24px;
-    border: 3px dashed var(--border);
-    border-radius: 16px;
-    background: var(--bg-secondary);
+    gap: 2rem;
+}
+
+.file-input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.patch-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
-.file-input-label:hover {
-    border-color: var(--primary);
-    background: var(--bg-primary);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px var(--shadow);
-}
-
-.file-info {
-    margin-top: 12px;
-}
-
-.file-selected {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px;
-    background: var(--bg-primary);
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
 }
 
-.file-selected small {
-    color: var(--text-secondary);
-    margin-left: auto;
+.patch-btn:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
-.loading {
-    text-align: center;
-    padding: 40px;
-    color: var(--text-secondary);
-    font-size: 16px;
+.patch-btn:disabled {
+    background: var(--border-color);
+    cursor: not-allowed;
+    transform: none;
 }
 
-.loading.error {
-    color: var(--error);
-}
-
+/* Mobile responsiveness */
 @media (max-width: 1024px) {
     .patcher-layout {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
+        max-width: 100%;
+        padding: 0 1rem;
     }
     
     .patcher-sidebar {
         position: static;
-        order: -1;
+        top: auto;
     }
 }
 
 @media (max-width: 768px) {
+    .search-section {
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
     .creator-mode {
+        padding: 0.75rem;
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 0.75rem;
+    }
+    
+    .creator-mode-info {
+        width: 100%;
     }
     
     .patch-result {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+        padding: 1rem;
     }
     
-    .patch-meta {
-        flex-direction: column;
-        gap: 8px;
+    .patch-result-content h4 {
+        font-size: 1rem;
+    }
+    
+    .patch-description {
+        font-size: 0.875rem;
+    }
+    
+    .selected-patch {
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .patcher-sidebar {
+        padding: 1.5rem;
+    }
+    
+    .patch-interface {
+        gap: 1.5rem;
+    }
+    
+    .patch-btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .patcher-layout {
+        padding: 0 0.5rem;
+        gap: 1rem;
+    }
+    
+    .creator-mode {
+        padding: 0.5rem;
+    }
+    
+    .patch-result {
+        padding: 0.75rem;
+    }
+    
+    .patch-badges {
+        gap: 0.25rem;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .selected-patch {
+        padding: 0.75rem;
+    }
+    
+    .patcher-sidebar {
+        padding: 1rem;
+    }
+    
+    .patch-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
     }
 }

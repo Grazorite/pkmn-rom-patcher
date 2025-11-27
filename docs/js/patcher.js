@@ -5,7 +5,18 @@ export class PatchManager {
     constructor() {
         this.selectedHack = null;
         this.romPatcherAvailable = false;
-        this.checkDependencies();
+        this.initializeRomPatcher();
+    }
+    
+    async initializeRomPatcher() {
+        if (window.romPatcherLoader) {
+            window.romPatcherLoader.onReady((success) => {
+                this.setRomPatcherAvailable(success);
+            });
+            await window.romPatcherLoader.initialize();
+        } else {
+            this.checkDependencies();
+        }
     }
     
     checkDependencies() {

@@ -100,6 +100,15 @@ class ROMHackStore {
             });
         });
         
+        // Navigation toggle
+        const navToggle = document.getElementById('navToggle');
+        const navSidebar = document.getElementById('navSidebar');
+        if (navToggle && navSidebar) {
+            navToggle.addEventListener('click', () => {
+                navSidebar.classList.toggle('open');
+            });
+        }
+        
         // Theme toggle
         const themeBtn = document.getElementById('themeToggle');
         if (themeBtn) {
@@ -108,6 +117,13 @@ class ROMHackStore {
                 const wasDetailCollapsed = document.getElementById('detailPanel')?.classList.contains('collapsed');
                 
                 Utils.toggleTheme();
+                
+                // Update theme toggle text
+                const isDark = document.body.classList.contains('dark-mode');
+                const themeText = themeBtn.querySelector('span');
+                if (themeText) {
+                    themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+                }
                 
                 // Preserve detail panel state after theme change
                 if (wasDetailOpen || wasDetailCollapsed) {
@@ -129,8 +145,13 @@ class ROMHackStore {
         
         // ROM file input
         const romInput = document.getElementById('romFileInput');
-        if (romInput) {
-            romInput.addEventListener('change', () => this.patchManager.validateROM());
+        const fileLabel = document.querySelector('.file-input-label');
+        if (romInput && fileLabel) {
+            fileLabel.addEventListener('click', () => romInput.click());
+            romInput.addEventListener('change', (e) => {
+                this.handleROMFile(e);
+                this.patchManager.validateROM();
+            });
         }
         
         // Apply patch
@@ -256,6 +277,35 @@ class ROMHackStore {
         this.selectedHack = null;
         this.patchManager.setSelectedHack(null);
     }
+    
+    handleROMFile(event) {
+        const file = event.target.files[0];
+        const fileInfo = document.getElementById('romFileInfo');
+        
+        if (!file) {
+            if (fileInfo) fileInfo.innerHTML = '';
+            return;
+        }
+        
+        if (fileInfo) {
+            fileInfo.innerHTML = `
+                <div class="file-selected">
+                    <i data-lucide="file" width="16" height="16"></i>
+                    <span>${file.name}</span>
+                    <small>${this.formatFileSize(file.size)}</small>
+                </div>
+            `;
+            this.initializeIcons();
+        }
+    }
+    
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
 }
 
 // Initialize the app when DOM and scripts are loaded
@@ -263,29 +313,7 @@ function initializeApp() {
     // Initialize app immediately for UI, check RomPatcher separately for patching functionality
     window.app = new ROMHackStore();
     
-    // Enhanced RomPatcher loading with multiple retry attempts
-    function checkRomPatcher(attempt = 0) {
-        if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
-            console.log('RomPatcher dependencies loaded - patching functionality available');
-            window.app.patchManager.setRomPatcherAvailable(true);
-            return;
-        }
-        
-        if (typeof RomPatcherWeb !== 'undefined' && RomPatcherWeb.isInitialized && RomPatcherWeb.isInitialized()) {
-            console.log('RomPatcherWeb initialized - patching functionality available');
-            window.app.patchManager.setRomPatcherAvailable(true);
-            return;
-        }
-        
-        if (attempt < 15) { // Try up to 15 times
-            setTimeout(() => checkRomPatcher(attempt + 1), 500);
-        } else {
-            console.error('RomPatcher dependencies failed to load after multiple attempts');
-            window.app.patchManager.setRomPatcherAvailable(false);
-        }
-    }
-    
-    checkRomPatcher();
+    // RomPatcher initialization is now handled by the PatchManager
 }
 
 // Start initialization when DOM is loaded

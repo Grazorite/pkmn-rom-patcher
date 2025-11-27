@@ -88,9 +88,91 @@
     font-size: 18px;
 }
 
+/* Mobile responsiveness */
+@media (max-width: 1024px) {
+    .hack-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+}
+
 @media (max-width: 768px) {
     .hack-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .hack-card {
+        border-radius: 12px;
+    }
+    
+    .hack-card:hover {
+        transform: translateY(-4px) scale(1.01);
+    }
+    
+    .hack-card-image {
+        height: 150px;
+        font-size: 16px;
+    }
+    
+    .hack-card-content {
+        padding: 16px;
+    }
+    
+    .hack-card-title {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+    
+    .hack-card-author {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    
+    .hack-card-badges {
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+    
+    .loading {
+        padding: 40px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hack-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .hack-card-image {
+        height: 120px;
+        font-size: 14px;
+    }
+    
+    .hack-card-content {
+        padding: 12px;
+    }
+    
+    .hack-card-title {
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+    
+    .hack-card-author {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+    
+    .hack-card-badges {
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+    
+    .loading {
+        padding: 30px;
+        font-size: 14px;
     }
 }

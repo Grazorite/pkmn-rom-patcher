@@ -101,8 +101,7 @@ export class UIManager {
         if (titleEl) titleEl.textContent = hack.title;
         if (authorEl) authorEl.innerHTML = `<i data-lucide="user" width="16" height="16"></i> ${hack.meta?.author || 'Unknown'}`;
         if (statusEl) {
-            const statusIcon = hack.meta?.status === 'Completed' ? 'check-circle' : 'clock';
-            statusEl.innerHTML = `<i data-lucide="${statusIcon}" width="16" height="16"></i> ${hack.meta?.status || 'Completed'}`;
+            statusEl.innerHTML = `<i data-lucide="activity" width="16" height="16"></i> ${hack.meta?.status || 'Completed'}`;
         }
         if (playtimeEl) playtimeEl.innerHTML = hack.meta?.playtime ? `<i data-lucide="clock" width="16" height="16"></i> ${hack.meta.playtime}` : '';
 
@@ -272,24 +271,38 @@ export class UIManager {
 
     openDetailPanel() {
         const panel = document.getElementById('detailPanel');
+        const overlay = document.getElementById('detailOverlay');
         if (panel) {
             panel.classList.add('open');
             panel.classList.remove('collapsed');
         }
+        if (overlay) {
+            overlay.classList.add('active');
+        }
+        // Default to info tab
+        this.switchTab('info');
     }
 
     closeDetailPanel() {
         const panel = document.getElementById('detailPanel');
+        const overlay = document.getElementById('detailOverlay');
         if (panel) {
             panel.classList.remove('open', 'collapsed');
+        }
+        if (overlay) {
+            overlay.classList.remove('active');
         }
     }
     
     collapseDetailPanel() {
         const panel = document.getElementById('detailPanel');
+        const overlay = document.getElementById('detailOverlay');
         if (panel) {
             panel.classList.add('collapsed');
             panel.classList.remove('open');
+        }
+        if (overlay) {
+            overlay.classList.remove('active');
         }
     }
     

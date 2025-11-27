@@ -38,9 +38,15 @@ export const Utils = {
     updateThemeIcon(isDark) {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
-            themeToggle.innerHTML = isDark 
-                ? '<i data-lucide="moon" width="24" height="24"></i>'
-                : '<i data-lucide="sun" width="24" height="24"></i>';
+            const icon = themeToggle.querySelector('i');
+            const text = themeToggle.querySelector('span');
+            
+            if (icon) {
+                icon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            }
+            if (text) {
+                text.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+            }
             
             // Re-initialize icons
             if (typeof lucide !== 'undefined') {

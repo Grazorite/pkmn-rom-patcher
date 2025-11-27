@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ROM Hack Store</title>
     <link rel="stylesheet" href="styles/main.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -24,8 +24,34 @@
         <div class="shape"></div>
     </div>
     
-    <div class="theme-toggle" id="themeToggle">
-        <i data-lucide="sun" width="24" height="24"></i>
+    <nav class="nav-sidebar" id="navSidebar">
+        <div class="nav-header">
+            <h3>ROM Patcher</h3>
+        </div>
+        <div class="nav-links">
+            <a href="../" class="nav-link">
+                <i data-lucide="home" width="20" height="20"></i>
+                Home
+            </a>
+            <a href="../patcher/" class="nav-link">
+                <i data-lucide="download" width="20" height="20"></i>
+                ROM Patcher
+            </a>
+            <a href="./" class="nav-link active">
+                <i data-lucide="store" width="20" height="20"></i>
+                ROM Hack Store
+            </a>
+        </div>
+        <div class="nav-footer">
+            <div class="theme-toggle-nav" id="themeToggle">
+                <i data-lucide="sun" width="20" height="20"></i>
+                <span>Light Mode</span>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="nav-toggle" id="navToggle">
+        <i data-lucide="menu" width="24" height="24"></i>
     </div>
     
     <div class="app-container">
@@ -52,7 +78,7 @@
                 
                 <div class="filter-section">
                     <h3>Filters</h3>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
                                 <i data-lucide="disc" width="14" height="14"></i>
@@ -62,7 +88,7 @@
                         </h4>
                         <div id="baseRomFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
                                 <i data-lucide="cpu" width="14" height="14"></i>
@@ -72,7 +98,7 @@
                         </h4>
                         <div id="systemFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
                                 <i data-lucide="activity" width="14" height="14"></i>
@@ -82,7 +108,7 @@
                         </h4>
                         <div id="statusFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
                                 <i data-lucide="trending-up" width="14" height="14"></i>
@@ -92,17 +118,17 @@
                         </h4>
                         <div id="difficultyFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
-                                <i data-lucide="user" width="14" height="14"></i>
-                                Author
+                                <i data-lucide="star" width="14" height="14"></i>
+                                Fakemons
                             </div>
                             <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
                         </h4>
-                        <div id="authorFilters" class="filter-options"></div>
+                        <div id="fakemonsFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
                                 <i data-lucide="image" width="14" height="14"></i>
@@ -112,7 +138,7 @@
                         </h4>
                         <div id="graphicsFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
                                 <i data-lucide="book-open" width="14" height="14"></i>
@@ -122,7 +148,7 @@
                         </h4>
                         <div id="storyFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
                                 <i data-lucide="settings" width="14" height="14"></i>
@@ -132,17 +158,17 @@
                         </h4>
                         <div id="mechanicsFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
-                                <i data-lucide="star" width="14" height="14"></i>
+                                <i data-lucide="award" width="14" height="14"></i>
                                 Rating
                             </div>
                             <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
                         </h4>
                         <div id="ratingFilters" class="filter-options"></div>
                     </div>
-                    <div class="filter-group">
+                    <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
                                 <i data-lucide="hash" width="14" height="14"></i>
@@ -177,6 +203,7 @@
     </div>
     
     <!-- Detail Panel -->
+    <div id="detailOverlay" class="detail-overlay"></div>
     <div id="detailPanel" class="detail-panel">
         <div class="collapsed-content">
             <div class="collapsed-header">
@@ -235,7 +262,12 @@
                 <div id="patchTab" class="tab-panel">
                     <div class="patch-interface">
                         <div class="file-input-section">
-                            <input type="file" id="romFileInput" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64">
+                            <label for="romFileInput" class="file-input-label">
+                                <i data-lucide="upload" width="24" height="24"></i>
+                                <span>Select ROM File</span>
+                            </label>
+                            <input type="file" id="romFileInput" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64" style="display: none;">
+                            <div id="romFileInfo" class="file-info"></div>
                             <div id="romValidationDetail"></div>
                         </div>
                         <button id="applyPatchBtn" class="patch-btn" disabled>
@@ -254,28 +286,8 @@
     </div>
     
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script>
-        // Load RomPatcher dependencies in correct order
-        const scripts = [
-            'js/RomPatcher.webapp.js'
-        ];
-        
-        let loadedScripts = 0;
-        scripts.forEach((src, index) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = () => {
-                loadedScripts++;
-                if (loadedScripts === scripts.length) {
-                    // Initialize RomPatcher after all scripts load
-                    if (typeof RomPatcherWeb !== 'undefined') {
-                        RomPatcherWeb.initialize();
-                    }
-                }
-            };
-            document.head.appendChild(script);
-        });
-    </script>
+    <script src="js/rompatcher.min.js"></script>
+    <script type="module" src="js/rompatcher-loader.js"></script>
     <script type="module" src="js/app.js"></script>
 </body>
 </html>

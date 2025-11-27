@@ -9,6 +9,7 @@
 @import 'layout/app.css';
 
 /* Components */
+@import 'components/navigation.css';
 @import 'components/theme-toggle.css';
 @import 'components/sidebar.css';
 @import 'components/hack-grid.css';

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ROM Patcher</title>
     <link rel="stylesheet" href="../docs/styles/main.css">
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
@@ -23,8 +23,34 @@
         <div class="shape"></div>
     </div>
     
-    <div class="theme-toggle" id="themeToggle">
-        <i data-lucide="sun" width="24" height="24"></i>
+    <nav class="nav-sidebar" id="navSidebar">
+        <div class="nav-header">
+            <h3>ROM Patcher</h3>
+        </div>
+        <div class="nav-links">
+            <a href="../" class="nav-link">
+                <i data-lucide="home" width="20" height="20"></i>
+                Home
+            </a>
+            <a href="./" class="nav-link active">
+                <i data-lucide="download" width="20" height="20"></i>
+                ROM Patcher
+            </a>
+            <a href="../docs/" class="nav-link">
+                <i data-lucide="store" width="20" height="20"></i>
+                ROM Hack Store
+            </a>
+        </div>
+        <div class="nav-footer">
+            <div class="theme-toggle-nav" id="themeToggle">
+                <i data-lucide="sun" width="20" height="20"></i>
+                <span>Light Mode</span>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="nav-toggle" id="navToggle">
+        <i data-lucide="menu" width="24" height="24"></i>
     </div>
     
     <div class="app-container">
@@ -41,12 +67,8 @@
         </header>
         
         <div class="patcher-layout">
-            <div class="patcher-main">
+            <div class="patcher-main narrow">
                 <div class="search-section">
-                    <div class="search-wrapper">
-                        <i data-lucide="search" class="search-icon" width="20" height="20"></i>
-                        <input type="text" id="patchSearch" placeholder="Search for patches..." class="search-input">
-                    </div>
                     <div class="creator-mode">
                         <label class="toggle-switch">
                             <input type="checkbox" id="creatorMode">
@@ -54,8 +76,12 @@
                         </label>
                         <div class="creator-mode-info">
                             <span class="creator-mode-label">Creator Mode</span>
-                            <small>Bypass checksum validation for testing</small>
+                            <small>Create patches from ROMs</small>
                         </div>
+                    </div>
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="search-icon" width="20" height="20"></i>
+                        <input type="text" id="patchSearch" placeholder="Search for patches..." class="search-input">
                     </div>
                 </div>
                 
@@ -67,7 +93,6 @@
                     <div class="patch-info">
                         <h3 id="selectedPatchTitle"></h3>
                         <p id="selectedPatchDescription"></p>
-                        <div class="patch-meta" id="selectedPatchMeta"></div>
                     </div>
                 </div>
             </div>
@@ -97,6 +122,7 @@
     
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="../docs/js/rompatcher.min.js"></script>
+    <script type="module" src="../docs/js/rompatcher-loader.js"></script>
     <script type="module" src="js/patcher-app.js"></script>
 </body>
 </html>

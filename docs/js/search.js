@@ -8,7 +8,7 @@ export class SearchManager {
             status: new Set(),
             difficulty: new Set(),
             tags: new Set(),
-            author: new Set(),
+            fakemons: new Set(),
             graphics: new Set(),
             story: new Set(),
             mechanics: new Set(),
@@ -90,7 +90,7 @@ export class SearchManager {
             status: new Map(),
             difficulty: new Map(),
             tags: new Map(),
-            author: new Map(),
+            fakemons: new Map(),
             graphics: new Map(),
             story: new Map(),
             mechanics: new Map(),
@@ -106,7 +106,7 @@ export class SearchManager {
                 if (hack.meta.system) filters.system.set(hack.meta.system, (filters.system.get(hack.meta.system) || 0) + 1);
                 if (hack.meta.status) filters.status.set(hack.meta.status, (filters.status.get(hack.meta.status) || 0) + 1);
                 if (hack.meta.difficulty) filters.difficulty.set(hack.meta.difficulty, (filters.difficulty.get(hack.meta.difficulty) || 0) + 1);
-                if (hack.meta.author) filters.author.set(hack.meta.author, (filters.author.get(hack.meta.author) || 0) + 1);
+                if (hack.meta.fakemons) filters.fakemons.set(hack.meta.fakemons, (filters.fakemons.get(hack.meta.fakemons) || 0) + 1);
                 if (hack.meta.graphics) filters.graphics.set(hack.meta.graphics, (filters.graphics.get(hack.meta.graphics) || 0) + 1);
                 if (hack.meta.story) filters.story.set(hack.meta.story, (filters.story.get(hack.meta.story) || 0) + 1);
                 

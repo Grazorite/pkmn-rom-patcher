@@ -143,10 +143,122 @@
     border-radius: 10px;
 }
 
+/* Mobile responsiveness */
 @media (max-width: 1024px) {
     .sidebar {
         position: static;
         max-height: none;
         margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        padding: 16px;
+        border-radius: 12px;
+    }
+    
+    .search-wrapper {
+        margin-bottom: 16px;
+    }
+    
+    .search-input {
+        padding: 10px 10px 10px 40px;
+        font-size: 14px;
+    }
+    
+    .search-icon {
+        left: 10px;
+    }
+    
+    .filter-section h3 {
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .filter-group {
+        margin-bottom: 16px;
+    }
+    
+    .filter-group h4 {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+    
+    .filter-options {
+        max-height: 200px;
+        gap: 6px;
+    }
+    
+    .filter-option {
+        padding: 6px;
+        font-size: 13px;
+        gap: 8px;
+    }
+    
+    .filter-option input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .filter-count {
+        font-size: 11px;
+        padding: 1px 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        padding: 12px;
+    }
+    
+    .search-wrapper {
+        margin-bottom: 12px;
+    }
+    
+    .search-input {
+        padding: 8px 8px 8px 36px;
+        font-size: 13px;
+    }
+    
+    .search-icon {
+        left: 8px;
+        width: 16px;
+        height: 16px;
+    }
+    
+    .filter-section h3 {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+    
+    .filter-group {
+        margin-bottom: 12px;
+    }
+    
+    .filter-group h4 {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+    
+    .filter-options {
+        max-height: 150px;
+        gap: 4px;
+    }
+    
+    .filter-option {
+        padding: 4px;
+        font-size: 12px;
+        gap: 6px;
+    }
+    
+    .filter-option input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .filter-count {
+        font-size: 10px;
+        padding: 1px 3px;
     }
 }

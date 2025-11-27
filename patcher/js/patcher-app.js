@@ -83,11 +83,28 @@ class ROMPatcherApp {
             patchBtn.addEventListener('click', () => this.applyPatch());
         }
         
+        // Navigation toggle
+        const navToggle = document.getElementById('navToggle');
+        const navSidebar = document.getElementById('navSidebar');
+        if (navToggle && navSidebar) {
+            navToggle.addEventListener('click', () => {
+                navSidebar.classList.toggle('open');
+            });
+        }
+        
         // Theme toggle
         const themeBtn = document.getElementById('themeToggle');
         if (themeBtn) {
             themeBtn.addEventListener('click', () => {
                 Utils.toggleTheme();
+                
+                // Update theme toggle text
+                const isDark = document.body.classList.contains('dark-mode');
+                const themeText = themeBtn.querySelector('span');
+                if (themeText) {
+                    themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+                }
+                
                 setTimeout(() => this.initializeIcons(), 100);
             });
         }
@@ -126,21 +143,16 @@ class ROMPatcherApp {
         
         const resultsHtml = results.map(result => {
             const patch = result.item;
+            const description = patch.changelog ? patch.changelog.replace(/[#*`]/g, '').substring(0, 100) + '...' : 'No description available';
             return `
-                <div class="patch-result" data-patch-id="${patch.id}">
+                <div class="patch-result clickable" data-patch-id="${patch.id}">
                     <div class="patch-result-content">
                         <h4>${patch.title}</h4>
-                        <p class="patch-author">by ${patch.meta?.author || 'Unknown'}</p>
+                        <p class="patch-description">${description}</p>
                         <div class="patch-badges">
                             ${patch.meta?.system ? `<span class="badge badge-system" data-system="${patch.meta.system}">${patch.meta.system}</span>` : ''}
                             ${patch.meta?.baseRom ? `<span class="badge badge-rom">${patch.meta.baseRom}</span>` : ''}
                         </div>
-                    </div>
-                    <div class="patch-select">
-                        <button class="select-btn" data-patch-id="${patch.id}">
-                            <i data-lucide="check" width="16" height="16"></i>
-                            Select
-                        </button>
                     </div>
                 </div>
             `;
@@ -148,10 +160,10 @@ class ROMPatcherApp {
         
         container.innerHTML = resultsHtml;
         
-        // Add click handlers for select buttons
-        container.querySelectorAll('.select-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const patchId = e.target.closest('.select-btn').dataset.patchId;
+        // Add click handlers for entire patch result
+        container.querySelectorAll('.patch-result').forEach(result => {
+            result.addEventListener('click', (e) => {
+                const patchId = e.target.closest('.patch-result').dataset.patchId;
                 this.selectPatch(patchId);
             });
         });
@@ -173,31 +185,14 @@ class ROMPatcherApp {
         const container = document.getElementById('selectedPatch');
         const title = document.getElementById('selectedPatchTitle');
         const description = document.getElementById('selectedPatchDescription');
-        const meta = document.getElementById('selectedPatchMeta');
         
         if (title) title.textContent = this.selectedPatch.title;
         if (description) {
-            description.textContent = this.selectedPatch.changelog || 'No description available.';
-        }
-        if (meta) {
-            meta.innerHTML = `
-                <div class="meta-item">
-                    <i data-lucide="user" width="14" height="14"></i>
-                    <span>${this.selectedPatch.meta?.author || 'Unknown'}</span>
-                </div>
-                ${this.selectedPatch.meta?.system ? `
-                    <div class="meta-item">
-                        <i data-lucide="cpu" width="14" height="14"></i>
-                        <span>${this.selectedPatch.meta.system}</span>
-                    </div>
-                ` : ''}
-                ${this.selectedPatch.meta?.baseRom ? `
-                    <div class="meta-item">
-                        <i data-lucide="disc" width="14" height="14"></i>
-                        <span>${this.selectedPatch.meta.baseRom}</span>
-                    </div>
-                ` : ''}
-            `;
+            // Clean markdown formatting from description
+            const cleanDescription = this.selectedPatch.changelog ? 
+                this.selectedPatch.changelog.replace(/[#*`]/g, '') : 
+                'No description available.';
+            description.textContent = cleanDescription;
         }
         
         container.style.display = 'block';
@@ -238,7 +233,7 @@ class ROMPatcherApp {
     updateCreatorMode() {
         const validation = document.getElementById('romValidationDetail');
         if (this.creatorMode) {
-            validation.innerHTML = '<div class="validation-info"><i data-lucide="info" width="16" height="16"></i> Creator mode: Checksum validation disabled</div>';
+            validation.innerHTML = '<div class="validation-info"><i data-lucide="info" width="16" height="16"></i> Creator mode: For creating patches from ROMs</div>';
         } else {
             this.validateCurrentROM();
         }
@@ -283,18 +278,6 @@ class ROMPatcherApp {
 // Initialize the app
 function initializeApp() {
     window.patcherApp = new ROMPatcherApp();
-    
-    // Check RomPatcher availability
-    if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
-        window.patcherApp.patchManager.setRomPatcherAvailable(true);
-    } else {
-        window.patcherApp.patchManager.setRomPatcherAvailable(false);
-        setTimeout(() => {
-            if (typeof BinFile !== 'undefined' && typeof RomPatcher !== 'undefined') {
-                window.patcherApp.patchManager.setRomPatcherAvailable(true);
-            }
-        }, 2000);
-    }
 }
 
 if (document.readyState === 'loading') {
