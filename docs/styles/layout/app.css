@@ -21,33 +21,30 @@
 }
 
 .app-header h1 {
-    font-size: 2.5rem !important;
-    margin-bottom: 10px !important;
-    background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-    color: transparent !important;
-    font-weight: 700 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-    justify-content: center !important;
-    text-align: center !important;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, #fff, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
 }
 
 .app-header h1 i {
-    color: var(--primary) !important;
+    color: #f093fb;
     flex-shrink: 0;
-    -webkit-text-fill-color: var(--primary) !important;
-    background: none !important;
 }
 
 .app-header p {
-    color: var(--text-primary);
-    font-size: 1.1rem;
-    font-weight: 500;
-    opacity: 0.8;
+    color: white;
+    font-size: 1.25rem;
+    margin-bottom: 3rem;
+    opacity: 0.9;
+    line-height: 1.6;
 }
 
 /* Mobile responsiveness */

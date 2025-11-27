@@ -62,7 +62,12 @@
     align-items: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 2px solid var(--bg-secondary);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.results-header span {
+    color: white;
+    font-weight: 500;
 }
 
 .clear-btn {
@@ -70,20 +75,39 @@
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: var(--bg-secondary);
-    border: 2px solid var(--border);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.clear-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.clear-btn:hover::before {
+    left: 100%;
 }
 
 .clear-btn:hover {
-    background: var(--error);
-    color: white;
-    border-color: var(--error);
-    transform: translateY(-1px);
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 .badge {

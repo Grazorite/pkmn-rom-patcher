@@ -7,19 +7,21 @@
 }
 
 .hack-card {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 2px solid transparent;
     animation: scaleIn 0.4s ease-out;
 }
 
 .hack-card:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px var(--shadow);
-    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(240, 147, 251, 0.5);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .hack-card-image {
@@ -65,12 +67,12 @@
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: var(--text-primary);
+    color: white;
 }
 
 .hack-card-author {
     font-size: 14px;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 12px;
 }
 
@@ -84,7 +86,7 @@
 .loading {
     text-align: center;
     padding: 60px;
-    color: var(--text-secondary);
+    color: white;
     font-size: 18px;
 }
 

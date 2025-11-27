@@ -269,6 +269,9 @@
 .info-metadata td:last-child {
     width: 40%;
     padding-left: 12px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .info-metadata tr:last-child td {

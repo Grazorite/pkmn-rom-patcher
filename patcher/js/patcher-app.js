@@ -383,22 +383,28 @@ class ROMPatcherApp {
     
     showEngineError() {
         const resultsContainer = document.getElementById('patchResults');
+        const debugContainer = document.getElementById('debugContainer');
+        
         if (resultsContainer) {
+            resultsContainer.innerHTML = '<div class="loading error">Patch Engine failed to load. Check debug info below.</div>';
+        }
+        
+        if (debugContainer) {
             const debugInfo = `
-                <div class="loading error">
-                    <h3>Patch Engine Failed to Load</h3>
-                    <p><strong>Window Objects:</strong></p>
-                    <ul>
-                        <li>RomPatcher: ${typeof window.RomPatcher}</li>
-                        <li>BinFile: ${typeof window.BinFile}</li>
-                    </ul>
-                    <p><strong>Scripts Loaded:</strong></p>
-                    <ul>
-                        ${Array.from(document.querySelectorAll('script')).map(s => `<li>${s.src || 'inline'}</li>`).join('')}
-                    </ul>
-                </div>
+                <h3>Patch Engine Debug Info</h3>
+                <p><strong>Window Objects:</strong></p>
+                <ul>
+                    <li>RomPatcher: ${typeof window.RomPatcher}</li>
+                    <li>MarcFile: ${typeof window.MarcFile}</li>
+                    <li>BinFile: ${typeof window.BinFile}</li>
+                </ul>
+                <p><strong>Scripts Loaded:</strong></p>
+                <ul>
+                    ${Array.from(document.querySelectorAll('script')).map(s => `<li>${s.src || 'inline'}</li>`).join('')}
+                </ul>
             `;
-            resultsContainer.innerHTML = debugInfo;
+            debugContainer.innerHTML = debugInfo;
+            debugContainer.style.display = 'block';
         }
     }
     

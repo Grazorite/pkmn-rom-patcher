@@ -71,7 +71,7 @@
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: var(--text-primary);
+    color: white;
     text-decoration: none;
 }
 
@@ -101,7 +101,7 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: var(--text-primary);
+    color: white;
 }
 
 .nav-toggle:hover {
@@ -115,7 +115,7 @@
 }
 
 .nav-header h3 {
-    color: var(--text-primary);
+    color: white;
     font-size: 18px;
     font-weight: 600;
     margin: 0;
@@ -131,7 +131,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 20px;
-    color: var(--text-primary);
+    color: white;
     text-decoration: none;
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
@@ -163,7 +163,7 @@
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: var(--text-primary);
+    color: white;
 }
 
 .theme-toggle-nav:hover {
