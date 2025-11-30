@@ -1,7 +1,7 @@
 // ROM Patcher App - Dedicated patching interface
-import { Utils } from '/docs/library/js/utils.js';
-import { PatchManager } from '/docs/library/js/patcher.js';
-import PatchEngine from '/docs/library/js/modules/PatchEngine.js';
+import { Utils } from './utils.js';
+import { PatchManager } from './patcher.js';
+import PatchEngine from './PatchEngine.js';
 
 class ROMPatcherApp {
     constructor() {
@@ -52,7 +52,7 @@ class ROMPatcherApp {
     
     async loadPatches() {
         try {
-            const response = await fetch('/docs/library/manifest.json');
+            const response = await fetch('../manifest.json');
             this.patches = await response.json();
             this.setupFuse();
         } catch (error) {

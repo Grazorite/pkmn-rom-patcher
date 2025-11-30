@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/base.js';
 test.describe('Patcher Page', () => {
   test('loads correctly', async ({ patcherPage, selectors }) => {
     await expect(patcherPage.locator('h1')).toContainText('ROM Patcher');
-    await expect(patcherPage.locator(selectors.searchInput)).toBeVisible();
+    await expect(patcherPage.locator(selectors.patchSearch)).toBeVisible();
   });
 
   test('displays navigation', async ({ patcherPage, selectors }) => {

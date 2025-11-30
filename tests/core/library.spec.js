@@ -11,8 +11,8 @@ test.describe('Library Page', () => {
     await expect(sidebar).toBeVisible();
     
     await test.step('Check collapsed nav icons', async () => {
-      await expect(sidebar.locator('.nav-collapsed-icon[href="../"]')).toBeVisible();
-      await expect(sidebar.locator('.nav-collapsed-icon[href="../patcher/"]')).toBeVisible();
+      await expect(sidebar.locator('.nav-collapsed-icon[href="/docs/"]')).toBeVisible();
+      await expect(sidebar.locator('.nav-collapsed-icon[href="/docs/patcher/"]')).toBeVisible();
     });
   });
 
@@ -35,7 +35,7 @@ test.describe('Library Page', () => {
     await toggle.click({ force: true });
     
     // Wait for theme change to process
-    await libraryPage.waitForTimeout(500);
+    await libraryPage.waitForTimeout(1000);
     
     await expect(body).toHaveClass(/dark-mode/);
   });

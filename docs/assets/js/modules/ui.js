@@ -167,7 +167,7 @@ export class UIManager {
                 const titlePattern = new RegExp(`^#\s*${hack.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*\n`, 'i');
                 cleanedChangelog = cleanedChangelog.replace(titlePattern, '');
                 
-                descEl.innerHTML = marked.parse(cleanedChangelog);
+                descEl.innerHTML = typeof marked !== 'undefined' ? marked.parse(cleanedChangelog) : cleanedChangelog;
             } else {
                 descEl.innerHTML = '<p>No description available.</p>';
             }
@@ -181,6 +181,16 @@ export class UIManager {
         
         // Populate collapsed panel
         this.populateCollapsedPanel(hack);
+        
+        // Setup tab listeners
+        setTimeout(() => {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    this.switchTab(btn.dataset.tab);
+                };
+            });
+        }, 50);
         
         // Re-initialize icons
         if (typeof lucide !== 'undefined') {

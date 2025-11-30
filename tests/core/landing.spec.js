@@ -8,7 +8,7 @@ test.describe('Landing Page', () => {
     });
 
     await test.step('Check CTA buttons', async () => {
-      const patcherBtn = landingPage.locator(selectors.ctaButton).first();
+      const patcherBtn = landingPage.locator('.cta-button').first();
       const libraryBtn = landingPage.locator('.cta-button.cta-secondary');
       
       await expect(patcherBtn).toBeVisible();
