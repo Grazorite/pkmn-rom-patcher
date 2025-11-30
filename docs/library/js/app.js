@@ -3,6 +3,9 @@ import { Utils } from './utils.js';
 import { SearchManager } from './search.js';
 import { UIManager } from './ui.js';
 import { PatchManager } from './patcher.js';
+import { CacheManager } from './cache.js';
+import { PerformanceMonitor } from './monitor.js';
+import { DebugPanel } from './debug.js';
 import PatchEngine from './modules/PatchEngine.js';
 
 class ROMHackStore {
@@ -12,6 +15,8 @@ class ROMHackStore {
         this.searchManager = new SearchManager();
         this.uiManager = new UIManager();
         this.patchManager = new PatchManager();
+        this.cacheManager = new CacheManager();
+        this.performanceMonitor = new PerformanceMonitor();
         this.selectedHack = null;
         
         this.init();
@@ -43,6 +48,9 @@ class ROMHackStore {
         this.setupEventListeners();
         this.generateFilters();
         this.renderHacks();
+        
+        // Setup debug panel (always available, toggle with Ctrl+Shift+D)
+        this.debugPanel = new DebugPanel(this);
     }
     
     initializeIcons() {
@@ -53,6 +61,18 @@ class ROMHackStore {
     }
     
     async loadHacks() {
+        this.performanceMonitor.startTiming('loadHacks');
+        
+        // Try cache first
+        const cachedData = this.cacheManager.getManifest();
+        if (cachedData) {
+            this.hacks = cachedData;
+            this.filteredHacks = [...this.hacks];
+            this.searchManager.initFuse(this.hacks);
+            this.performanceMonitor.endTiming('loadHacks');
+            return;
+        }
+
         // Show loading state
         this.uiManager.showLoading();
         
@@ -64,6 +84,10 @@ class ROMHackStore {
             this.hacks = await response.json();
             this.filteredHacks = [...this.hacks];
             this.searchManager.initFuse(this.hacks);
+            
+            // Cache the data
+            this.cacheManager.setManifest(this.hacks);
+            this.performanceMonitor.endTiming('loadHacks');
         } catch (error) {
             console.error('Failed to load hacks:', error);
             const grid = document.getElementById('hackGrid');
@@ -88,12 +112,12 @@ class ROMHackStore {
     }
     
     setupEventListeners() {
-        // Search with debounce
+        // Search with optimized debounce
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', Utils.debounce((e) => {
                 this.handleSearch(e.target.value);
-            }, 300));
+            }, 150)); // Reduced debounce for better responsiveness
         }
         
         // Clear filters
@@ -206,10 +230,10 @@ class ROMHackStore {
                 const filterType = filterId.replace('Filters', '');
                 this.handleFilterChange(filterType, e.target.value, e.target.checked);
                 
-                // Update filter counts after change
-                setTimeout(() => {
+                // Update filter counts after change with RAF
+                requestAnimationFrame(() => {
                     this.updateFilterCounts();
-                }, 100);
+                });
             }
         });
         

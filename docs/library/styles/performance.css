@@ -1,0 +1,117 @@
+/* Performance optimizations */
+
+/* Lazy loading styles */
+.lazy-load {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
+}
+
+/* Placeholder for missing images */
+.hack-card-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-color);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    min-height: 120px;
+}
+
+/* Optimize animations for performance */
+.hack-card {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.hack-card:hover {
+    transform: translateZ(0) scale(1.02);
+}
+
+/* Reduce paint on scroll */
+.hack-grid {
+    contain: layout style paint;
+}
+
+/* Optimize image rendering */
+.hack-card-image img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.hack-card-image img.low-res {
+    image-rendering: pixelated;
+}
+
+/* GPU acceleration for smooth animations */
+.detail-panel,
+.nav-sidebar,
+.loading-overlay {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+/* Optimize filter rendering */
+.filter-options {
+    contain: layout;
+}
+
+/* Reduce reflow during typing */
+.search-input {
+    contain: layout;
+}
+
+/* Optimize badge rendering */
+.badge {
+    contain: layout style;
+}
+
+/* Loading states optimization */
+.loading-spinner {
+    animation: spin 1s linear infinite;
+    will-change: transform;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Intersection observer loading placeholder */
+.hack-card-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.hack-card-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        var(--surface-color) 25%, 
+        var(--border-color) 50%, 
+        var(--surface-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hack-card-image:has(.lazy-load:not(.loaded))::before {
+    opacity: 1;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}

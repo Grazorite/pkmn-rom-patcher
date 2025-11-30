@@ -1,8 +1,13 @@
 // UI rendering and management
+import { PerformanceManager } from './performance.js';
+
 export class UIManager {
     constructor() {
         this.currentPage = 0;
         this.itemsPerPage = 20;
+        this.performanceManager = new PerformanceManager();
+        this.renderQueue = [];
+        this.isRendering = false;
     }
 
     renderFilterOptions(filterType, options) {
@@ -24,8 +29,8 @@ export class UIManager {
         // Use boxArt for cards, fallback to banner, then title
         const imageUrl = hack.meta?.images?.boxArt || hack.meta?.images?.banner;
         const imageHtml = imageUrl ? 
-            `<img src="${imageUrl}" alt="${hack.title}" onerror="this.style.display='none'">` : 
-            hack.title;
+            `<img data-src="${imageUrl}" alt="${hack.title}" class="lazy-load" loading="lazy">` : 
+            `<div class="hack-card-placeholder">${hack.title}</div>`;
             
         const statusClass = hack.meta?.status ? `status-${hack.meta.status.toLowerCase().replace(' ', '-')}` : 'status-completed';
         
@@ -38,8 +43,8 @@ export class UIManager {
                     <div class="hack-card-title">${hack.title}</div>
                     <div class="hack-card-author">by ${hack.meta?.author || 'Unknown'}</div>
                     <div class="hack-card-badges">
-                        ${hack.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${hack.meta.baseRom}">${hack.meta.baseRom}</span>` : ''}
-                        ${hack.meta?.system ? `<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>` : ''}
+                        ${hack.meta?.baseRom ? `<span class="badge badge-rom">${hack.meta.baseRom}</span>` : ''}
+                        ${hack.meta?.system ? `<span class="badge badge-system">${hack.meta.system}</span>` : ''}
                         ${hack.meta?.difficulty ? `<span class="badge badge-difficulty">${hack.meta.difficulty}</span>` : ''}
                     </div>
                     <div class="status-indicator">
@@ -51,7 +56,7 @@ export class UIManager {
         `;
     }
 
-    renderHacks(hacks, append = false) {
+    async renderHacks(hacks, append = false) {
         const grid = document.getElementById('hackGrid');
         if (!grid) return;
 
@@ -63,23 +68,36 @@ export class UIManager {
             grid.innerHTML = '<div class="no-results"><i data-lucide="search-x" width="48" height="48"></i><p>No ROM hacks found matching your criteria</p></div>';
             this.updateLoadMoreButton(false);
             this.updateResultsCount(0);
-            // Re-initialize icons
-            if (typeof lucide !== 'undefined') {
-                setTimeout(() => lucide.createIcons(), 50);
-            }
+            this.initializeIcons();
             return;
         }
 
-        const cardsHtml = hacksToShow.map(hack => this.createHackCard(hack)).join('');
-        
-        if (append) {
-            grid.insertAdjacentHTML('beforeend', cardsHtml);
-        } else {
-            grid.innerHTML = cardsHtml;
-        }
+        // Batch DOM updates for better performance
+        await this.performanceManager.batchDOMUpdates([
+            () => {
+                const cardsHtml = hacksToShow.map(hack => this.createHackCard(hack)).join('');
+                
+                if (append) {
+                    grid.insertAdjacentHTML('beforeend', cardsHtml);
+                } else {
+                    grid.innerHTML = cardsHtml;
+                }
+            }
+        ]);
+
+        // Setup lazy loading for new images
+        grid.querySelectorAll('.lazy-load').forEach(img => {
+            this.performanceManager.observeImage(img);
+        });
 
         this.updateResultsCount(hacks.length);
         this.updateLoadMoreButton(endIndex < hacks.length);
+    }
+
+    initializeIcons() {
+        if (typeof lucide !== 'undefined') {
+            requestAnimationFrame(() => lucide.createIcons());
+        }
     }
 
     updateResultsCount(count) {
