@@ -25,7 +25,10 @@ class ROMHackStore {
     async init() {
         // Initialize theme first
         Utils.initTheme();
+        
+        // Initialize icons immediately and again after a delay to ensure they're processed
         this.initializeIcons();
+        setTimeout(() => this.initializeIcons(), 100);
         
         // Initialize PatchEngine first
         try {
@@ -51,6 +54,9 @@ class ROMHackStore {
         
         // Setup debug panel (always available, toggle with Ctrl+Shift+D)
         this.debugPanel = new DebugPanel(this);
+        
+        // Final icon initialization to ensure everything is processed
+        setTimeout(() => this.initializeIcons(), 500);
     }
     
     initializeIcons() {
@@ -364,10 +370,23 @@ class ROMHackStore {
         const themeBtn = document.getElementById('themeToggle');
         const themeCollapsed = document.getElementById('themeToggleCollapsed');
         
+        // Update expanded theme toggle
         if (themeBtn) {
+            const themeIcon = themeBtn.querySelector('i');
             const themeText = themeBtn.querySelector('span');
+            if (themeIcon) {
+                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            }
             if (themeText) {
                 themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+            }
+        }
+        
+        // Update collapsed theme toggle
+        if (themeCollapsed) {
+            const themeIcon = themeCollapsed.querySelector('i');
+            if (themeIcon) {
+                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
             }
         }
         

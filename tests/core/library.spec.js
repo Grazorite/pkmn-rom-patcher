@@ -22,8 +22,21 @@ test.describe('Library Page', () => {
     await libraryPage.waitForTimeout(300);
   });
 
-  test('has theme toggle', async ({ libraryPage }) => {
+  test('toggles theme', async ({ libraryPage }) => {
     const toggle = libraryPage.locator('#themeToggleCollapsed');
+    const body = libraryPage.locator('body');
+    
     await expect(toggle).toBeVisible();
+    
+    // Wait for app to fully initialize
+    await libraryPage.waitForTimeout(2000);
+    
+    // Use force click since Playwright has issues with SVG clicks
+    await toggle.click({ force: true });
+    
+    // Wait for theme change to process
+    await libraryPage.waitForTimeout(500);
+    
+    await expect(body).toHaveClass(/dark-mode/);
   });
 });

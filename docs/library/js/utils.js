@@ -36,6 +36,7 @@ export const Utils = {
     },
     
     updateThemeIcon(isDark) {
+        // Update expanded theme toggle
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             const icon = themeToggle.querySelector('i');
@@ -47,11 +48,20 @@ export const Utils = {
             if (text) {
                 text.textContent = isDark ? 'Dark Mode' : 'Light Mode';
             }
-            
-            // Re-initialize icons
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
+        }
+        
+        // Update collapsed theme toggle
+        const themeCollapsed = document.getElementById('themeToggleCollapsed');
+        if (themeCollapsed) {
+            const icon = themeCollapsed.querySelector('i');
+            if (icon) {
+                icon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
             }
+        }
+        
+        // Re-initialize icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
         }
     },
 
