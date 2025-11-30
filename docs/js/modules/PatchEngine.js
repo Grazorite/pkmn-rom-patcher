@@ -19,14 +19,19 @@ export default class PatchEngine {
             // Set the correct path for RomPatcher dependencies
             const ROM_PATCHER_JS_PATH = '../docs/js/vendor/';
             
-            // Load dependencies manually in correct order
+            // Load dependencies in correct order
             await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/BinFile.js');
             await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/HashCalculator.js');
+            await this._loadScript(ROM_PATCHER_JS_PATH + 'RomPatcher.js');
+            
+            // Load format modules after RomPatcher.js
             await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.ips.js');
             await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.bps.js');
             await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.ups.js');
-            await this._loadScript(ROM_PATCHER_JS_PATH + 'RomPatcher.js');
 
+            // Wait a moment for modules to initialize
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             // Verify all required objects are loaded
             if (!window.RomPatcher || !window.BinFile || !window.HashCalculator) {
                 throw new Error("Failed to load required RomPatcher dependencies");
