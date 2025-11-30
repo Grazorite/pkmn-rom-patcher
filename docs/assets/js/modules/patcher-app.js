@@ -1,6 +1,7 @@
 // ROM Patcher App - Dedicated patching interface
 import { Utils } from './utils.js';
 import { PatchManager } from './patcher.js';
+import { imageCache } from './image-cache.js';
 // import PatchEngine from './PatchEngine.js'; // Temporarily disabled
 
 class ROMPatcherApp {
@@ -113,6 +114,12 @@ class ROMPatcherApp {
             patchBtn.addEventListener('click', () => this.applyPatch());
         }
         
+        // Close patch description button
+        const closePatchBtn = document.getElementById('closePatchDescription');
+        if (closePatchBtn) {
+            closePatchBtn.addEventListener('click', () => this.deselectPatch());
+        }
+        
         // Navigation handled by global navigation.js
         
         // Theme toggles handled by unified theme system
@@ -159,14 +166,27 @@ class ROMPatcherApp {
         const resultsHtml = results.map(result => {
             const patch = result.item;
             const description = patch.changelog ? patch.changelog.replace(/[#*`]/g, '').substring(0, 100) + '...' : 'No description available';
+            const boxArt = patch.meta?.images?.boxArt || '';
+            const status = patch.meta?.status || 'Completed';
+            const statusClass = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+            
             return `
                 <div class="patch-result clickable" data-patch-id="${patch.id}">
+                    <div class="patch-result-boxart">
+                        ${boxArt ? `<div class="image-container"><div class="image-placeholder"><i data-lucide="image" width="16" height="16"></i></div><img ${imageCache.getCachedImage(boxArt) ? `src="${boxArt}" class="patch-boxart loaded"` : `data-src="${boxArt}" class="patch-boxart"`} alt="${patch.title}"></div>` : `<div class="patch-boxart-placeholder"><i data-lucide="image" width="24" height="24"></i></div>`}
+                    </div>
                     <div class="patch-result-content">
                         <h4>${patch.title}</h4>
                         <p class="patch-description">${description}</p>
-                        <div class="patch-badges">
-                            ${patch.meta?.system ? `<span class="badge badge-system" data-system="${patch.meta.system}">${patch.meta.system}</span>` : ''}
-                            ${patch.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${patch.meta.baseRom}">${patch.meta.baseRom}</span>` : ''}
+                        <div class="patch-meta-row">
+                            <div class="patch-badges">
+                                ${patch.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${patch.meta.baseRom}">${patch.meta.baseRom}</span>` : ''}
+                                ${patch.meta?.system ? `<span class="badge badge-system" data-system="${patch.meta.system}">${patch.meta.system}</span>` : ''}
+                            </div>
+                            <div class="status-indicator">
+                                <div class="status-dot ${statusClass}"></div>
+                                <span>${status}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -189,10 +209,7 @@ class ROMPatcherApp {
     selectPatch(patchId) {
         // If clicking the same patch, deselect it
         if (this.selectedPatch && this.selectedPatch.id === patchId) {
-            this.selectedPatch = null;
-            this.patchManager.setSelectedHack(null);
-            this.hideSelectedPatch();
-            this.showAllResults();
+            this.deselectPatch();
             return;
         }
         
@@ -200,45 +217,71 @@ class ROMPatcherApp {
         if (!this.selectedPatch) return;
         
         this.patchManager.setSelectedHack(this.selectedPatch);
-        this.renderSelectedPatch();
         this.hideOtherResults(patchId);
+        this.positionAndShowDetails(patchId);
         this.validateCurrentROM();
         this.updatePatchButton();
     }
     
-    renderSelectedPatch() {
+    deselectPatch() {
+        this.selectedPatch = null;
+        this.patchManager.setSelectedHack(null);
+        this.hideSelectedPatchWithAnimation();
+        setTimeout(() => {
+            this.showAllResults();
+        }, 200);
+        this.updatePatchButton();
+    }
+    
+    positionAndShowDetails(selectedId) {
+        const selectedElement = document.querySelector(`[data-patch-id="${selectedId}"]`);
         const container = document.getElementById('selectedPatch');
-        const title = document.getElementById('selectedPatchTitle');
         const description = document.getElementById('selectedPatchDescription');
         
-        if (title) title.textContent = this.selectedPatch.title;
+        if (!selectedElement || !container) return;
+        
+        // Update content
         if (description) {
             if (this.selectedPatch.changelog && typeof marked !== 'undefined') {
-                // Remove title from markdown if it appears at the beginning
                 let cleanedChangelog = this.selectedPatch.changelog;
                 const titlePattern = new RegExp(`^#\s*${this.selectedPatch.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*\n`, 'i');
                 cleanedChangelog = cleanedChangelog.replace(titlePattern, '');
-                
                 description.innerHTML = marked.parse(cleanedChangelog);
             } else {
                 description.textContent = this.selectedPatch.changelog || 'No description available.';
             }
         }
         
+        // Position after selected element
+        selectedElement.parentNode.insertBefore(container, selectedElement.nextSibling);
+        
+        // Show with animation
         container.style.display = 'block';
+        container.classList.remove('hide');
+        setTimeout(() => {
+            container.classList.add('show');
+        }, 10);
+        
         this.initializeIcons();
     }
     
-    hideSelectedPatch() {
+    hideSelectedPatchWithAnimation() {
         const container = document.getElementById('selectedPatch');
-        if (container) container.style.display = 'none';
+        if (container) {
+            container.classList.remove('show');
+            container.classList.add('hide');
+            setTimeout(() => {
+                container.style.display = 'none';
+                container.classList.remove('hide');
+            }, 400);
+        }
     }
     
     hideOtherResults(selectedId) {
         const results = document.querySelectorAll('.patch-result');
         results.forEach(result => {
             if (result.dataset.patchId !== selectedId) {
-                result.style.display = 'none';
+                result.classList.add('hidden');
             } else {
                 result.classList.add('selected');
             }
@@ -248,8 +291,7 @@ class ROMPatcherApp {
     showAllResults() {
         const results = document.querySelectorAll('.patch-result');
         results.forEach(result => {
-            result.style.display = 'block';
-            result.classList.remove('selected');
+            result.classList.remove('hidden', 'selected');
         });
     }
     

@@ -29,11 +29,6 @@ class ROMLibraryApp {
         // Skip PatchEngine for now to test manifest loading
         console.log('Skipping PatchEngine initialization for debugging');
         
-        // Initialize filters after loading hacks
-        if (this.hacks.length > 0) {
-            this.generateFilters();
-        }
-        
         await this.loadHacks();
         this.setupEventListeners();
         this.generateFilters();
@@ -75,6 +70,9 @@ class ROMLibraryApp {
             if (hackGrid) {
                 AnimationUtils.hideLoadingSkeleton(hackGrid);
             }
+            
+            // Generate filters for cached data
+            setTimeout(() => this.generateFilters(), 100);
             return;
         }
 
@@ -143,6 +141,16 @@ class ROMLibraryApp {
     }
     
     setupFilterListeners() {
+        // Filter dropdown toggles
+        document.addEventListener('click', (e) => {
+            const filterHeader = e.target.closest('.filter-group h4');
+            if (filterHeader) {
+                const filterGroup = filterHeader.closest('.filter-group');
+                filterGroup.classList.toggle('collapsed');
+            }
+        });
+        
+        // Filter checkboxes
         document.addEventListener('change', (e) => {
             if (e.target.type === 'checkbox' && e.target.closest('.filter-options')) {
                 const filterId = e.target.closest('.filter-options').id;
@@ -152,15 +160,51 @@ class ROMLibraryApp {
             }
         });
         
+
+        
         const clearBtn = document.getElementById('clearFilters');
         if (clearBtn) {
             clearBtn.addEventListener('click', () => this.clearAllFilters());
+        }
+        
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                const icon = sidebarToggle.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.setAttribute('data-lucide', 'chevron-right');
+                } else {
+                    icon.setAttribute('data-lucide', 'chevron-left');
+                }
+                this.initializeIcons();
+            });
         }
     }
     
     setupDetailPanelListeners() {
         // Use event delegation for detail panel interactions
         document.addEventListener('click', (e) => {
+            // Badge clicks to set filters (must be before card clicks)
+            const badge = e.target.closest('.badge');
+            if (badge && badge.closest('.hack-card')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const filterType = badge.classList.contains('badge-rom') ? 'baseRom' :
+                                 badge.classList.contains('badge-system') ? 'system' :
+                                 badge.classList.contains('badge-difficulty') ? 'difficulty' : null;
+                if (filterType) {
+                    const value = badge.textContent.trim();
+                    console.log('Badge clicked:', filterType, value); // Debug log
+                    this.searchManager.setFilter(filterType, value, true);
+                    this.updateFilterCheckbox(filterType, value, true);
+                    this.applyFilters();
+                }
+                return;
+            }
+            
             // Hack card clicks with ripple effect
             const card = e.target.closest('.hack-card');
             if (card) {
@@ -234,6 +278,13 @@ class ROMLibraryApp {
             const hackCards = document.querySelectorAll('.hack-card');
             AnimationUtils.animateHackCards(hackCards);
         }, 50);
+    }
+    
+    updateFilterCheckbox(filterType, value, checked) {
+        const checkbox = document.getElementById(`${filterType}-${value}`);
+        if (checkbox) {
+            checkbox.checked = checked;
+        }
     }
     
     clearAllFilters() {

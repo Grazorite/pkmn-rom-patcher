@@ -1,5 +1,6 @@
 // UI rendering and management
 import { PerformanceManager } from './performance.js';
+import { imageCache } from './image-cache.js';
 
 export class UIManager {
     constructor() {
@@ -26,11 +27,15 @@ export class UIManager {
     }
 
     createHackCard(hack) {
-        // Use boxArt for cards, fallback to banner, then title
+        // Use boxArt for cards, fallback to banner, then placeholder
         const imageUrl = hack.meta?.images?.boxArt || hack.meta?.images?.banner;
+        const cachedImage = imageUrl ? imageCache.getCachedImage(imageUrl) : null;
         const imageHtml = imageUrl ? 
-            `<img data-src="${imageUrl}" alt="${hack.title}" class="lazy-load" loading="lazy">` : 
-            `<div class="hack-card-placeholder">${hack.title}</div>`;
+            `<div class="image-container">
+                <div class="image-placeholder"><i data-lucide="image" width="24" height="24"></i></div>
+                <img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy">
+            </div>` : 
+            `<div class="hack-card-placeholder"><i data-lucide="image" width="24" height="24"></i><span>${hack.title}</span></div>`;
             
         const statusClass = hack.meta?.status ? `status-${hack.meta.status.toLowerCase().replace(' ', '-')}` : 'status-completed';
         
@@ -85,9 +90,20 @@ export class UIManager {
             }
         ]);
 
-        // Setup lazy loading for new images
+        // Setup lazy loading for new images and preload
+        const imageUrls = hacksToShow
+            .map(hack => hack.meta?.images?.boxArt || hack.meta?.images?.banner)
+            .filter(Boolean);
+        
+        if (imageUrls.length > 0) {
+            imageCache.preloadImages(imageUrls);
+        }
+        
         grid.querySelectorAll('.lazy-load').forEach(img => {
             this.performanceManager.observeImage(img);
+            img.addEventListener('load', () => {
+                img.classList.add('loaded');
+            });
         });
 
         this.updateResultsCount(hacks.length);
@@ -139,15 +155,31 @@ export class UIManager {
         // Header
         const titleEl = document.getElementById('detailTitle');
         const authorEl = document.getElementById('detailAuthor');
+        const badgesEl = document.getElementById('detailBadges');
         const statusEl = document.getElementById('detailStatus');
         const playtimeEl = document.getElementById('detailPlaytime');
+        const releasedEl = document.getElementById('detailReleased');
         
         if (titleEl) titleEl.textContent = hack.title;
-        if (authorEl) authorEl.innerHTML = `<i data-lucide="user" width="16" height="16"></i> ${hack.meta?.author || 'Unknown'}`;
-        if (statusEl) {
-            statusEl.innerHTML = `<i data-lucide="activity" width="16" height="16"></i> ${hack.meta?.status || 'Completed'}`;
+        if (authorEl) authorEl.innerHTML = `<span class="tooltip" data-tooltip="Author"><i data-lucide="user" width="16" height="16"></i> ${hack.meta?.author || 'Unknown'}</span>`;
+        
+        // Add badges to header
+        if (badgesEl) {
+            const badges = [];
+            if (hack.meta?.baseRom) badges.push(`<span class="badge badge-rom" data-rom="${hack.meta.baseRom}">${hack.meta.baseRom}</span>`);
+            if (hack.meta?.system) badges.push(`<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>`);
+            if (hack.meta?.difficulty) badges.push(`<span class="badge badge-difficulty" data-difficulty="${hack.meta.difficulty}">${hack.meta.difficulty}</span>`);
+            badgesEl.innerHTML = badges.join('');
         }
-        if (playtimeEl) playtimeEl.innerHTML = hack.meta?.playtime ? `<i data-lucide="clock" width="16" height="16"></i> ${hack.meta.playtime}` : '';
+        
+        // Animated status dot
+        if (statusEl) {
+            const status = hack.meta?.status || 'Completed';
+            const statusClass = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+            statusEl.innerHTML = `<div class="status-dot ${statusClass}"></div> ${status}`;
+        }
+        if (playtimeEl) playtimeEl.innerHTML = hack.meta?.playtime ? `<span class="tooltip" data-tooltip="Playtime"><i data-lucide="clock" width="16" height="16"></i> ${hack.meta.playtime}</span>` : '';
+        if (releasedEl) releasedEl.innerHTML = hack.meta?.released ? `<span class="tooltip" data-tooltip="Release Date"><i data-lucide="calendar" width="16" height="16"></i> ${hack.meta.released}</span>` : '';
 
         // Show banner with bannerImage
         const banner = document.getElementById('detailBanner');
@@ -245,9 +277,6 @@ export class UIManager {
         };
         
         const fields = [
-            ['Base ROM', meta.baseRom],
-            ['System', meta.system],
-            ['Difficulty', meta.difficulty],
             ['Graphics', meta.graphics],
             ['Story', meta.story],
             ['Maps', meta.maps],
@@ -255,7 +284,6 @@ export class UIManager {
             ['Mechanics', Array.isArray(meta.mechanics) ? meta.mechanics.join(', ') : meta.mechanics],
             ['Fakemons', meta.fakemons],
             ['Tags', Array.isArray(meta.tags) ? meta.tags.join(', ') : meta.tags],
-            ['Released', meta.released],
             ['Rating', meta.rating ? this.renderStarRating(meta.rating) : null]
         ].filter(([_, value]) => value);
         

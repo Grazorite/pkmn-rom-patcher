@@ -3,8 +3,8 @@ import { test, expect } from '../fixtures/base.js';
 test.describe('Landing Page', () => {
   test('loads with correct content', async ({ landingPage, selectors }) => {
     await test.step('Check page title and header', async () => {
-      await expect(landingPage).toHaveTitle(/Universal ROM Management/);
-      await expect(landingPage.locator('h1')).toContainText('Universal ROM Management');
+      await expect(landingPage).toHaveTitle(/Universal ROM Manager/);
+      await expect(landingPage.locator('h1')).toContainText('Universal ROM Manager');
     });
 
     await test.step('Check CTA buttons', async () => {

@@ -25,7 +25,7 @@
             <i data-lucide="menu" width="20" height="20"></i>
         </div>
         <div class="nav-header">
-            <h3>ROM Patcher</h3>
+            <h3>UROMM</h3>
         </div>
         <div class="nav-links">
             <a href="../" class="nav-link">
@@ -65,12 +65,19 @@
         </nav>
         
         <header class="app-header">
-            <h1><i data-lucide="book-open" width="32" height="32"></i> ROM Library</h1>
+            <h1><i data-lucide="book-open" width="48" height="48"></i> ROM Library</h1>
             <p>Discover and patch your favorite ROM hacks</p>
         </header>
         
         <div class="app-layout">
             <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3 style="margin: 0; color: var(--text-primary); font-size: 1.1rem;">Filters</h3>
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <i data-lucide="chevron-down" width="16" height="16" class="collapse-icon"></i>
+                    </button>
+                </div>
+                <div class="sidebar-content">
                 <div class="search-section">
                     <div class="search-wrapper">
                         <i data-lucide="search" class="search-icon" width="20" height="20"></i>
@@ -79,7 +86,6 @@
                 </div>
                 
                 <div class="filter-section">
-                    <h3>Filters</h3>
                     <div class="filter-group collapsed">
                         <h4>
                             <div class="filter-header-content">
@@ -181,6 +187,7 @@
                         <div id="tagFilters" class="filter-options"></div>
                     </div>
                 </div>
+                </div>
             </aside>
             
             <main class="main-content">
@@ -228,8 +235,12 @@
                     <h2 id="detailTitle"></h2>
                     <div class="detail-meta">
                         <span id="detailAuthor"></span>
-                        <span id="detailStatus"></span>
                         <span id="detailPlaytime"></span>
+                        <span id="detailReleased"></span>
+                        <div class="detail-status" id="detailStatus"></div>
+                    </div>
+                    <div class="detail-header-row">
+                        <div id="detailBadges" class="detail-badges"></div>
                     </div>
                 </div>
             </div>

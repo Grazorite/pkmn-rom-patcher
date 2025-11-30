@@ -4,7 +4,7 @@ test.describe('Navigation Flow', () => {
   test('all pages load and function correctly', async ({ page }) => {
     await test.step('Landing page works', async () => {
       await page.goto('/docs/');
-      await expect(page.locator('h1')).toContainText('Universal ROM Management');
+      await expect(page.locator('h1')).toContainText('Universal ROM Manager');
       await expect(page.locator('.cta-button')).toHaveCount(2);
     });
 
