@@ -1,7 +1,7 @@
 // ROM Patcher App - Dedicated patching interface
-import { Utils } from '../../docs/js/utils.js';
-import { PatchManager } from '../../docs/js/patcher.js';
-import PatchEngine from '../../docs/js/modules/PatchEngine.js';
+import { Utils } from '../library/js/utils.js';
+import { PatchManager } from '../library/js/patcher.js';
+import PatchEngine from '../library/js/modules/PatchEngine.js';
 
 class ROMPatcherApp {
     constructor() {
@@ -16,6 +16,7 @@ class ROMPatcherApp {
     
     async init() {
         Utils.initTheme();
+        this.updateThemeToggles();
         this.initializeIcons();
         
         // Initialize PatchEngine first
@@ -41,14 +42,17 @@ class ROMPatcherApp {
     }
     
     initializeIcons() {
+        // Initialize Lucide icons
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
+        } else {
+            console.warn('Lucide icons not loaded');
         }
     }
     
     async loadPatches() {
         try {
-            const response = await fetch('../docs/manifest.json');
+            const response = await fetch('../library/manifest.json');
             this.patches = await response.json();
             this.setupFuse();
         } catch (error) {
@@ -371,14 +375,53 @@ class ROMPatcherApp {
         const themeBtn = document.getElementById('themeToggle');
         const themeCollapsed = document.getElementById('themeToggleCollapsed');
         
+        // Update expanded theme toggle
         if (themeBtn) {
+            const themeIcon = themeBtn.querySelector('i');
             const themeText = themeBtn.querySelector('span');
+            if (themeIcon) {
+                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            }
             if (themeText) {
                 themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
             }
         }
         
+        // Update collapsed theme toggle
+        if (themeCollapsed) {
+            const themeIcon = themeCollapsed.querySelector('i');
+            if (themeIcon) {
+                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            }
+        }
+        
         setTimeout(() => this.initializeIcons(), 100);
+    }
+    
+    updateThemeToggles() {
+        const isDark = document.body.classList.contains('dark-mode');
+        const themeBtn = document.getElementById('themeToggle');
+        const themeCollapsed = document.getElementById('themeToggleCollapsed');
+        
+        // Update expanded theme toggle
+        if (themeBtn) {
+            const themeIcon = themeBtn.querySelector('i');
+            const themeText = themeBtn.querySelector('span');
+            if (themeIcon) {
+                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            }
+            if (themeText) {
+                themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+            }
+        }
+        
+        // Update collapsed theme toggle
+        if (themeCollapsed) {
+            const themeIcon = themeCollapsed.querySelector('i');
+            if (themeIcon) {
+                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+            }
+        }
     }
     
     showEngineError() {
