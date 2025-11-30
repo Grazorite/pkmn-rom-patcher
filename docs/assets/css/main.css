@@ -10,7 +10,7 @@
 
 /* Components */
 @import 'components/navigation.css';
-@import 'components/theme-toggle.css';
+
 @import 'components/sidebar.css';
 @import 'components/hack-grid.css';
 @import 'components/detail-panel.css';

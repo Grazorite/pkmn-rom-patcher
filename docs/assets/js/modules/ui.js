@@ -43,9 +43,9 @@ export class UIManager {
                     <div class="hack-card-title">${hack.title}</div>
                     <div class="hack-card-author">by ${hack.meta?.author || 'Unknown'}</div>
                     <div class="hack-card-badges">
-                        ${hack.meta?.baseRom ? `<span class="badge badge-rom">${hack.meta.baseRom}</span>` : ''}
-                        ${hack.meta?.system ? `<span class="badge badge-system">${hack.meta.system}</span>` : ''}
-                        ${hack.meta?.difficulty ? `<span class="badge badge-difficulty">${hack.meta.difficulty}</span>` : ''}
+                        ${hack.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${hack.meta.baseRom}">${hack.meta.baseRom}</span>` : ''}
+                        ${hack.meta?.system ? `<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>` : ''}
+                        ${hack.meta?.difficulty ? `<span class="badge badge-difficulty" data-difficulty="${hack.meta.difficulty}">${hack.meta.difficulty}</span>` : ''}
                     </div>
                     <div class="status-indicator">
                         <div class="status-dot ${statusClass}"></div>
@@ -95,8 +95,16 @@ export class UIManager {
     }
 
     initializeIcons() {
-        if (typeof lucide !== 'undefined') {
-            requestAnimationFrame(() => lucide.createIcons());
+        if (typeof window.initIcons === 'function') {
+            requestAnimationFrame(() => window.initIcons());
+        } else if (typeof lucide !== 'undefined') {
+            requestAnimationFrame(() => {
+                try {
+                    lucide.createIcons();
+                } catch (e) {
+                    console.warn('Icon initialization failed:', e);
+                }
+            });
         }
     }
 
@@ -116,9 +124,7 @@ export class UIManager {
         if (grid) {
             grid.innerHTML = '<div class="loading"><i data-lucide="loader" width="32" height="32" class="loading-spinner"></i><p>Loading ROM hacks...</p></div>';
             // Re-initialize icons
-            if (typeof lucide !== 'undefined') {
-                setTimeout(() => lucide.createIcons(), 50);
-            }
+            setTimeout(() => this.initializeIcons(), 100);
         }
     }
 
@@ -193,9 +199,7 @@ export class UIManager {
         }, 50);
         
         // Re-initialize icons
-        if (typeof lucide !== 'undefined') {
-            setTimeout(() => lucide.createIcons(), 50);
-        }
+        setTimeout(() => this.initializeIcons(), 100);
     }
     
     populateCollapsedPanel(hack) {

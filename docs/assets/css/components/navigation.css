@@ -155,22 +155,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.theme-toggle-nav {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: white;
-}
 
-.theme-toggle-nav:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
 
 /* Adjust main content for sidebar */
 .app-container {
@@ -210,14 +195,7 @@ body.dark-mode .nav-link.active {
     background: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .theme-toggle-nav {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-}
 
-body.dark-mode .theme-toggle-nav:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
 
 /* Mobile responsiveness */
 @media (max-width: 1024px) {
@@ -272,10 +250,7 @@ body.dark-mode .theme-toggle-nav:hover {
         padding: 16px;
     }
     
-    .theme-toggle-nav {
-        padding: 10px;
-        font-size: 14px;
-    }
+
 }
 
 @media (max-width: 480px) {
@@ -308,9 +283,5 @@ body.dark-mode .theme-toggle-nav:hover {
         padding: 12px;
     }
     
-    .theme-toggle-nav {
-        padding: 8px;
-        font-size: 13px;
-        gap: 10px;
-    }
+
 }

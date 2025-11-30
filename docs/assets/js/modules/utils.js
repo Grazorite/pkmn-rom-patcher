@@ -20,19 +20,27 @@ export const Utils = {
     // Theme management
     initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
-        if (savedTheme === 'dark') {
+        const isDark = savedTheme === 'dark';
+        
+        // Ensure both body and documentElement have the class
+        if (isDark) {
+            document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
-            this.updateThemeIcon(true);
         } else {
-            this.updateThemeIcon(false);
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
         }
+        
+        this.updateThemeIcon(isDark);
     },
 
     toggleTheme() {
+        document.documentElement.classList.toggle('dark-mode');
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         this.updateThemeIcon(isDark);
+        return isDark;
     },
     
     updateThemeIcon(isDark) {

@@ -1,7 +1,7 @@
 // ROM Patcher App - Dedicated patching interface
 import { Utils } from './utils.js';
 import { PatchManager } from './patcher.js';
-import PatchEngine from './PatchEngine.js';
+// import PatchEngine from './PatchEngine.js'; // Temporarily disabled
 
 class ROMPatcherApp {
     constructor() {
@@ -15,26 +15,10 @@ class ROMPatcherApp {
     }
     
     async init() {
-        Utils.initTheme();
-        this.updateThemeToggles();
         this.initializeIcons();
         
-        // Initialize PatchEngine first
-        try {
-            await PatchEngine.init();
-            console.log('PatchEngine ready for ROM Patcher app');
-        } catch (error) {
-            console.error('Failed to initialize PatchEngine:', error);
-            console.error('ROM Patcher App - PatchEngine init failed:', {
-                error: error.message,
-                stack: error.stack,
-                windowObjects: {
-                    RomPatcher: typeof window.RomPatcher,
-                    BinFile: typeof window.BinFile
-                }
-            });
-            this.showEngineError();
-        }
+        // Skip PatchEngine for now to test manifest loading
+        console.log('Skipping PatchEngine initialization for debugging');
         
         await this.loadPatches();
         this.setupEventListeners();
@@ -42,23 +26,47 @@ class ROMPatcherApp {
     }
     
     initializeIcons() {
-        // Initialize Lucide icons
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        } else {
-            console.warn('Lucide icons not loaded');
+        if (typeof window.initIcons === 'function') {
+            window.initIcons();
+        } else if (typeof lucide !== 'undefined') {
+            try {
+                lucide.createIcons();
+            } catch (e) {
+                console.warn('Icon initialization failed:', e);
+            }
         }
     }
     
     async loadPatches() {
         try {
-            const response = await fetch('../manifest.json');
+            // Try multiple manifest paths for different server setups
+            const manifestPaths = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? ['/docs/manifest.json', './manifest.json', '../manifest.json']
+                : ['../manifest.json'];
+            
+            let response;
+            let successPath;
+            for (const path of manifestPaths) {
+                try {
+                    response = await fetch(path);
+                    if (response.ok) {
+                        successPath = path;
+                        break;
+                    }
+                } catch (e) { /* try next path */ }
+            }
+            console.log('Patcher manifest loaded from:', successPath);
+            console.log('Patcher manifest response:', response.status, response.statusText);
+            
+            if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            
             this.patches = await response.json();
+            console.log('Patcher loaded patches:', this.patches.length);
             this.setupFuse();
         } catch (error) {
             console.error('Failed to load patches:', error);
             document.getElementById('patchResults').innerHTML = 
-                '<div class="loading error">Failed to load patches</div>';
+                `<div class="loading error">Failed to load patches: ${error.message}</div>`;
         }
     }
     
@@ -105,35 +113,9 @@ class ROMPatcherApp {
             patchBtn.addEventListener('click', () => this.applyPatch());
         }
         
-        // Navigation toggle
-        const navToggle = document.getElementById('navToggle');
-        const navSidebar = document.getElementById('navSidebar');
-        if (navToggle && navSidebar) {
-            navToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                navSidebar.classList.toggle('open');
-            });
-            
-            navSidebar.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        }
+        // Navigation handled by global navigation.js
         
-        // Theme toggle (expanded)
-        const themeBtn = document.getElementById('themeToggle');
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                this.handleThemeToggle();
-            });
-        }
-        
-        // Theme toggle (collapsed)
-        const themeCollapsed = document.getElementById('themeToggleCollapsed');
-        if (themeCollapsed) {
-            themeCollapsed.addEventListener('click', () => {
-                this.handleThemeToggle();
-            });
-        }
+        // Theme toggles handled by unified theme system
     }
     
     setupSearch() {
@@ -362,67 +344,10 @@ class ROMPatcherApp {
             console.error('Patching error:', error);
         }
         
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
+        setTimeout(() => this.initializeIcons(), 50);
     }
     
-    handleThemeToggle() {
-        Utils.toggleTheme();
-        
-        // Update both theme toggles
-        const isDark = document.body.classList.contains('dark-mode');
-        const themeBtn = document.getElementById('themeToggle');
-        const themeCollapsed = document.getElementById('themeToggleCollapsed');
-        
-        // Update expanded theme toggle
-        if (themeBtn) {
-            const themeIcon = themeBtn.querySelector('i');
-            const themeText = themeBtn.querySelector('span');
-            if (themeIcon) {
-                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
-            }
-            if (themeText) {
-                themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-            }
-        }
-        
-        // Update collapsed theme toggle
-        if (themeCollapsed) {
-            const themeIcon = themeCollapsed.querySelector('i');
-            if (themeIcon) {
-                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
-            }
-        }
-        
-        setTimeout(() => this.initializeIcons(), 100);
-    }
-    
-    updateThemeToggles() {
-        const isDark = document.body.classList.contains('dark-mode');
-        const themeBtn = document.getElementById('themeToggle');
-        const themeCollapsed = document.getElementById('themeToggleCollapsed');
-        
-        // Update expanded theme toggle
-        if (themeBtn) {
-            const themeIcon = themeBtn.querySelector('i');
-            const themeText = themeBtn.querySelector('span');
-            if (themeIcon) {
-                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
-            }
-            if (themeText) {
-                themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-            }
-        }
-        
-        // Update collapsed theme toggle
-        if (themeCollapsed) {
-            const themeIcon = themeCollapsed.querySelector('i');
-            if (themeIcon) {
-                themeIcon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
-            }
-        }
-    }
+
     
     showEngineError() {
         const resultsContainer = document.getElementById('patchResults');

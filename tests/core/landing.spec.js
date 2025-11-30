@@ -21,11 +21,5 @@ test.describe('Landing Page', () => {
     await expect(landingPage).toHaveURL(/.*docs/);
   });
 
-  test('toggles theme', async ({ landingPage, selectors }) => {
-    const toggle = landingPage.locator(selectors.themeToggle);
-    const body = landingPage.locator('body');
-    
-    await toggle.click();
-    await expect(body).toHaveClass(/dark-mode/);
-  });
+
 });

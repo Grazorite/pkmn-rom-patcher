@@ -5,7 +5,6 @@ class BaseFixtures {
         // Common selectors used across tests
         this.selectors = {
             // Landing page
-            themeToggle: '#themeToggle',
             ctaButton: '.cta-button',
             
             // Library page

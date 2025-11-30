@@ -111,452 +111,354 @@
 }
 
 .badge {
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* System-specific badge colors */
+.badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
+}
+
+.badge:hover::before {
+    left: 100%;
+}
+
+/* System badges with authentic colors */
 .badge-system {
-    background: rgba(102, 126, 234, 0.5);
-    color: #4c63d2;
-    border: 1px solid rgba(102, 126, 234, 0.7);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #ffffff;
 }
 
-/* Console-specific colors */
-.badge-system[data-system="Game Boy"] {
-    background: rgba(139, 69, 19, 0.5);
-    color: #5d2e0a;
-    border: 1px solid rgba(139, 69, 19, 0.7);
+/* Game Boy (1989) - Greenish monochrome */
+.badge-system[data-system="Game Boy"],
+.badge-system[data-system="GB"] {
+    background: linear-gradient(135deg, #9BBB58, #8BAE68);
+    color: #2d4016;
 }
 
-.badge-system[data-system="Game Boy Color"] {
-    background: rgba(255, 215, 0, 0.5);
-    color: #8b6914;
-    border: 1px solid rgba(255, 215, 0, 0.7);
+/* Game Boy Color (1998) - Bright yellow/orange */
+.badge-system[data-system="Game Boy Color"],
+.badge-system[data-system="GBC"] {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #8B4513;
 }
 
-.badge-system[data-system="Game Boy Advance"] {
-    background: rgba(138, 43, 226, 0.5);
-    color: #6a1b9a;
-    border: 1px solid rgba(138, 43, 226, 0.7);
+/* Game Boy Advance (2001) - Purple/indigo */
+.badge-system[data-system="Game Boy Advance"],
+.badge-system[data-system="GBA"] {
+    background: linear-gradient(135deg, #6A5ACD, #483D8B);
+    color: #ffffff;
 }
 
-.badge-system[data-system="Nintendo DS"] {
-    background: rgba(70, 130, 180, 0.5);
-    color: #2e5984;
-    border: 1px solid rgba(70, 130, 180, 0.7);
+/* Nintendo DS (2004) - Silver/blue */
+.badge-system[data-system="Nintendo DS"],
+.badge-system[data-system="NDS"],
+.badge-system[data-system="DS"] {
+    background: linear-gradient(135deg, #C0C0C0, #4682B4);
+    color: #000080;
 }
 
-.badge-system[data-system="Nintendo 3DS"] {
-    background: rgba(255, 69, 0, 0.5);
-    color: #cc3700;
-    border: 1px solid rgba(255, 69, 0, 0.7);
+/* Nintendo 3DS (2011) - Cyan/teal */
+.badge-system[data-system="Nintendo 3DS"],
+.badge-system[data-system="3DS"] {
+    background: linear-gradient(135deg, #00CED1, #20B2AA);
+    color: #ffffff;
 }
 
-.badge-system[data-system="NES"] {
-    background: rgba(220, 20, 60, 0.5);
-    color: #b91c3c;
-    border: 1px solid rgba(220, 20, 60, 0.7);
+/* NES (1985) - Red/gray */
+.badge-system[data-system="NES"],
+.badge-system[data-system="Famicom"] {
+    background: linear-gradient(135deg, #DC143C, #B22222);
+    color: #ffffff;
 }
 
-.badge-system[data-system="SNES"] {
-    background: rgba(128, 0, 128, 0.5);
-    color: #5d005d;
-    border: 1px solid rgba(128, 0, 128, 0.7);
+/* SNES (1991) - Purple/gray */
+.badge-system[data-system="SNES"],
+.badge-system[data-system="Super Famicom"] {
+    background: linear-gradient(135deg, #9370DB, #8B7D6B);
+    color: #ffffff;
 }
 
-.badge-system[data-system="Nintendo 64"] {
-    background: rgba(0, 100, 0, 0.5);
-    color: #004d00;
-    border: 1px solid rgba(0, 100, 0, 0.7);
+/* Nintendo 64 (1996) - Blue/black */
+.badge-system[data-system="Nintendo 64"],
+.badge-system[data-system="N64"] {
+    background: linear-gradient(135deg, #0047AB, #000080);
+    color: #ffffff;
 }
 
-.badge-system[data-system="GameCube"] {
-    background: rgba(75, 0, 130, 0.5);
-    color: #380062;
-    border: 1px solid rgba(75, 0, 130, 0.7);
+/* GameCube (2001) - Purple/black */
+.badge-system[data-system="GameCube"],
+.badge-system[data-system="NGC"] {
+    background: linear-gradient(135deg, #663399, #2F1B69);
+    color: #ffffff;
 }
 
-/* Pokemon game version colors */
-.badge-rom[data-rom*="Red"] {
-    background: rgba(220, 20, 60, 0.5);
-    color: #b91c3c;
-    border: 1px solid rgba(220, 20, 60, 0.7);
-}
-
-.badge-rom[data-rom*="Blue"] {
-    background: rgba(30, 144, 255, 0.5);
-    color: #1873cc;
-    border: 1px solid rgba(30, 144, 255, 0.7);
-}
-
-.badge-rom[data-rom*="Yellow"] {
-    background: rgba(255, 215, 0, 0.5);
-    color: #8b6914;
-    border: 1px solid rgba(255, 215, 0, 0.7);
-}
-
-.badge-rom[data-rom*="Green"] {
-    background: rgba(34, 139, 34, 0.5);
-    color: #1a6b1a;
-    border: 1px solid rgba(34, 139, 34, 0.7);
-}
-
-.badge-rom[data-rom*="Gold"] {
-    background: rgba(255, 215, 0, 0.5);
-    color: #8b6914;
-    border: 1px solid rgba(255, 215, 0, 0.7);
-}
-
-.badge-rom[data-rom*="Silver"] {
-    background: rgba(192, 192, 192, 0.5);
-    color: #556b7d;
-    border: 1px solid rgba(192, 192, 192, 0.7);
-}
-
-.badge-rom[data-rom*="Crystal"] {
-    background: rgba(64, 224, 208, 0.5);
-    color: #1a8f88;
-    border: 1px solid rgba(64, 224, 208, 0.7);
-}
-
-.badge-rom[data-rom*="Ruby"] {
-    background: rgba(220, 20, 60, 0.5);
-    color: #b91c3c;
-    border: 1px solid rgba(220, 20, 60, 0.7);
-}
-
-.badge-rom[data-rom*="Sapphire"] {
-    background: rgba(30, 144, 255, 0.5);
-    color: #1873cc;
-    border: 1px solid rgba(30, 144, 255, 0.7);
-}
-
-.badge-rom[data-rom*="Emerald"] {
-    background: rgba(50, 205, 50, 0.5);
-    color: #1a6b1a;
-    border: 1px solid rgba(50, 205, 50, 0.7);
-}
-
-.badge-rom[data-rom*="FireRed"] {
-    background: rgba(255, 69, 0, 0.5);
-    color: #cc3700;
-    border: 1px solid rgba(255, 69, 0, 0.7);
-}
-
-.badge-rom[data-rom*="LeafGreen"] {
-    background: rgba(124, 252, 0, 0.5);
-    color: #28a428;
-    border: 1px solid rgba(124, 252, 0, 0.7);
-}
-
-.badge-rom[data-rom*="Diamond"] {
-    background: rgba(135, 206, 235, 0.5);
-    color: #2e5984;
-    border: 1px solid rgba(135, 206, 235, 0.7);
-}
-
-.badge-rom[data-rom*="Pearl"] {
-    background: rgba(255, 192, 203, 0.5);
-    color: #c85a7a;
-    border: 1px solid rgba(255, 192, 203, 0.7);
-}
-
-.badge-rom[data-rom*="Platinum"] {
-    background: rgba(169, 169, 169, 0.5);
-    color: #4a4a4a;
-    border: 1px solid rgba(169, 169, 169, 0.7);
-}
-
-.badge-rom[data-rom*="HeartGold"] {
-    background: rgba(255, 215, 0, 0.5);
-    color: #8b6914;
-    border: 1px solid rgba(255, 215, 0, 0.7);
-}
-
-.badge-rom[data-rom*="SoulSilver"] {
-    background: rgba(192, 192, 192, 0.5);
-    color: #556b7d;
-    border: 1px solid rgba(192, 192, 192, 0.7);
-}
-
-.badge-rom[data-rom*="Black"] {
-    background: rgba(47, 79, 79, 0.5);
-    color: #1e3333;
-    border: 1px solid rgba(47, 79, 79, 0.7);
-}
-
-.badge-rom[data-rom*="White"] {
-    background: rgba(248, 248, 255, 0.5);
-    color: #2e5984;
-    border: 1px solid rgba(248, 248, 255, 0.7);
-}
-
-.badge-rom[data-rom*="Black 2"] {
-    background: rgba(25, 25, 112, 0.5);
-    color: #0f0f4d;
-    border: 1px solid rgba(25, 25, 112, 0.7);
-}
-
-.badge-rom[data-rom*="White 2"] {
-    background: rgba(255, 250, 250, 0.5);
-    color: #2e5984;
-    border: 1px solid rgba(255, 250, 250, 0.7);
-}
-
-.badge-rom[data-rom*="X"] {
-    background: rgba(30, 144, 255, 0.5);
-    color: #1873cc;
-    border: 1px solid rgba(30, 144, 255, 0.7);
-}
-
-.badge-rom[data-rom*="Y"] {
-    background: rgba(220, 20, 60, 0.5);
-    color: #b91c3c;
-    border: 1px solid rgba(220, 20, 60, 0.7);
-}
-
-.badge-rom[data-rom*="Omega Ruby"] {
-    background: rgba(255, 69, 0, 0.5);
-    color: #cc3700;
-    border: 1px solid rgba(255, 69, 0, 0.7);
-}
-
-.badge-rom[data-rom*="Alpha Sapphire"] {
-    background: rgba(70, 130, 180, 0.5);
-    color: #2e5984;
-    border: 1px solid rgba(70, 130, 180, 0.7);
-}
-
-.badge-rom[data-rom*="Moon"] {
-    background: rgba(75, 0, 130, 0.5);
-    color: #380062;
-    border: 1px solid rgba(75, 0, 130, 0.7);
-}
-
-.badge-rom[data-rom*="Ultra Moon"] {
-    background: rgba(72, 61, 139, 0.5);
-    color: #342a5f;
-    border: 1px solid rgba(72, 61, 139, 0.7);
-}
-
-.badge-rom[data-rom*="Ultra Sun"] {
-    background: rgba(255, 140, 0, 0.5);
-    color: #cc7000;
-    border: 1px solid rgba(255, 140, 0, 0.7);
-}
-
-.badge-rom[data-rom*="Sword"] {
-    background: rgba(70, 130, 180, 0.5);
-    color: #2e5984;
-    border: 1px solid rgba(70, 130, 180, 0.7);
-}
-
-.badge-rom[data-rom*="Brilliant Diamond"] {
-    background: rgba(135, 206, 235, 0.5);
-    color: #6bb6d6;
-    border: 1px solid rgba(135, 206, 235, 0.7);
-}
-
-.badge-rom[data-rom*="Scarlet"] {
-    background: rgba(220, 20, 60, 0.5);
-    color: #b91c3c;
-    border: 1px solid rgba(220, 20, 60, 0.7);
-}
-
-.badge-rom[data-rom*="Let's Go"] {
-    background: rgba(255, 215, 0, 0.5);
-    color: #8b6914;
-    border: 1px solid rgba(255, 215, 0, 0.7);
-}
-
-.badge-rom[data-rom*="Colosseum"] {
-    background: rgba(138, 43, 226, 0.5);
-    color: #6a1b9a;
-    border: 1px solid rgba(138, 43, 226, 0.7);
-}
-
-.badge-rom[data-rom*="XD"] {
-    background: rgba(75, 0, 130, 0.5);
-    color: #380062;
-    border: 1px solid rgba(75, 0, 130, 0.7);
-}
-
-.badge-rom[data-rom*="Mystery Dungeon"] {
-    background: rgba(255, 165, 0, 0.5);
-    color: #cc7000;
-    border: 1px solid rgba(255, 165, 0, 0.7);
-}
-
-.badge-rom[data-rom*="Trading Card Game"] {
-    background: rgba(255, 20, 147, 0.5);
-    color: #ff1493;
-    border: 1px solid rgba(255, 20, 147, 0.7);
-}
-
-.badge-rom[data-rom*="Pinball"] {
-    background: rgba(255, 105, 180, 0.5);
-    color: #ff69b4;
-    border: 1px solid rgba(255, 105, 180, 0.7);
-}
-
-.badge-rom[data-rom*="Conquest"] {
-    background: rgba(128, 0, 128, 0.5);
-    color: #5d005d;
-    border: 1px solid rgba(128, 0, 128, 0.7);
-}
-
-.badge-rom[data-rom*="Rumble"] {
-    background: rgba(255, 99, 71, 0.5);
-    color: #ff6347;
-    border: 1px solid rgba(255, 99, 71, 0.7);
-}
-
-.badge-rom[data-rom*="Fire Emblem"] {
-    background: rgba(178, 34, 34, 0.5);
-    color: #b22222;
-    border: 1px solid rgba(178, 34, 34, 0.7);
-}
-
-/* Exact base ROM name matches */
+/* Pokemon ROM badges with authentic game colors */
 .badge-rom[data-rom="Alpha Sapphire"] {
-    background: rgba(70, 130, 180, 0.5);
-    color: #2e5984;
-    border: 1px solid rgba(70, 130, 180, 0.7);
+    background: linear-gradient(135deg, #4682B4, #2F4F4F);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Black"] {
+    background: linear-gradient(135deg, #2F4F4F, #000000);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Black 2"] {
-    background: rgba(25, 25, 112, 0.5);
-    color: #0f0f4d;
-    border: 1px solid rgba(25, 25, 112, 0.7);
+    background: linear-gradient(135deg, #191970, #000080);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Blue"] {
+    background: linear-gradient(135deg, #0066FF, #0044CC);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Brilliant Diamond"] {
-    background: rgba(135, 206, 235, 0.5);
-    color: #6bb6d6;
-    border: 1px solid rgba(135, 206, 235, 0.7);
+    background: linear-gradient(135deg, #87CEEB, #4682B4);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Colosseum"] {
+    background: linear-gradient(135deg, #8A2BE2, #6A1B9A);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Conquest"] {
+    background: linear-gradient(135deg, #800080, #4B0082);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom*="Crystal"] {
+    background: linear-gradient(135deg, #4FD0FF, #00BFFF);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Diamond"] {
+    background: linear-gradient(135deg, #87CEEB, #4682B4);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom*="Emerald"] {
+    background: linear-gradient(135deg, #00A000, #007700);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Fire Emblem: The Sacred Stones"] {
-    background: rgba(178, 34, 34, 0.5);
-    color: #b22222;
-    border: 1px solid rgba(178, 34, 34, 0.7);
+    background: linear-gradient(135deg, #B22222, #8B0000);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="FireRed"] {
+    background: linear-gradient(135deg, #FF4500, #FF6347);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Gold"] {
+    background: linear-gradient(135deg, #DAA520, #B8860B);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Green"] {
+    background: linear-gradient(135deg, #00BB00, #008800);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="HeartGold"] {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #8B4513;
+}
+
+.badge-rom[data-rom="LeafGreen"] {
+    background: linear-gradient(135deg, #32CD32, #228B22);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Let's Go! Eevee"] {
-    background: rgba(255, 215, 0, 0.5);
-    color: #8b6914;
-    border: 1px solid rgba(255, 215, 0, 0.7);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #8B4513;
+}
+
+.badge-rom[data-rom="Moon"] {
+    background: linear-gradient(135deg, #4B0082, #2F1B69);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Omega Ruby"] {
-    background: rgba(255, 69, 0, 0.5);
-    color: #cc3700;
-    border: 1px solid rgba(255, 69, 0, 0.7);
+    background: linear-gradient(135deg, #FF4500, #FF6347);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Pinball"] {
+    background: linear-gradient(135deg, #FF69B4, #FF1493);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Platinum"] {
+    background: linear-gradient(135deg, #C0C0C0, #808080);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Pokemon Mystery Dungeon: Explorers of Sky"] {
-    background: rgba(255, 165, 0, 0.5);
-    color: #cc7000;
-    border: 1px solid rgba(255, 165, 0, 0.7);
+    background: linear-gradient(135deg, #FFA500, #FF8C00);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Pokemon Mystery Dungeon: Go For It! Light Adventure Squad!"] {
-    background: rgba(255, 165, 0, 0.5);
-    color: #cc7000;
-    border: 1px solid rgba(255, 165, 0, 0.7);
+    background: linear-gradient(135deg, #FFA500, #FF8C00);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Pokemon Mystery Dungeon: Red Rescue Team"] {
-    background: rgba(220, 20, 60, 0.5);
-    color: #b91c3c;
-    border: 1px solid rgba(220, 20, 60, 0.7);
+    background: linear-gradient(135deg, #FF1111, #CC0000);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Pokemon Mystery Dungeon: Rescue Team DX"] {
-    background: rgba(255, 165, 0, 0.5);
-    color: #cc7000;
-    border: 1px solid rgba(255, 165, 0, 0.7);
+    background: linear-gradient(135deg, #FFA500, #FF8C00);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Red"] {
+    background: linear-gradient(135deg, #FF1111, #CC0000);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Ruby"] {
+    background: linear-gradient(135deg, #A00000, #800000);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Rumble"] {
+    background: linear-gradient(135deg, #FF6347, #FF4500);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Scarlet"] {
+    background: linear-gradient(135deg, #DC143C, #B22222);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Silver"] {
+    background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+    color: #2F4F4F;
+}
+
+.badge-rom[data-rom="SoulSilver"] {
+    background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+    color: #2F4F4F;
 }
 
 .badge-rom[data-rom="Super Mystery Dungeon"] {
-    background: rgba(255, 165, 0, 0.5);
-    color: #cc7000;
-    border: 1px solid rgba(255, 165, 0, 0.7);
+    background: linear-gradient(135deg, #FFA500, #FF8C00);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Sword"] {
+    background: linear-gradient(135deg, #4682B4, #2F4F4F);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Trading Card Game"] {
+    background: linear-gradient(135deg, #FF1493, #DC143C);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Trading Card Game 2: The Invasion of Team GR!"] {
-    background: rgba(255, 20, 147, 0.5);
-    color: #ff1493;
-    border: 1px solid rgba(255, 20, 147, 0.7);
+    background: linear-gradient(135deg, #FF1493, #DC143C);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Ultra Moon"] {
-    background: rgba(72, 61, 139, 0.5);
-    color: #342a5f;
-    border: 1px solid rgba(72, 61, 139, 0.7);
+    background: linear-gradient(135deg, #483D8B, #2F1B69);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="Ultra Sun"] {
-    background: rgba(255, 140, 0, 0.5);
-    color: #cc7000;
-    border: 1px solid rgba(255, 140, 0, 0.7);
+    background: linear-gradient(135deg, #FF8C00, #FF7F50);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="White"] {
+    background: linear-gradient(135deg, #F8F8FF, #E6E6FA);
+    color: #2F4F4F;
 }
 
 .badge-rom[data-rom="White 2"] {
-    background: rgba(255, 250, 250, 0.5);
-    color: #2e5984;
-    border: 1px solid rgba(255, 250, 250, 0.7);
+    background: linear-gradient(135deg, #FFFAFA, #E6E6FA);
+    color: #2F4F4F;
+}
+
+.badge-rom[data-rom="X"] {
+    background: linear-gradient(135deg, #1E90FF, #0066CC);
+    color: #ffffff;
 }
 
 .badge-rom[data-rom="XD: Gale of Darkness"] {
-    background: rgba(75, 0, 130, 0.5);
-    color: #380062;
-    border: 1px solid rgba(75, 0, 130, 0.7);
+    background: linear-gradient(135deg, #4B0082, #2F1B69);
+    color: #ffffff;
 }
 
-/* Sun version (missing from partial matches) */
-.badge-rom[data-rom="Sun"] {
-    background: rgba(255, 140, 0, 0.5);
-    color: #cc7000;
-    border: 1px solid rgba(255, 140, 0, 0.7);
+.badge-rom[data-rom="Y"] {
+    background: linear-gradient(135deg, #DC143C, #B22222);
+    color: #ffffff;
 }
 
-/* Violet version (missing from partial matches) */
-.badge-rom[data-rom="Violet"] {
-    background: rgba(138, 43, 226, 0.5);
-    color: #6a1b9a;
-    border: 1px solid rgba(138, 43, 226, 0.7);
-}
-
-/* Shield version (missing from partial matches) */
-.badge-rom[data-rom="Shield"] {
-    background: rgba(255, 20, 147, 0.5);
-    color: #ff1493;
-    border: 1px solid rgba(255, 20, 147, 0.7);
-}
-
-/* Shining Pearl (missing from partial matches) */
-.badge-rom[data-rom="Shining Pearl"] {
-    background: rgba(255, 192, 203, 0.5);
-    color: #c85a7a;
-    border: 1px solid rgba(255, 192, 203, 0.7);
+.badge-rom[data-rom="Yellow"] {
+    background: linear-gradient(135deg, #FFDD00, #FFB000);
+    color: #8B4513;
 }
 
 .badge-rom {
-    background: rgba(102, 126, 234, 0.5);
-    color: #4c63d2;
-    border: 1px solid rgba(102, 126, 234, 0.7);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #ffffff;
 }
 
 .badge-difficulty {
-    background: rgba(245, 158, 11, 0.5);
-    color: #d97706;
-    border: 1px solid rgba(245, 158, 11, 0.7);
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: #ffffff;
+}
+
+/* Difficulty-specific colors */
+.badge-difficulty[data-difficulty="Easy"] {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: #ffffff;
+}
+
+.badge-difficulty[data-difficulty="Normal"] {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: #ffffff;
+}
+
+.badge-difficulty[data-difficulty="Hard"] {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: #ffffff;
+}
+
+.badge-difficulty[data-difficulty="Very Hard"] {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    color: #ffffff;
+}
+
+.badge-difficulty[data-difficulty="Extreme"] {
+    background: linear-gradient(135deg, #7C2D12, #451A03);
+    color: #ffffff;
 }
 
 .status-indicator {

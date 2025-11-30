@@ -1,6 +1,6 @@
 // ROM patching functionality
 import { Utils } from './utils.js';
-import PatchEngine from './modules/PatchEngine.js';
+import PatchEngine from './PatchEngine.js';
 
 export class PatchManager {
     constructor() {

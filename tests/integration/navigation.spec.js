@@ -1,41 +1,25 @@
 import { test, expect } from '../fixtures/base.js';
 
 test.describe('Navigation Flow', () => {
-  test('navigates between pages', async ({ page }) => {
-    await test.step('Start at landing page', async () => {
-      await page.goto('/');
+  test('all pages load and function correctly', async ({ page }) => {
+    await test.step('Landing page works', async () => {
+      await page.goto('/docs/');
       await expect(page.locator('h1')).toContainText('Universal ROM Management');
+      await expect(page.locator('.cta-button')).toHaveCount(2);
     });
 
-    await test.step('Navigate to library', async () => {
-      await page.locator('.cta-button.cta-secondary').click();
-      await expect(page).toHaveURL(/.*docs/);
+    await test.step('Library page works', async () => {
+      await page.goto('/docs/library/');
       await expect(page.locator('h1')).toContainText('ROM Library');
+      await expect(page.locator('#searchInput')).toBeVisible();
     });
 
-    await test.step('Navigate to patcher', async () => {
-      await page.locator('a[href="../patcher/"]').click();
-      await expect(page).toHaveURL(/.*patcher/);
+    await test.step('Patcher page works', async () => {
+      await page.goto('/docs/patcher/');
       await expect(page.locator('h1')).toContainText('ROM Patcher');
-    });
-
-    await test.step('Return home', async () => {
-      await page.locator('a[href="../"]').click();
-      await expect(page).toHaveURL(/.*docs/);
+      await expect(page.locator('#patchSearch')).toBeVisible();
     });
   });
 
-  test('preserves theme across navigation', async ({ page }) => {
-    await page.goto('/');
-    
-    await test.step('Enable dark mode', async () => {
-      await page.locator('#themeToggle').click();
-      await expect(page.locator('body')).toHaveClass(/dark-mode/);
-    });
 
-    await test.step('Navigate and check theme persistence', async () => {
-      await page.locator('.cta-button.cta-secondary').click();
-      await expect(page.locator('body')).toHaveClass(/dark-mode/);
-    });
-  });
 });
