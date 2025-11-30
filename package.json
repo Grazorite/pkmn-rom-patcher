@@ -1,18 +1,24 @@
 {
   "name": "pkmn-rom-patcher",
   "version": "1.0.0",
-  "description": "Pokemon ROM Patcher with GitHub Pages deployment",
+  "description": "A GitHub Pages-hosted ROM patcher that automatically updates its patch list when new files are added.",
+  "main": "index.js",
   "scripts": {
+    "serve": "http-server . -p 3000 -a localhost",
     "test": "playwright test",
-    "test:ui": "playwright test --ui",
+    "test:smoke": "playwright test tests/smoke --reporter=list",
+    "test:core": "playwright test tests/core --reporter=list",
+    "test:integration": "playwright test tests/integration --reporter=list",
+    "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
-    "serve": "http-server . -p 3000"
+    "test:ui": "playwright test --ui"
   },
+  "keywords": ["rom", "patcher", "github-pages"],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.40.0",
-    "http-server": "^14.1.1"
-  },
-  "dependencies": {
+    "http-server": "^14.1.1",
     "gray-matter": "^4.0.3"
   }
 }
