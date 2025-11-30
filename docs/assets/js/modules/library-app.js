@@ -6,6 +6,7 @@ import { PatchManager } from './patcher.js';
 import { CacheManager } from './cache.js';
 import { PerformanceMonitor } from './monitor.js';
 import { DebugPanel } from './debug.js';
+import { AnimationUtils } from '../utils/animations.js';
 // import PatchEngine from './PatchEngine.js'; // Temporarily disabled
 
 class ROMLibraryApp {
@@ -56,12 +57,23 @@ class ROMLibraryApp {
     }
     
     async loadHacks() {
+        // Show loading skeleton while fetching
+        const hackGrid = document.getElementById('hackGrid');
+        if (hackGrid) {
+            AnimationUtils.showLoadingSkeleton(hackGrid, 6, 'card');
+        }
+        
         const cachedData = this.cacheManager.getManifest();
         if (cachedData) {
             this.hacks = cachedData;
             this.filteredHacks = [...this.hacks];
             if (typeof Fuse !== 'undefined') {
                 this.searchManager.initFuse(this.hacks);
+            }
+            
+            // Hide skeleton and show content
+            if (hackGrid) {
+                AnimationUtils.hideLoadingSkeleton(hackGrid);
             }
             return;
         }
@@ -97,10 +109,16 @@ class ROMLibraryApp {
             }
             this.cacheManager.setManifest(this.hacks);
             
-            // Generate filters after loading
+            // Hide skeleton and generate filters after loading
+            if (hackGrid) {
+                AnimationUtils.hideLoadingSkeleton(hackGrid);
+            }
             this.generateFilters();
         } catch (error) {
             console.error('Failed to load hacks:', error);
+            if (hackGrid) {
+                AnimationUtils.hideLoadingSkeleton(hackGrid);
+            }
             this.showError(`${error.message} - Check browser console for details`);
         }
     }
@@ -143,9 +161,10 @@ class ROMLibraryApp {
     setupDetailPanelListeners() {
         // Use event delegation for detail panel interactions
         document.addEventListener('click', (e) => {
-            // Hack card clicks
+            // Hack card clicks with ripple effect
             const card = e.target.closest('.hack-card');
             if (card) {
+                AnimationUtils.addRippleEffect(card, e);
                 this.openDetailPanel(card.dataset.hackId);
                 return;
             }
@@ -162,6 +181,14 @@ class ROMLibraryApp {
             
             if (!isClickInside && panel && panel.classList.contains('open')) {
                 this.uiManager.collapseDetailPanel();
+            }
+        });
+        
+        // Add ripple effects to buttons
+        document.addEventListener('click', (e) => {
+            const button = e.target.closest('.patch-btn, .load-more, .clear-btn, .breadcrumb-link');
+            if (button) {
+                AnimationUtils.addRippleEffect(button, e);
             }
         });
     }
@@ -201,6 +228,12 @@ class ROMLibraryApp {
     
     renderHacks() {
         this.uiManager.renderHacks(this.filteredHacks);
+        
+        // Add staggered animations to hack cards after rendering
+        setTimeout(() => {
+            const hackCards = document.querySelectorAll('.hack-card');
+            AnimationUtils.animateHackCards(hackCards);
+        }, 50);
     }
     
     clearAllFilters() {

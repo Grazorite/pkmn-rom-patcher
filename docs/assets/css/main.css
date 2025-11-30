@@ -9,8 +9,8 @@
 @import 'layout/app.css';
 
 /* Components */
+@import 'components/animations.css';
 @import 'components/navigation.css';
-
 @import 'components/sidebar.css';
 @import 'components/hack-grid.css';
 @import 'components/detail-panel.css';
