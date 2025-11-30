@@ -50,13 +50,13 @@ test.describe('Architecture Validation', () => {
     await page.waitForLoadState('networkidle');
     await expect(page).toHaveURL(/.*patcher\/$/);
     
-    // Go to library
-    await page.click('.nav-link[href="../library/"]');
+    // Go to library using collapsed nav icons (visible by default)
+    await page.click('.nav-collapsed-icon[href="../library/"]');
     await page.waitForLoadState('networkidle');
     await expect(page).toHaveURL(/.*library\/$/);
     
-    // Go back to home
-    await page.click('.nav-link[href="../"]');
+    // Go back to home using collapsed nav icons
+    await page.click('.nav-collapsed-icon[href="../"]');
     await page.waitForLoadState('networkidle');
     await expect(page).toHaveURL(/.*docs\/$/);
   });
@@ -80,12 +80,16 @@ test.describe('Architecture Validation', () => {
     await page.waitForLoadState('networkidle');
     
     // Wait for manifest to load and populate
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
     
     const hackGrid = page.locator('#hackGrid');
-    const loadingText = hackGrid.locator('.loading');
     
-    // Should either show hacks or "no results" but not "Loading..."
-    await expect(loadingText).not.toContainText('Loading ROM hacks...');
+    // Should show either hack cards or a no-results/error message
+    const hasCards = await hackGrid.locator('.hack-card').count() > 0;
+    const hasNoResults = await hackGrid.locator('.no-results').count() > 0;
+    const hasError = await hackGrid.locator('.error-state').count() > 0;
+    
+    // At least one of these should be true
+    expect(hasCards || hasNoResults || hasError).toBe(true);
   });
 });

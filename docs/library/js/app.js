@@ -53,15 +53,37 @@ class ROMHackStore {
     }
     
     async loadHacks() {
+        // Show loading state
+        this.uiManager.showLoading();
+        
         try {
             const response = await fetch('manifest.json');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
             this.hacks = await response.json();
             this.filteredHacks = [...this.hacks];
             this.searchManager.initFuse(this.hacks);
         } catch (error) {
             console.error('Failed to load hacks:', error);
             const grid = document.getElementById('hackGrid');
-            if (grid) grid.innerHTML = '<div class="loading">Failed to load ROM hacks</div>';
+            if (grid) {
+                grid.innerHTML = `
+                    <div class="error-state">
+                        <i data-lucide="wifi-off" width="48" height="48"></i>
+                        <p>Failed to load ROM hacks</p>
+                        <small>${error.message}</small>
+                        <button onclick="window.location.reload()" class="retry-btn">
+                            <i data-lucide="refresh-cw" width="16" height="16"></i>
+                            Retry
+                        </button>
+                    </div>
+                `;
+                // Re-initialize icons
+                if (typeof lucide !== 'undefined') {
+                    setTimeout(() => lucide.createIcons(), 50);
+                }
+            }
         }
     }
     

@@ -60,9 +60,13 @@ export class UIManager {
         const hacksToShow = hacks.slice(startIndex, endIndex);
         
         if (hacksToShow.length === 0 && !append) {
-            grid.innerHTML = '<div class="loading">No ROM hacks found matching your criteria</div>';
+            grid.innerHTML = '<div class="no-results"><i data-lucide="search-x" width="48" height="48"></i><p>No ROM hacks found matching your criteria</p></div>';
             this.updateLoadMoreButton(false);
             this.updateResultsCount(0);
+            // Re-initialize icons
+            if (typeof lucide !== 'undefined') {
+                setTimeout(() => lucide.createIcons(), 50);
+            }
             return;
         }
 
@@ -81,7 +85,22 @@ export class UIManager {
     updateResultsCount(count) {
         const element = document.getElementById('resultsCount');
         if (element) {
-            element.textContent = `${count} hack${count !== 1 ? 's' : ''} found`;
+            if (count === 0) {
+                element.textContent = 'No hacks found';
+            } else {
+                element.textContent = `${count} hack${count !== 1 ? 's' : ''} found`;
+            }
+        }
+    }
+    
+    showLoading() {
+        const grid = document.getElementById('hackGrid');
+        if (grid) {
+            grid.innerHTML = '<div class="loading"><i data-lucide="loader" width="32" height="32" class="loading-spinner"></i><p>Loading ROM hacks...</p></div>';
+            // Re-initialize icons
+            if (typeof lucide !== 'undefined') {
+                setTimeout(() => lucide.createIcons(), 50);
+            }
         }
     }
 
