@@ -2,7 +2,7 @@
   {
     "id": "crystal-gold-97-reforged-v6-1e",
     "title": "Gold 97: Reforged",
-    "file": "../patches/crystal/Gold_97_Reforged_v6.1e.ips",
+    "file": "../../patches/crystal/Gold_97_Reforged_v6.1e.ips",
     "type": "ips",
     "baseRom": "crystal",
     "meta": {
@@ -55,7 +55,7 @@
   {
     "id": "emerald-emerald-enhanced-v11-010",
     "title": "Emerald Enhanced",
-    "file": "../patches/emerald/Emerald_Enhanced_v11.010.xdelta",
+    "file": "../../patches/emerald/Emerald_Enhanced_v11.010.xdelta",
     "type": "xdelta",
     "baseRom": "emerald",
     "meta": {
@@ -90,7 +90,7 @@
       "physicalSpecialSplit": true,
       "antiCheat": false,
       "version": "v11.010",
-      "rating": 4,
+      "rating": 0,
       "playtime": "8 gyms + E4",
       "totalCatchable": 684,
       "pokedexIncludes": "VII",

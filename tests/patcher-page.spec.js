@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('ROM Patcher Page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/patcher/');
+    await page.goto('/docs/patcher/');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
   });
@@ -20,7 +20,7 @@ test.describe('ROM Patcher Page', () => {
     // Check navigation links
     const homeLink = page.locator('.nav-link[href="../"]');
     const patcherLink = page.locator('.nav-link.active');
-    const libraryLink = page.locator('.nav-link[href="../docs/"]');
+    const libraryLink = page.locator('.nav-link[href="../library/"]');
     
     await expect(homeLink).toBeVisible();
     await expect(patcherLink).toBeVisible();
@@ -161,18 +161,18 @@ test.describe('ROM Patcher Page', () => {
     await page.waitForLoadState('networkidle');
     
     // Should be on landing page
-    await expect(page).toHaveURL(/.*\/$/);
+    await expect(page).toHaveURL(/.*docs\/$/);
     await expect(page.locator('h1')).toContainText('Universal ROM Management');
   });
 
   test('should navigate to library', async ({ page }) => {
-    const libraryLink = page.locator('.nav-link[href="../docs/"]');
+    const libraryLink = page.locator('.nav-link[href="../library/"]');
     
     await libraryLink.click();
     await page.waitForLoadState('networkidle');
     
     // Should be on library page
-    await expect(page).toHaveURL(/.*docs/);
+    await expect(page).toHaveURL(/.*library\/$/);
     await expect(page.locator('h1')).toContainText('ROM Library');
   });
 });

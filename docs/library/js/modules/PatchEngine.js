@@ -17,7 +17,7 @@ export default class PatchEngine {
             console.log('Initializing PatchEngine with RomPatcher.webapp.js...');
             
             // Set the correct path for RomPatcher dependencies
-            const ROM_PATCHER_JS_PATH = '../docs/js/vendor/';
+            const ROM_PATCHER_JS_PATH = './js/vendor/';
             
             // Load dependencies in correct order
             await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/BinFile.js');
