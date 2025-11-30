@@ -6,7 +6,8 @@ import { PatchManager } from './patcher.js';
 import { CacheManager } from './cache.js';
 import { PerformanceMonitor } from './monitor.js';
 import { DebugPanel } from './debug.js';
-import PatchEngine from './PatchEngine.js';
+import { AnimationUtils } from '../utils/animations.js';
+// import PatchEngine from './PatchEngine.js'; // Temporarily disabled
 
 class ROMLibraryApp {
     constructor() {
@@ -23,14 +24,10 @@ class ROMLibraryApp {
     }
     
     async init() {
-        Utils.initTheme();
         this.initializeIcons();
         
-        try {
-            await PatchEngine.init();
-        } catch (error) {
-            console.error('PatchEngine init failed:', error);
-        }
+        // Skip PatchEngine for now to test manifest loading
+        console.log('Skipping PatchEngine initialization for debugging');
         
         await this.loadHacks();
         this.setupEventListeners();
@@ -38,16 +35,29 @@ class ROMLibraryApp {
         this.renderHacks();
         
         this.debugPanel = new DebugPanel(this);
-        setTimeout(() => this.initializeIcons(), 500);
+        setTimeout(() => this.initializeIcons(), 100);
+        setTimeout(() => this.initializeIcons(), 1000);
     }
     
     initializeIcons() {
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
+        if (typeof window.initIcons === 'function') {
+            window.initIcons();
+        } else if (typeof lucide !== 'undefined') {
+            try {
+                lucide.createIcons();
+            } catch (e) {
+                console.warn('Icon initialization failed:', e);
+            }
         }
     }
     
     async loadHacks() {
+        // Show loading skeleton while fetching
+        const hackGrid = document.getElementById('hackGrid');
+        if (hackGrid) {
+            AnimationUtils.showLoadingSkeleton(hackGrid, 6, 'card');
+        }
+        
         const cachedData = this.cacheManager.getManifest();
         if (cachedData) {
             this.hacks = cachedData;
@@ -55,22 +65,59 @@ class ROMLibraryApp {
             if (typeof Fuse !== 'undefined') {
                 this.searchManager.initFuse(this.hacks);
             }
+            
+            // Hide skeleton and show content
+            if (hackGrid) {
+                AnimationUtils.hideLoadingSkeleton(hackGrid);
+            }
+            
+            // Generate filters for cached data
+            setTimeout(() => this.generateFilters(), 100);
             return;
         }
 
         try {
-            const response = await fetch('../manifest.json');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            // Try multiple manifest paths for different server setups
+            const manifestPaths = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? ['/docs/manifest.json', './manifest.json', '../manifest.json']
+                : ['../manifest.json'];
+            
+            let response;
+            let successPath;
+            for (const path of manifestPaths) {
+                try {
+                    response = await fetch(path);
+                    if (response.ok) {
+                        successPath = path;
+                        break;
+                    }
+                } catch (e) { /* try next path */ }
+            }
+            console.log('Manifest loaded from:', successPath);
+            console.log('Manifest response:', response.status, response.statusText);
+            
+            if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             
             this.hacks = await response.json();
+            console.log('Loaded hacks:', this.hacks.length);
+            
             this.filteredHacks = [...this.hacks];
             if (typeof Fuse !== 'undefined') {
                 this.searchManager.initFuse(this.hacks);
             }
             this.cacheManager.setManifest(this.hacks);
+            
+            // Hide skeleton and generate filters after loading
+            if (hackGrid) {
+                AnimationUtils.hideLoadingSkeleton(hackGrid);
+            }
+            this.generateFilters();
         } catch (error) {
             console.error('Failed to load hacks:', error);
-            this.showError(error.message);
+            if (hackGrid) {
+                AnimationUtils.hideLoadingSkeleton(hackGrid);
+            }
+            this.showError(`${error.message} - Check browser console for details`);
         }
     }
     
@@ -83,22 +130,9 @@ class ROMLibraryApp {
             }, 150));
         }
         
-        // Theme toggles
-        ['themeToggle', 'themeToggleCollapsed'].forEach(id => {
-            const btn = document.getElementById(id);
-            if (btn) {
-                btn.addEventListener('click', () => this.handleThemeToggle());
-            }
-        });
+        // Theme toggles handled by unified theme system
         
-        // Navigation
-        const navToggle = document.getElementById('navToggle');
-        if (navToggle) {
-            navToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.getElementById('navSidebar')?.classList.toggle('open');
-            });
-        }
+        // Navigation handled by global navigation.js
         
         // Other event listeners...
         this.setupFilterListeners();
@@ -107,6 +141,16 @@ class ROMLibraryApp {
     }
     
     setupFilterListeners() {
+        // Filter dropdown toggles
+        document.addEventListener('click', (e) => {
+            const filterHeader = e.target.closest('.filter-group h4');
+            if (filterHeader) {
+                const filterGroup = filterHeader.closest('.filter-group');
+                filterGroup.classList.toggle('collapsed');
+            }
+        });
+        
+        // Filter checkboxes
         document.addEventListener('change', (e) => {
             if (e.target.type === 'checkbox' && e.target.closest('.filter-options')) {
                 const filterId = e.target.closest('.filter-options').id;
@@ -116,18 +160,55 @@ class ROMLibraryApp {
             }
         });
         
+
+        
         const clearBtn = document.getElementById('clearFilters');
         if (clearBtn) {
             clearBtn.addEventListener('click', () => this.clearAllFilters());
+        }
+        
+        // Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                const icon = sidebarToggle.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.setAttribute('data-lucide', 'chevron-right');
+                } else {
+                    icon.setAttribute('data-lucide', 'chevron-left');
+                }
+                this.initializeIcons();
+            });
         }
     }
     
     setupDetailPanelListeners() {
         // Use event delegation for detail panel interactions
         document.addEventListener('click', (e) => {
-            // Hack card clicks
+            // Badge clicks to set filters (must be before card clicks)
+            const badge = e.target.closest('.badge');
+            if (badge && badge.closest('.hack-card')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const filterType = badge.classList.contains('badge-rom') ? 'baseRom' :
+                                 badge.classList.contains('badge-system') ? 'system' :
+                                 badge.classList.contains('badge-difficulty') ? 'difficulty' : null;
+                if (filterType) {
+                    const value = badge.textContent.trim();
+                    console.log('Badge clicked:', filterType, value); // Debug log
+                    this.searchManager.setFilter(filterType, value, true);
+                    this.updateFilterCheckbox(filterType, value, true);
+                    this.applyFilters();
+                }
+                return;
+            }
+            
+            // Hack card clicks with ripple effect
             const card = e.target.closest('.hack-card');
             if (card) {
+                AnimationUtils.addRippleEffect(card, e);
                 this.openDetailPanel(card.dataset.hackId);
                 return;
             }
@@ -144,6 +225,14 @@ class ROMLibraryApp {
             
             if (!isClickInside && panel && panel.classList.contains('open')) {
                 this.uiManager.collapseDetailPanel();
+            }
+        });
+        
+        // Add ripple effects to buttons
+        document.addEventListener('click', (e) => {
+            const button = e.target.closest('.patch-btn, .load-more, .clear-btn, .breadcrumb-link');
+            if (button) {
+                AnimationUtils.addRippleEffect(button, e);
             }
         });
     }
@@ -183,6 +272,19 @@ class ROMLibraryApp {
     
     renderHacks() {
         this.uiManager.renderHacks(this.filteredHacks);
+        
+        // Add staggered animations to hack cards after rendering
+        setTimeout(() => {
+            const hackCards = document.querySelectorAll('.hack-card');
+            AnimationUtils.animateHackCards(hackCards);
+        }, 50);
+    }
+    
+    updateFilterCheckbox(filterType, value, checked) {
+        const checkbox = document.getElementById(`${filterType}-${value}`);
+        if (checkbox) {
+            checkbox.checked = checked;
+        }
     }
     
     clearAllFilters() {
@@ -201,7 +303,8 @@ class ROMLibraryApp {
         this.patchManager.setSelectedHack(this.selectedHack);
         this.uiManager.renderDetailPanel(this.selectedHack);
         this.uiManager.openDetailPanel();
-        setTimeout(() => this.initializeIcons(), 100);
+        setTimeout(() => this.initializeIcons(), 50);
+        setTimeout(() => this.initializeIcons(), 200);
     }
     
     closeDetailPanel() {
@@ -227,26 +330,11 @@ class ROMLibraryApp {
                     <small>${this.formatFileSize(file.size)}</small>
                 </div>
             `;
-            this.initializeIcons();
+            setTimeout(() => this.initializeIcons(), 50);
         }
     }
     
-    handleThemeToggle() {
-        Utils.toggleTheme();
-        const isDark = document.body.classList.contains('dark-mode');
-        
-        ['themeToggle', 'themeToggleCollapsed'].forEach(id => {
-            const btn = document.getElementById(id);
-            if (btn) {
-                const icon = btn.querySelector('i');
-                const text = btn.querySelector('span');
-                if (icon) icon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
-                if (text) text.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-            }
-        });
-        
-        setTimeout(() => this.initializeIcons(), 100);
-    }
+
     
     showError(message) {
         const grid = document.getElementById('hackGrid');

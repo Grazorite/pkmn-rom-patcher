@@ -44,7 +44,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npx http-server . -p 3000 --cors',
+    command: 'npx http-server docs -p 3000 --cors',
     port: 3000,
     reuseExistingServer: !process.env.CI,
     timeout: 120000, // Increase server startup timeout

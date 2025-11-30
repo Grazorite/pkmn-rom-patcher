@@ -92,9 +92,9 @@ function scanPatchesDirectory(patchesDir, metadataDir) {
       const cleanName = baseName.replace(/\s*\[([A-Fa-f0-9]{8})\]\s*/, '');
       const id = `${baseRom.toLowerCase()}-${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
       
-      // Create relative path from docs/library directory
+      // Create relative path from docs directory for GitHub Pages
       const relativePath = path.relative(
-        path.join(__dirname, '..', 'docs', 'library'), 
+        path.join(__dirname, '..', 'docs'), 
         patchPath
       ).replace(/\\/g, '/');
       
@@ -144,7 +144,7 @@ function scanPatchesDirectory(patchesDir, metadataDir) {
 // Main execution
 const patchesDir = path.join(__dirname, '..', 'patches');
 const metadataDir = path.join(__dirname, '..', 'metadata');
-const outputFile = path.join(__dirname, '..', 'docs', 'library', 'manifest.json');
+const outputFile = path.join(__dirname, '..', 'docs', 'manifest.json');
 
 // Ensure directories exist
 if (!fs.existsSync(patchesDir)) {

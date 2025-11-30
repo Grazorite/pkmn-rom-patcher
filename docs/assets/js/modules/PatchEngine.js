@@ -16,18 +16,8 @@ export default class PatchEngine {
         try {
             console.log('Initializing PatchEngine with RomPatcher.webapp.js...');
             
-            // Set the correct path for RomPatcher dependencies
-            const ROM_PATCHER_JS_PATH = './js/vendor/';
-            
-            // Load dependencies in correct order
-            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/BinFile.js');
-            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/HashCalculator.js');
-            await this._loadScript(ROM_PATCHER_JS_PATH + 'RomPatcher.js');
-            
-            // Load format modules after RomPatcher.js
-            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.ips.js');
-            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.bps.js');
-            await this._loadScript(ROM_PATCHER_JS_PATH + 'modules/RomPatcher.format.ups.js');
+            // Load the main RomPatcher library
+            await this._loadScript('./vendor/RomPatcher.js');
 
             // Wait a moment for modules to initialize
             await new Promise(resolve => setTimeout(resolve, 100));

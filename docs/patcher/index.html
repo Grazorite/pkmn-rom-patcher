@@ -5,19 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ROM Patcher</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7,10 12,15 17,10'/><line x1='12' y1='15' x2='12' y2='3'/></svg>">
-    <link rel="stylesheet" href="/docs/assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/components/patcher-results.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
-    <script>
-        // Initialize theme immediately to prevent flash
-        (function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark-mode');
-                document.body.classList.add('dark-mode');
-            }
-        })();
-    </script>
+
 </head>
 <body>
     <div class="background-shapes">
@@ -33,54 +25,47 @@
             <i data-lucide="menu" width="20" height="20"></i>
         </div>
         <div class="nav-header">
-            <h3>ROM Patcher</h3>
+            <h3>UROMM</h3>
         </div>
         <div class="nav-links">
-            <a href="/docs/" class="nav-link">
+            <a href="../" class="nav-link">
                 <i data-lucide="home" width="20" height="20"></i>
                 Home
             </a>
-            <a href="/docs/patcher/" class="nav-link active">
+            <a href="../patcher/" class="nav-link active">
                 <i data-lucide="download" width="20" height="20"></i>
                 ROM Patcher
             </a>
-            <a href="/docs/library/" class="nav-link">
+            <a href="../library/" class="nav-link">
                 <i data-lucide="book-open" width="20" height="20"></i>
                 ROM Library
             </a>
         </div>
-        <div class="nav-footer">
-            <div class="theme-toggle-nav" id="themeToggle">
-                <i data-lucide="sun" width="20" height="20"></i>
-                <span>Light Mode</span>
-            </div>
-        </div>
+
         <div class="nav-collapsed-icons">
-            <a href="/docs/" class="nav-collapsed-icon">
+            <a href="../" class="nav-collapsed-icon">
                 <i data-lucide="home" width="20" height="20"></i>
             </a>
-            <a href="/docs/patcher/" class="nav-collapsed-icon active">
+            <a href="../patcher/" class="nav-collapsed-icon active">
                 <i data-lucide="download" width="20" height="20"></i>
             </a>
-            <a href="/docs/library/" class="nav-collapsed-icon">
+            <a href="../library/" class="nav-collapsed-icon">
                 <i data-lucide="book-open" width="20" height="20"></i>
             </a>
-            <div class="nav-collapsed-icon" id="themeToggleCollapsed">
-                <i data-lucide="sun" width="20" height="20"></i>
-            </div>
+
         </div>
     </nav>
     
     <div class="app-container">
         <nav class="breadcrumb">
-            <a href="/docs/" class="breadcrumb-link">
+            <a href="../" class="breadcrumb-link">
                 <i data-lucide="arrow-left" width="16" height="16"></i>
                 Home
             </a>
         </nav>
         
         <header class="app-header">
-            <h1><i data-lucide="download" width="32" height="32"></i> ROM Patcher</h1>
+            <h1><i data-lucide="download" width="48" height="48"></i> ROM Patcher</h1>
             <p>Search and apply patches directly to your ROM files</p>
         </header>
         
@@ -108,6 +93,9 @@
                 </div>
                 
                 <div class="selected-patch" id="selectedPatch" style="display: none;">
+                    <button class="close-btn" id="closePatchDescription">
+                        <i data-lucide="x" width="20" height="20"></i>
+                    </button>
                     <div class="patch-info">
                         <p id="selectedPatchDescription"></p>
                     </div>
@@ -148,16 +136,9 @@
     <!-- Debug container at bottom -->
     <div id="debugContainer" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); color: white; padding: 10px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; z-index: 9999; display: none;"></div>
     
+    <script src="../assets/js/core.js"></script>
+    <script src="../assets/js/navigation.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script>
-        // Initialize icons immediately after Lucide loads
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        });
-    </script>
-    <!-- PatchEngine will handle dependency loading -->
-    <script type="module" src="/docs/assets/js/modules/patcher-app.js"></script>
+    <script type="module" src="../assets/js/modules/patcher-app.js"></script>
 </body>
 </html>

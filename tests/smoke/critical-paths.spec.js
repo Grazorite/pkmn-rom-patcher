@@ -3,7 +3,7 @@ import { test, expect } from '../fixtures/base.js';
 test.describe('Smoke Tests', () => {
   test('critical pages load', async ({ page }) => {
     const pages = [
-      { url: '/', title: 'Universal ROM Management' },
+      { url: '/', title: 'Universal ROM Manager' },
       { url: '/docs/library/', title: 'ROM Library' },
       { url: '/docs/patcher/', title: 'ROM Patcher' }
     ];

@@ -50,7 +50,7 @@ export class SearchManager {
                             this.activeFilters[filterType].has(mechanic)
                         );
                     } else if (filterType === 'baseRom') {
-                        const baseRom = hack.baseRom || hack.meta?.baseRom;
+                        const baseRom = hack.meta?.baseRom;
                         return this.activeFilters[filterType].has(baseRom);
                     } else if (filterType === 'rating') {
                         const rating = hack.meta?.rating;
@@ -98,8 +98,8 @@ export class SearchManager {
         };
         
         data.forEach(hack => {
-            // Use baseRom from top level or meta
-            const baseRom = hack.baseRom || hack.meta?.baseRom;
+            // Use baseRom from meta (proper case)
+            const baseRom = hack.meta?.baseRom;
             if (baseRom) filters.baseRom.set(baseRom, (filters.baseRom.get(baseRom) || 0) + 1);
             
             if (hack.meta) {

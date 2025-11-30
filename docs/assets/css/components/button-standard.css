@@ -1,0 +1,185 @@
+/* Standardized Button System with Liquid Glass Shimmer */
+
+/* Base button styles - applied to all buttons */
+.btn-base {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    will-change: transform, box-shadow;
+    cursor: pointer;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-base::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.btn-base:hover::before {
+    left: 100%;
+}
+
+.btn-base:hover {
+    transform: translateY(-2px) translateZ(0);
+}
+
+.btn-base:active {
+    transform: translateY(0) scale(0.98) translateZ(0);
+    transition-duration: 0.15s;
+}
+
+/* Close button standardization */
+.close-btn {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    will-change: transform, background;
+    cursor: pointer;
+}
+
+.close-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.close-btn:hover::before {
+    left: 100%;
+}
+
+.close-btn:active {
+    transform: translateY(0) scale(0.95) translateZ(0);
+    transition-duration: 0.15s;
+}
+
+/* Tab button standardization */
+.tab-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    will-change: transform, color, background;
+}
+
+.tab-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn:hover::before {
+    left: 100%;
+}
+
+.tab-btn:hover {
+    transform: translateY(-1px) translateZ(0);
+}
+
+.tab-btn:active {
+    transform: translateY(0) scale(0.98) translateZ(0);
+    transition-duration: 0.15s;
+}
+
+/* Toggle switch standardization */
+.toggle-slider {
+    position: relative;
+    overflow: hidden;
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-switch:hover .toggle-slider::before {
+    left: 100%;
+}
+
+/* Apply to existing buttons */
+.clear-btn,
+.breadcrumb-link,
+.load-more,
+.patch-btn,
+.file-input-label,
+.nav-toggle,
+.nav-collapsed-icon,
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ensure all buttons have shimmer effect */
+.clear-btn::before,
+.breadcrumb-link::before,
+.load-more::before,
+.patch-btn::before,
+.file-input-label::before,
+.nav-toggle::before,
+.nav-collapsed-icon::before,
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.clear-btn:hover::before,
+.breadcrumb-link:hover::before,
+.load-more:hover::before,
+.patch-btn:not(:disabled):hover::before,
+.file-input-label:hover::before,
+.nav-toggle:hover::before,
+.nav-collapsed-icon:hover::before,
+.nav-link:hover::before {
+    left: 100%;
+}

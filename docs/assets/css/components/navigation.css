@@ -9,11 +9,13 @@
     backdrop-filter: blur(20px);
     border-right: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 1001;
-    transition: all 0.3s ease;
+    transition: all var(--anim-duration-normal) var(--anim-easing-smooth);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
+    transform: translateZ(0);
+    will-change: width, transform;
 }
 
 .nav-sidebar.open {
@@ -67,14 +69,38 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--anim-duration-normal) var(--anim-easing-smooth);
     color: white;
     text-decoration: none;
+    transform: translateZ(0);
+    will-change: transform, background;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-collapsed-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left var(--anim-duration-slow) var(--anim-easing-smooth);
 }
 
 .nav-collapsed-icon:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(0);
+}
+
+.nav-collapsed-icon:hover::before {
+    left: 100%;
+}
+
+.nav-collapsed-icon:active {
+    transform: scale(0.95) translateZ(0);
+    transition-duration: var(--anim-duration-fast);
 }
 
 .nav-collapsed-icon.active {
@@ -94,9 +120,24 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--anim-duration-normal) var(--anim-easing-smooth);
     color: white;
     margin-bottom: 20px;
+    transform: translateZ(0);
+    will-change: transform, background;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left var(--anim-duration-slow) var(--anim-easing-smooth);
 }
 
 .nav-sidebar.open .nav-toggle {
@@ -108,7 +149,16 @@
 
 .nav-toggle:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(0);
+}
+
+.nav-toggle:hover::before {
+    left: 100%;
+}
+
+.nav-toggle:active {
+    transform: scale(0.95) translateZ(0);
+    transition-duration: var(--anim-duration-fast);
 }
 
 .nav-header {
@@ -135,13 +185,38 @@
     padding: 12px 20px;
     color: white;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all var(--anim-duration-normal) var(--anim-easing-smooth);
     border-left: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+    will-change: transform, background, border-color;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left var(--anim-duration-slow) var(--anim-easing-smooth);
 }
 
 .nav-link:hover {
     background: rgba(255, 255, 255, 0.1);
     border-left-color: var(--primary);
+    transform: translateX(4px) translateZ(0);
+}
+
+.nav-link:hover::before {
+    left: 100%;
+}
+
+.nav-link:active {
+    transform: translateX(2px) scale(0.98) translateZ(0);
+    transition-duration: var(--anim-duration-fast);
 }
 
 .nav-link.active {
@@ -155,22 +230,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.theme-toggle-nav {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: white;
-}
 
-.theme-toggle-nav:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
 
 /* Adjust main content for sidebar */
 .app-container {
@@ -210,14 +270,7 @@ body.dark-mode .nav-link.active {
     background: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .theme-toggle-nav {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-}
 
-body.dark-mode .theme-toggle-nav:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
 
 /* Mobile responsiveness */
 @media (max-width: 1024px) {
@@ -272,10 +325,7 @@ body.dark-mode .theme-toggle-nav:hover {
         padding: 16px;
     }
     
-    .theme-toggle-nav {
-        padding: 10px;
-        font-size: 14px;
-    }
+
 }
 
 @media (max-width: 480px) {
@@ -308,9 +358,5 @@ body.dark-mode .theme-toggle-nav:hover {
         padding: 12px;
     }
     
-    .theme-toggle-nav {
-        padding: 8px;
-        font-size: 13px;
-        gap: 10px;
-    }
+
 }

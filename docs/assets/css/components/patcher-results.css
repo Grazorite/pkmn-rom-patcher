@@ -1,0 +1,146 @@
+/* Patcher page specific styles */
+.patch-result {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.patch-result::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s;
+}
+
+.patch-result:hover::before {
+    left: 100%;
+}
+
+.patch-result:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(240, 147, 251, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.patch-result.selected {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.5);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.patch-result-content h4 {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.patch-description {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.patch-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Badges inherit from main CSS - no overrides needed */
+
+/* Loading states */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.loading.error {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 8px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .patch-result {
+        padding: 16px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+    }
+    
+    .patch-result-content h4 {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+    
+    .patch-description {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    
+    .patch-badges {
+        gap: 6px;
+    }
+    
+    .badge {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+    
+    .loading {
+        padding: 30px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .patch-result {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+    
+    .patch-result-content h4 {
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+    
+    .patch-description {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+    
+    .patch-badges {
+        gap: 4px;
+    }
+    
+    .badge {
+        padding: 3px 6px;
+        font-size: 9px;
+    }
+    
+    .loading {
+        padding: 20px;
+        font-size: 13px;
+    }
+}
