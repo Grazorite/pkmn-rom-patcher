@@ -57,7 +57,9 @@
     border-radius: 16px;
     padding: 32px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    animation: slideInRight 0.6s ease-out 0.6s both;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s ease-out 0.8s both;
     min-width: 0;
 }
 

@@ -20,6 +20,7 @@
 @import 'components/patcher.css';
 @import 'components/loading.css';
 @import 'components/tooltip.css';
+@import 'components/mobile.css';
 
 /* Themes */
 @import 'themes/dark.css';
