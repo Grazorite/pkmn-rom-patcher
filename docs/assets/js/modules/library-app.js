@@ -7,7 +7,9 @@ import { CacheManager } from './cache.js';
 import { PerformanceMonitor } from './monitor.js';
 import { DebugPanel } from './debug.js';
 import { AnimationUtils } from '../utils/animations.js';
-// import PatchEngine from './PatchEngine.js'; // Temporarily disabled
+
+const ICON_INIT_DELAY_SHORT = 100;
+const ICON_INIT_DELAY_LONG = 1000;
 
 class ROMLibraryApp {
     constructor() {
@@ -25,18 +27,14 @@ class ROMLibraryApp {
     
     async init() {
         this.initializeIcons();
-        
-        // Skip PatchEngine for now to test manifest loading
-        console.log('Skipping PatchEngine initialization for debugging');
-        
         await this.loadHacks();
         this.setupEventListeners();
         this.generateFilters();
         this.renderHacks();
         
         this.debugPanel = new DebugPanel(this);
-        setTimeout(() => this.initializeIcons(), 100);
-        setTimeout(() => this.initializeIcons(), 1000);
+        setTimeout(() => this.initializeIcons(), ICON_INIT_DELAY_SHORT);
+        setTimeout(() => this.initializeIcons(), ICON_INIT_DELAY_LONG);
     }
     
     initializeIcons() {
@@ -72,7 +70,7 @@ class ROMLibraryApp {
             }
             
             // Generate filters for cached data
-            setTimeout(() => this.generateFilters(), 100);
+            setTimeout(() => this.generateFilters(), ICON_INIT_DELAY_SHORT);
             return;
         }
 
@@ -93,13 +91,10 @@ class ROMLibraryApp {
                     }
                 } catch (e) { /* try next path */ }
             }
-            console.log('Manifest loaded from:', successPath);
-            console.log('Manifest response:', response.status, response.statusText);
             
             if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             
             this.hacks = await response.json();
-            console.log('Loaded hacks:', this.hacks.length);
             
             this.filteredHacks = [...this.hacks];
             if (typeof Fuse !== 'undefined') {
@@ -197,7 +192,6 @@ class ROMLibraryApp {
                                  badge.classList.contains('badge-difficulty') ? 'difficulty' : null;
                 if (filterType) {
                     const value = badge.textContent.trim();
-                    console.log('Badge clicked:', filterType, value); // Debug log
                     this.searchManager.setFilter(filterType, value, true);
                     this.updateFilterCheckbox(filterType, value, true);
                     this.applyFilters();

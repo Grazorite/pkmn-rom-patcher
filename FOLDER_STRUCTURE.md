@@ -19,13 +19,37 @@ The project is organized by base ROM to support scalability with thousands of pa
 ├── images/                     # Static images (optional, URLs preferred)
 │   ├── crystal/               # Images for Crystal patches
 │   └── ...                    # Matching base ROM structure
-└── docs/                      # Web application files
-    ├── js/                    # Modular JavaScript
-    │   ├── app.js            # Main application
-    │   ├── search.js         # Search and filtering
-    │   ├── ui.js             # UI rendering
-    │   ├── patcher.js        # ROM patching
-    │   └── utils.js          # Utilities
+└── docs/                      # Web application files (GitHub Pages root)
+    ├── assets/
+    │   ├── css/              # Stylesheets
+    │   │   ├── base/         # Variables, reset, animations
+    │   │   ├── layout/       # App layout, grid systems
+    │   │   ├── components/   # UI components, buttons, cards
+    │   │   └── themes/       # Dark theme
+    │   └── js/
+    │       ├── modules/      # Core application modules
+    │       │   ├── library-app.js    # Library page controller
+    │       │   ├── patcher-app.js    # Patcher page controller
+    │       │   ├── search.js         # Search & filtering
+    │       │   ├── ui.js             # UI rendering
+    │       │   ├── patcher.js        # Patch management
+    │       │   ├── cache.js          # LocalStorage caching
+    │       │   ├── monitor.js        # Performance monitoring
+    │       │   └── utils.js          # Utilities
+    │       ├── utils/        # Utility functions
+    │       │   └── animations.js     # Animation helpers
+    │       ├── core.js       # Core initialization
+    │       └── navigation.js # Navigation handling
+    ├── patcher/
+    │   ├── rom-patcher-js/   # RomPatcher.js library (280KB)
+    │   │   ├── RomPatcher.webapp.js
+    │   │   ├── worker files
+    │   │   └── format modules (IPS, BPS, UPS, XDelta)
+    │   └── index.html        # Patcher page
+    ├── library/
+    │   └── index.html        # Library page
+    ├── index.html            # Landing page
+    ├── test-patcher.html     # RomPatcher.js test page
     └── manifest.json         # Auto-generated from patches + metadata
 ```
 

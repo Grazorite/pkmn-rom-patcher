@@ -22,9 +22,13 @@ test.describe('Patcher Page', () => {
     await expect(toggleLabel).toBeVisible();
   });
 
-  test('displays patch interface', async ({ patcherPage }) => {
-    await expect(patcherPage.locator('.file-input-label')).toBeVisible();
-    await expect(patcherPage.locator('#applyPatchBtn')).toBeVisible();
-    await expect(patcherPage.locator('#applyPatchBtn')).toBeDisabled();
+  test('hides patcher widget initially', async ({ patcherPage }) => {
+    const patcherContainer = patcherPage.locator('#rom-patcher-container');
+    await expect(patcherContainer).toBeHidden();
+  });
+
+  test('shows patch results container', async ({ patcherPage }) => {
+    const resultsContainer = patcherPage.locator('#patchResults');
+    await expect(resultsContainer).toBeVisible();
   });
 });

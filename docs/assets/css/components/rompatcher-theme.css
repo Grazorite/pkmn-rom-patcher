@@ -1,0 +1,124 @@
+/* RomPatcher.js Theme Overrides */
+/* Matches app design system */
+
+#rom-patcher-container {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+/* File input styling */
+#rom-patcher-container .rom-patcher-container-input input[type="file"],
+#rom-patcher-input-file-rom {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#rom-patcher-container .rom-patcher-container-input input[type="file"]:hover,
+#rom-patcher-input-file-rom:hover {
+    border-color: var(--accent-primary);
+    background: var(--bg-hover);
+}
+
+#rom-patcher-container .rom-patcher-container-input input[type="file"]:disabled,
+#rom-patcher-input-file-rom:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Row styling */
+.rom-patcher-row {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.rom-patcher-row .text-right {
+    min-width: 100px;
+    text-align: right;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Button styling */
+#rom-patcher-button-apply {
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#rom-patcher-button-apply:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+#rom-patcher-button-apply:disabled {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* CRC info styling */
+#rom-patcher-rom-info {
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+}
+
+#rom-patcher-rom-info .rom-patcher-row {
+    margin-bottom: var(--spacing-xs);
+}
+
+#rom-patcher-rom-info .text-truncate {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+/* Select dropdown */
+#rom-patcher-select-patch {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* Error message */
+#rom-patcher-error-message {
+    color: var(--error-color, #ef4444);
+    font-size: 0.9rem;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+}
+
+#rom-patcher-row-error-message.show #rom-patcher-error-message {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Checkbox styling */
+#rom-patcher-checkbox-alter-header {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}

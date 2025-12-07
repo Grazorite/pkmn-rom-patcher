@@ -10,6 +10,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7,10 12,15 17,10'/><line x1='12' y1='15' x2='12' y2='3'/></svg>">
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/components/patcher-results.css">
+    <link rel="stylesheet" href="./rom-patcher-js/style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
 
@@ -72,8 +73,8 @@
             <p>Search and apply patches directly to your ROM files</p>
         </header>
         
-        <div class="patcher-layout">
-            <div class="patcher-main narrow">
+        <div class="patcher-layout patcher-layout-centered">
+            <div class="patcher-main narrow patcher-main-centered">
                 <div class="search-section">
                     <div class="creator-mode">
                         <label class="toggle-switch">
@@ -95,34 +96,79 @@
                     <div class="loading">Start typing to search for patches...</div>
                 </div>
                 
-                <div class="selected-patch" id="selectedPatch" style="display: none;">
-                    <button class="close-btn" id="closePatchDescription">
+                <div class="selected-patch" id="selectedPatch" style="display: none; position: relative;">
+                    <button class="close-btn" id="closePatchDescription" style="position: absolute; top: 0.75rem; right: 0.75rem; z-index: 10;">
                         <i data-lucide="x" width="20" height="20"></i>
                     </button>
-                    <div class="patch-info">
-                        <p id="selectedPatchDescription"></p>
+                    <div class="patch-info" style="max-height: 400px; overflow-y: auto; padding: 0.5rem 1.25rem 1rem 1rem; position: relative;">
+                        <p id="selectedPatchDescription" style="padding-right: 0.75rem; margin: 0;"></p>
                     </div>
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, transparent, var(--bg-secondary)); pointer-events: none;"></div>
                 </div>
             </div>
             
             <div class="patcher-sidebar">
-                <div class="patch-interface">
-                    <div class="file-input-section">
-                        <label for="romFileInput" class="file-input-label">
-                            <i data-lucide="upload" width="24" height="24"></i>
-                            <span>Select ROM File</span>
-                        </label>
-                        <input type="file" id="romFileInput" accept=".gb,.gbc,.gba,.nes,.smc,.sfc,.z64,.n64" style="display: none;">
-                        <div id="romFileInfo" class="file-info"></div>
-                        <div id="romValidationDetail"></div>
+                <div class="patch-interface" id="rom-patcher-container" style="display: none;">
+                    <!-- RomPatcher.webapp.js required elements -->
+                    <div class="rom-patcher-row margin-bottom" id="rom-patcher-row-file-rom">
+                        <div class="text-right"><label for="rom-patcher-input-file-rom"><i data-lucide="disc" width="16" height="16" style="display: inline-block; vertical-align: middle; margin-right: 4px;"></i>ROM file:</label></div>
+                        <div class="rom-patcher-container-input">
+                            <input type="file" id="rom-patcher-input-file-rom" class="empty" disabled />
+                        </div>
                     </div>
                     
-                    <button id="applyPatchBtn" class="patch-btn" disabled>
-                        <i data-lucide="download" width="20" height="20"></i>
-                        Apply Patch
-                    </button>
+                    <div class="margin-bottom text-selectable text-mono text-muted" id="rom-patcher-rom-info">
+                        <div class="rom-patcher-row">
+                            <div class="text-right">CRC32:</div>
+                            <div class="text-truncate"><span id="rom-patcher-span-crc32"></span></div>
+                        </div>
+                        <div class="rom-patcher-row">
+                            <div class="text-right">MD5:</div>
+                            <div class="text-truncate"><span id="rom-patcher-span-md5"></span></div>
+                        </div>
+                        <div class="rom-patcher-row">
+                            <div class="text-right">SHA-1:</div>
+                            <div class="text-truncate"><span id="rom-patcher-span-sha1"></span></div>
+                        </div>
+                    </div>
                     
-                    <div id="patchStatus"></div>
+                    <div class="rom-patcher-row margin-bottom" id="rom-patcher-row-file-patch" style="display: none;">
+                        <div class="text-right"><label for="rom-patcher-input-file-patch">Patch file:</label></div>
+                        <div class="rom-patcher-container-input">
+                            <input type="file" id="rom-patcher-input-file-patch" class="empty" disabled />
+                        </div>
+                    </div>
+                    
+                    <div class="rom-patcher-row margin-bottom" id="rom-patcher-row-select-patch" style="display: none;">
+                        <div class="text-right"><label for="rom-patcher-select-patch">Patch file:</label></div>
+                        <div class="rom-patcher-container-input">
+                            <select id="rom-patcher-select-patch"></select>
+                        </div>
+                    </div>
+                    
+                    <div class="rom-patcher-row margin-bottom" id="rom-patcher-row-patch-description" style="display: none;">
+                        <div class="text-right text-mono text-muted">Description:</div>
+                        <div class="text-truncate" id="rom-patcher-patch-description"></div>
+                    </div>
+                    
+                    <div class="rom-patcher-row margin-bottom text-selectable text-mono text-muted" id="rom-patcher-row-patch-requirements" style="display: none;">
+                        <div class="text-right text-mono" id="rom-patcher-patch-requirements-type">ROM requirements:</div>
+                        <div class="text-truncate" id="rom-patcher-patch-requirements-value"></div>
+                    </div>
+                    
+                    <div class="rom-patcher-row margin-bottom" id="rom-patcher-row-alter-header" style="display: none;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="rom-patcher-checkbox-alter-header">
+                            <span id="rom-patcher-span-alter-header"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="text-center" id="rom-patcher-row-apply">
+                        <div id="rom-patcher-row-error-message" class="margin-bottom">
+                            <span id="rom-patcher-error-message"></span>
+                        </div>
+                        <button id="rom-patcher-button-apply" disabled>Apply patch</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -138,6 +184,9 @@
     
     <!-- Debug container at bottom -->
     <div id="debugContainer" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); color: white; padding: 10px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; z-index: 9999; display: none;"></div>
+    
+    <!-- RomPatcher.js library -->
+    <script src="./rom-patcher-js/RomPatcher.webapp.js"></script>
     
     <script src="../assets/js/core.js"></script>
     <script src="../assets/js/navigation.js"></script>

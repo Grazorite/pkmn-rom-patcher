@@ -16,6 +16,20 @@
     animation: fadeInUp var(--anim-duration-slow) var(--anim-easing-standard) var(--anim-delay-2) both;
 }
 
+.app-layout-centered {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.patcher-layout-centered {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.patcher-main-centered {
+    margin: 0 auto;
+}
+
 .app-header {
     text-align: center;
     margin-bottom: 30px;

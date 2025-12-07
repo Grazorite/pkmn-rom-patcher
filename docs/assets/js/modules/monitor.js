@@ -32,16 +32,29 @@ export class PerformanceMonitor {
 
     observeMetric(name, entryTypes) {
         try {
+            // Check if entryTypes are supported
+            if (!PerformanceObserver.supportedEntryTypes) {
+                return;
+            }
+            
+            const supportedTypes = entryTypes.filter(type => 
+                PerformanceObserver.supportedEntryTypes.includes(type)
+            );
+            
+            if (supportedTypes.length === 0) {
+                return; // Silently skip unsupported types
+            }
+            
             const observer = new PerformanceObserver((list) => {
                 for (const entry of list.getEntries()) {
                     this.recordMetric(name, entry);
                 }
             });
             
-            observer.observe({ entryTypes });
+            observer.observe({ entryTypes: supportedTypes });
             this.observers.push(observer);
         } catch (e) {
-            console.warn(`Failed to observe ${name}:`, e);
+            // Silently fail for unsupported metrics
         }
     }
 
