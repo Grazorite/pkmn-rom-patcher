@@ -9,6 +9,9 @@ class ROMPatcherApp {
         this.creatorMode = false;
         this.romPatcherInitialized = false;
         this.romPatcherReady = false;
+        this.retryAttempted = false;
+        this.isGitHubPages = window.location.hostname.includes('github.io');
+        this.basePath = this.isGitHubPages ? '/pkmn-rom-patcher' : '';
         
         this.init();
     }
@@ -99,46 +102,46 @@ class ROMPatcherApp {
             return false;
         }
         
-        if (this.romPatcherInitialized) {
-            // Already initialized, just switch patches
-            try {
-                RomPatcherWeb.setEmbededPatches(patchInfo);
-                
-                // Show container if hidden
-                const container = document.getElementById('rom-patcher-container');
-                if (container && container.style.display === 'none') {
-                    container.style.display = 'block';
-                }
-                
-                return true;
-            } catch (error) {
-                console.error('Failed to switch patch:', error);
-                return false;
-            }
-        }
-        
         try {
-            // First time initialization with embeded patch
-            RomPatcherWeb.initialize({
-                language: 'en',
-                requireValidation: false,
-                allowDropFiles: true
-            }, patchInfo);
-            
-            this.romPatcherInitialized = true;
+            if (!this.romPatcherInitialized) {
+                // First time initialization with embeded patch
+                RomPatcherWeb.initialize({
+                    language: 'en',
+                    requireValidation: false,
+                    allowDropFiles: true
+                }, patchInfo);
+                
+                this.romPatcherInitialized = true;
+            } else {
+                // Verify embeded mode is active
+                if (typeof RomPatcherWeb.setEmbededPatches === 'function') {
+                    RomPatcherWeb.setEmbededPatches(patchInfo);
+                } else {
+                    // Reinitialize if embeded mode lost
+                    this.romPatcherInitialized = false;
+                    return this.initializeRomPatcherWithPatch(patchInfo);
+                }
+            }
             
             // Show the patcher container
             const container = document.getElementById('rom-patcher-container');
             if (container) {
                 container.style.display = 'block';
                 container.style.visibility = 'visible';
-            } else {
-                console.error('rom-patcher-container not found!');
             }
             
+            this.retryAttempted = false;
             return true;
         } catch (error) {
-            console.error('Failed to initialize RomPatcherWeb:', error);
+            console.error('Failed to initialize/switch patch:', error);
+            
+            // Retry once if not already attempted
+            if (!this.retryAttempted) {
+                this.retryAttempted = true;
+                this.romPatcherInitialized = false;
+                return this.initializeRomPatcherWithPatch(patchInfo);
+            }
+            
             return false;
         }
     }
@@ -230,8 +233,15 @@ class ROMPatcherApp {
         this.positionAndShowDetails(patchId);
         
         // Build patch info for RomPatcher
-        // Fix path: manifest has ../patches but we're in /patcher/ so need ../../patches
-        const patchFile = this.selectedPatch.file.replace('../patches/', '../../patches/');
+        // Fix path for both local and GitHub Pages
+        let patchFile = this.selectedPatch.file;
+        if (this.isGitHubPages) {
+            // GitHub Pages: /pkmn-rom-patcher/docs/../patches/file.bps
+            patchFile = this.basePath + '/docs/' + this.selectedPatch.file;
+        } else {
+            // Local: ../../patches/file.bps
+            patchFile = patchFile.replace('../patches/', '../../patches/');
+        }
         const patchInfo = {
             file: patchFile,
             name: this.selectedPatch.title,
