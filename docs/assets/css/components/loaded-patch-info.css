@@ -1,0 +1,24 @@
+/* Loaded Patch Info Styling */
+#rom-patcher-loaded-patch-info {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.loaded-patch-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.loaded-patch-name {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: var(--accent-primary);
+    font-weight: 600;
+    word-break: break-all;
+    line-height: 1.3;
+}

@@ -1,6 +1,7 @@
 // UI rendering and management
 import { PerformanceManager } from './performance.js';
 import { imageCache } from './image-cache.js';
+import { imagePopup } from './image-popup.js';
 
 export class UIManager {
     constructor() {
@@ -188,10 +189,14 @@ export class UIManager {
                 banner.classList.add('has-banner');
                 banner.style.setProperty('--banner-bg', `url('${hack.meta.images.banner}')`);
                 banner.innerHTML = '';
+                banner.style.cursor = 'pointer';
+                banner.onclick = () => imagePopup.show(hack.meta.images.banner);
             } else {
                 banner.classList.remove('has-banner');
                 banner.style.removeProperty('--banner-bg');
                 banner.innerHTML = hack.title;
+                banner.style.cursor = 'default';
+                banner.onclick = null;
             }
             banner.style.display = 'flex';
         }
@@ -419,4 +424,6 @@ export class UIManager {
     nextPage() {
         this.currentPage++;
     }
+    
+
 }

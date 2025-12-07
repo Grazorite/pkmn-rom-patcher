@@ -232,18 +232,10 @@ class ROMLibraryApp {
     }
     
     setupPatchingListeners() {
-        const romInput = document.getElementById('romFileInput');
-        const patchBtn = document.getElementById('applyPatchBtn');
-        
-        if (romInput) {
-            romInput.addEventListener('change', (e) => {
-                this.handleROMFile(e);
-                this.patchManager.validateROM();
-            });
-        }
+        const patchBtn = document.getElementById('openPatcherBtn');
         
         if (patchBtn) {
-            patchBtn.addEventListener('click', () => this.patchManager.applyPatch());
+            patchBtn.addEventListener('click', () => this.openInPatcher());
         }
     }
     
@@ -307,25 +299,16 @@ class ROMLibraryApp {
         this.patchManager.setSelectedHack(null);
     }
     
-    handleROMFile(event) {
-        const file = event.target.files[0];
-        const fileInfo = document.getElementById('romFileInfo');
+    openInPatcher() {
+        if (!this.selectedHack) return;
         
-        if (!file) {
-            if (fileInfo) fileInfo.innerHTML = '';
-            return;
-        }
+        const params = new URLSearchParams({
+            patch: this.selectedHack.file,
+            name: this.selectedHack.title,
+            baseRom: this.selectedHack.baseRom || ''
+        });
         
-        if (fileInfo) {
-            fileInfo.innerHTML = `
-                <div class="file-selected">
-                    <i data-lucide="file" width="16" height="16"></i>
-                    <span>${file.name}</span>
-                    <small>${this.formatFileSize(file.size)}</small>
-                </div>
-            `;
-            setTimeout(() => this.initializeIcons(), 50);
-        }
+        window.location.href = `../patcher/?${params.toString()}`;
     }
     
 
@@ -348,13 +331,6 @@ class ROMLibraryApp {
         }
     }
     
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
 }
 
 // Initialize the library app
