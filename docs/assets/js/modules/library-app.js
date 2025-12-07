@@ -59,6 +59,8 @@ class ROMLibraryApp {
         const cachedData = this.cacheManager.getManifest();
         if (cachedData) {
             this.hacks = cachedData;
+            // Sort alphabetically by title
+            this.hacks.sort((a, b) => a.title.localeCompare(b.title));
             this.filteredHacks = [...this.hacks];
             if (typeof Fuse !== 'undefined') {
                 this.searchManager.initFuse(this.hacks);
@@ -95,6 +97,9 @@ class ROMLibraryApp {
             if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             
             this.hacks = await response.json();
+            
+            // Sort alphabetically by title
+            this.hacks.sort((a, b) => a.title.localeCompare(b.title));
             
             this.filteredHacks = [...this.hacks];
             if (typeof Fuse !== 'undefined') {

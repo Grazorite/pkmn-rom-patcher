@@ -27,7 +27,7 @@ Toggle creator mode to bypass checksum validation. This is useful for:
 
 ## File Structure
 
-```text
+```css
 patcher/
 ├── index.html          # Main patcher interface
 ├── js/

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Patch</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='17 8 12 3 7 8'/><line x1='12' y1='3' x2='12' y2='15'/></svg>">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/performance.css">
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <nav class="nav-sidebar" id="navSidebar">
+        <div class="nav-toggle" id="navToggle">
+            <i data-lucide="menu" width="20" height="20"></i>
+        </div>
+        <div class="nav-header">
+            <h3>UROMM</h3>
+        </div>
+        <div class="nav-links">
+            <a href="../" class="nav-link">
+                <i data-lucide="home" width="20" height="20"></i>
+                Home
+            </a>
+            <a href="../patcher/" class="nav-link">
+                <i data-lucide="download" width="20" height="20"></i>
+                ROM Patcher
+            </a>
+            <a href="../library/" class="nav-link">
+                <i data-lucide="book-open" width="20" height="20"></i>
+                ROM Library
+            </a>
+            <a href="../submit/" class="nav-link active">
+                <i data-lucide="upload" width="20" height="20"></i>
+                Submit Patch
+            </a>
+        </div>
+
+        <div class="nav-collapsed-icons">
+            <a href="../" class="nav-collapsed-icon">
+                <i data-lucide="home" width="20" height="20"></i>
+            </a>
+            <a href="../patcher/" class="nav-collapsed-icon">
+                <i data-lucide="download" width="20" height="20"></i>
+            </a>
+            <a href="../library/" class="nav-collapsed-icon">
+                <i data-lucide="book-open" width="20" height="20"></i>
+            </a>
+            <a href="../submit/" class="nav-collapsed-icon active">
+                <i data-lucide="upload" width="20" height="20"></i>
+            </a>
+        </div>
+    </nav>
+    
+    <div class="app-container">
+        <nav class="breadcrumb">
+            <a href="../" class="breadcrumb-link">
+                <i data-lucide="arrow-left" width="16" height="16"></i>
+                Home
+            </a>
+        </nav>
+        
+        <header class="app-header">
+            <h1><i data-lucide="upload" width="48" height="48"></i> Submit Patch</h1>
+            <p>Share your ROM hack with the community</p>
+        </header>
+        
+        <div class="submit-container">
+            <!-- Progress Indicator -->
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-circle">
+                        <i data-lucide="info" width="20" height="20"></i>
+                    </div>
+                    <span>Basic Info</span>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-circle">
+                        <i data-lucide="file-text" width="20" height="20"></i>
+                    </div>
+                    <span>Details</span>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-circle">
+                        <i data-lucide="image" width="20" height="20"></i>
+                    </div>
+                    <span>Media</span>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-circle">
+                        <i data-lucide="package" width="20" height="20"></i>
+                    </div>
+                    <span>Patch File</span>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <div class="step-circle">
+                        <i data-lucide="check-circle" width="20" height="20"></i>
+                    </div>
+                    <span>Review</span>
+                </div>
+            </div>
+
+            <!-- Form Steps -->
+            <form id="submitForm" class="submit-form">
+                <!-- Step 1: Basic Info -->
+                <div class="form-step active" data-step="1">
+                    <h2>Basic Information</h2>
+                    <div class="form-group">
+                        <label for="title">
+                            <i data-lucide="type" width="16" height="16"></i>
+                            Hack Title *
+                        </label>
+                        <input type="text" id="title" name="title" required placeholder="e.g., Crystal Clear">
+                        <small class="form-hint">The name of your ROM hack</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="baseRom">
+                            <i data-lucide="disc" width="16" height="16"></i>
+                            Base ROM *
+                        </label>
+                        <select id="baseRom" name="baseRom" required>
+                            <option value="">Select base ROM...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="author">
+                            <i data-lucide="user" width="16" height="16"></i>
+                            Author *
+                        </label>
+                        <input type="text" id="author" name="author" required placeholder="Your name or username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="version">
+                            <i data-lucide="git-branch" width="16" height="16"></i>
+                            Version
+                        </label>
+                        <input type="text" id="version" name="version" placeholder="e.g., 2.0.3">
+                    </div>
+                </div>
+
+                <!-- Step 2: Details -->
+                <div class="form-step" data-step="2">
+                    <h2>Hack Details</h2>
+                    <div class="form-group">
+                        <label for="description">
+                            <i data-lucide="align-left" width="16" height="16"></i>
+                            Description *
+                        </label>
+                        <textarea id="description" name="description" required rows="6" placeholder="Describe your ROM hack..."></textarea>
+                        <small class="form-hint">Supports Markdown formatting</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="difficulty">
+                                <i data-lucide="trending-up" width="16" height="16"></i>
+                                Difficulty
+                            </label>
+                            <select id="difficulty" name="difficulty">
+                                <option value="">Select...</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Hard">Hard</option>
+                                <option value="Very Hard">Very Hard</option>
+                                <option value="Extreme">Extreme</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="status">
+                                <i data-lucide="activity" width="16" height="16"></i>
+                                Status
+                            </label>
+                            <select id="status" name="status">
+                                <option value="">Select...</option>
+                                <option value="Complete">Complete</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Beta">Beta</option>
+                                <option value="Alpha">Alpha</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="released">
+                            <i data-lucide="calendar" width="16" height="16"></i>
+                            Release Date
+                        </label>
+                        <input type="date" id="released" name="released">
+                    </div>
+                </div>
+
+                <!-- Step 3: Media -->
+                <div class="form-step" data-step="3">
+                    <h2>Media & Images</h2>
+                    <div class="form-group">
+                        <label for="boxArt">
+                            <i data-lucide="image" width="16" height="16"></i>
+                            Box Art URL
+                        </label>
+                        <input type="url" id="boxArt" name="boxArt" placeholder="https://example.com/boxart.png">
+                        <small class="form-hint">Direct link to box art image</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="banner">
+                            <i data-lucide="layout" width="16" height="16"></i>
+                            Banner URL
+                        </label>
+                        <input type="url" id="banner" name="banner" placeholder="https://example.com/banner.png">
+                        <small class="form-hint">Wide banner image for detail view</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="link" width="16" height="16"></i>
+                            External Links
+                        </label>
+                        <input type="url" id="website" name="website" placeholder="Website URL">
+                        <input type="url" id="discord" name="discord" placeholder="Discord invite URL" style="margin-top: 8px;">
+                        <input type="url" id="documentation" name="documentation" placeholder="Documentation URL" style="margin-top: 8px;">
+                    </div>
+                </div>
+
+                <!-- Step 4: Patch File -->
+                <div class="form-step" data-step="4">
+                    <h2>Patch File</h2>
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="package" width="16" height="16"></i>
+                            Patch Source
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="patchSource" value="url" checked>
+                                <span>External URL</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="patchSource" value="upload">
+                                <span>Upload File</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="patchUrlGroup">
+                        <label for="patchUrl">
+                            <i data-lucide="link" width="16" height="16"></i>
+                            Patch File URL *
+                        </label>
+                        <input type="url" id="patchUrl" name="patchUrl" placeholder="https://example.com/patch.bps">
+                        <small class="form-hint">Direct download link to .ips, .bps, .ups, or .xdelta file</small>
+                    </div>
+                    
+                    <div class="form-group" id="patchUploadGroup" style="display: none;">
+                        <label for="patchFile">
+                            <i data-lucide="upload" width="16" height="16"></i>
+                            Upload Patch File *
+                        </label>
+                        <input type="file" id="patchFile" name="patchFile" accept=".ips,.bps,.ups,.xdelta">
+                        <small class="form-hint">Max 10MB. Supported: IPS, BPS, UPS, XDelta</small>
+                    </div>
+                </div>
+
+                <!-- Step 5: Review -->
+                <div class="form-step" data-step="5">
+                    <h2>Review & Submit</h2>
+                    <div class="preview-card">
+                        <div id="previewContent"></div>
+                    </div>
+                    
+                    <div class="submit-info">
+                        <i data-lucide="info" width="20" height="20"></i>
+                        <p>Your submission will create a pull request on GitHub for review. You'll need to authenticate with GitHub to continue.</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn-secondary" id="prevBtn" style="display: none;">
+                        <i data-lucide="chevron-left" width="20" height="20"></i>
+                        Previous
+                    </button>
+                    <button type="button" class="btn-primary" id="nextBtn">
+                        Next
+                        <i data-lucide="chevron-right" width="20" height="20"></i>
+                    </button>
+                    <button type="button" class="btn-primary" id="submitBtn" style="display: none;">
+                        <i data-lucide="github" width="20" height="20"></i>
+                        Submit via GitHub
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="../assets/js/core.js"></script>
+    <script src="../assets/js/navigation.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+    <script type="module" src="../assets/js/modules/submit-form.js"></script>
+</body>
+</html>

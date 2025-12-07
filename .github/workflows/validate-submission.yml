@@ -1,0 +1,123 @@
+name: Validate ROM Hack Submission
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'metadata/**'
+      - 'patches/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Validate metadata files
+        run: |
+          echo "Validating metadata files..."
+          
+          # Find all JSON files in metadata directory
+          for file in metadata/**/*.json; do
+            if [ -f "$file" ]; then
+              echo "Validating $file"
+              
+              # Check if valid JSON
+              if ! jq empty "$file" 2>/dev/null; then
+                echo "❌ Invalid JSON in $file"
+                exit 1
+              fi
+              
+              # Check required fields
+              if ! jq -e '.id' "$file" >/dev/null; then
+                echo "❌ Missing 'id' field in $file"
+                exit 1
+              fi
+              
+              if ! jq -e '.title' "$file" >/dev/null; then
+                echo "❌ Missing 'title' field in $file"
+                exit 1
+              fi
+              
+              if ! jq -e '.meta.baseRom' "$file" >/dev/null; then
+                echo "❌ Missing 'meta.baseRom' field in $file"
+                exit 1
+              fi
+              
+              if ! jq -e '.meta.author' "$file" >/dev/null; then
+                echo "❌ Missing 'meta.author' field in $file"
+                exit 1
+              fi
+              
+              echo "✅ $file is valid"
+            fi
+          done
+          
+      - name: Validate patch files
+        run: |
+          echo "Validating patch files..."
+          
+          # Check patch files exist and have valid extensions
+          for file in patches/**/*; do
+            if [ -f "$file" ]; then
+              ext="${file##*.}"
+              if [[ ! "$ext" =~ ^(ips|bps|ups|xdelta)$ ]]; then
+                echo "❌ Invalid patch file extension: $file"
+                exit 1
+              fi
+              
+              # Check file size (max 10MB)
+              size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null)
+              if [ "$size" -gt 10485760 ]; then
+                echo "⚠️  Warning: $file is larger than 10MB"
+              fi
+              
+              echo "✅ $file is valid"
+            fi
+          done
+          
+      - name: Check for duplicates
+        run: |
+          echo "Checking for duplicate submissions..."
+          
+          # Check if ID already exists in manifest
+          for file in metadata/**/*.json; do
+            if [ -f "$file" ]; then
+              id=$(jq -r '.id' "$file")
+              count=$(grep -c "\"id\": \"$id\"" docs/manifest.json || true)
+              if [ "$count" -gt 0 ]; then
+                echo "⚠️  Warning: ID '$id' already exists in manifest"
+              fi
+            fi
+          done
+          
+      - name: Comment on PR
+        if: always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = '## Validation Results\n\n';
+            
+            if (context.payload.pull_request) {
+              comment += '✅ All validation checks passed!\n\n';
+              comment += '### Next Steps\n';
+              comment += '- A maintainer will review your submission\n';
+              comment += '- Once approved, your ROM hack will be added to the library\n';
+              comment += '- You will be notified when the PR is merged\n';
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
