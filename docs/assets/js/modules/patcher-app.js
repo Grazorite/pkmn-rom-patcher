@@ -1,12 +1,13 @@
 // ROM Patcher App - Dedicated patching interface
 import { Utils } from './utils.js';
+import { imagePopup } from './image-popup.js';
 
 class ROMPatcherApp {
     constructor() {
         this.patches = [];
         this.fuse = null;
         this.selectedPatch = null;
-        this.creatorMode = false;
+
         this.romPatcherInitialized = false;
         this.romPatcherReady = false;
         this.retryAttempted = false;
@@ -21,6 +22,7 @@ class ROMPatcherApp {
         await this.loadPatches();
         this.setupEventListeners();
         this.setupSearch();
+        this.handleURLParameters();
     }
     
     initializeIcons() {
@@ -82,13 +84,7 @@ class ROMPatcherApp {
             }, 300));
         }
         
-        const creatorToggle = document.getElementById('creatorMode');
-        if (creatorToggle) {
-            creatorToggle.addEventListener('change', (e) => {
-                this.creatorMode = e.target.checked;
-                this.updateCreatorMode();
-            });
-        }
+
         
         const closePatchBtn = document.getElementById('closePatchDescription');
         if (closePatchBtn) {
@@ -130,6 +126,9 @@ class ROMPatcherApp {
                 container.style.visibility = 'visible';
             }
             
+            // Show loaded patch info
+            this.showLoadedPatchInfo(patchInfo);
+            
             this.retryAttempted = false;
             return true;
         } catch (error) {
@@ -156,6 +155,8 @@ class ROMPatcherApp {
     handleSearch(query) {
         const resultsContainer = document.getElementById('patchResults');
         
+
+        
         if (!query.trim()) {
             resultsContainer.innerHTML = '<div class="loading">Start typing to search for patches...</div>';
             return;
@@ -173,6 +174,8 @@ class ROMPatcherApp {
     renderSearchResults(results) {
         const container = document.getElementById('patchResults');
         
+
+        
         if (results.length === 0) {
             container.innerHTML = '<div class="loading">No patches found</div>';
             return;
@@ -183,7 +186,7 @@ class ROMPatcherApp {
             const description = patch.changelog ? patch.changelog.replace(/[#*`]/g, '').substring(0, 100) + '...' : 'No description available';
             const boxArt = patch.meta?.images?.boxArt || '';
             const status = patch.meta?.status || 'Completed';
-            const statusClass = `status-${status.toLowerCase().replace(/\\s+/g, '-')}`;
+            const statusClass = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
             
             return `
                 <div class="patch-result clickable" data-patch-id="${patch.id}">
@@ -256,7 +259,13 @@ class ROMPatcherApp {
         // Initialize or switch RomPatcher with this patch
         const success = this.initializeRomPatcherWithPatch(patchInfo);
         
-        if (!success) {
+        if (success) {
+            // Only show notification if not coming from URL (to avoid double notification)
+            const params = new URLSearchParams(window.location.search);
+            if (!params.get('patch') && !params.get('name')) {
+                this.showNotification(`Selected patch: ${this.selectedPatch.title}`, patchFile);
+            }
+        } else {
             console.error('Failed to load patch');
         }
     }
@@ -283,14 +292,35 @@ class ROMPatcherApp {
         
         if (!selectedElement || !container) return;
         
+        // Show banner with bannerImage (same as library implementation)
+        const banner = document.getElementById('selectedPatchBanner');
+        if (banner) {
+            if (this.selectedPatch.meta?.images?.banner) {
+                banner.classList.add('has-banner');
+                banner.style.setProperty('--banner-bg', `url('${this.selectedPatch.meta.images.banner}')`);
+                banner.innerHTML = '';
+                banner.style.cursor = 'pointer';
+                banner.onclick = () => imagePopup.show(this.selectedPatch.meta.images.banner);
+            } else {
+                banner.classList.remove('has-banner');
+                banner.style.removeProperty('--banner-bg');
+                banner.innerHTML = this.selectedPatch.title;
+                banner.style.cursor = 'default';
+                banner.onclick = null;
+            }
+            banner.style.display = 'flex';
+        }
+        
         if (description) {
             if (this.selectedPatch.changelog && typeof marked !== 'undefined') {
                 let cleanedChangelog = this.selectedPatch.changelog;
                 const titlePattern = new RegExp(`^#\\s*${this.selectedPatch.title.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}\\s*\\n`, 'i');
                 cleanedChangelog = cleanedChangelog.replace(titlePattern, '');
+                
                 description.innerHTML = marked.parse(cleanedChangelog);
             } else {
-                description.textContent = this.selectedPatch.changelog || 'No description available.';
+                let content = this.selectedPatch.changelog || 'No description available.';
+                description.textContent = content;
             }
         }
         
@@ -335,23 +365,127 @@ class ROMPatcherApp {
         });
     }
     
-    updateCreatorMode() {
-        const patchSection = document.getElementById('rom-patcher-patch-section');
-        if (this.creatorMode && patchSection) {
-            patchSection.style.display = 'block';
-        } else if (patchSection) {
-            patchSection.style.display = 'none';
+
+    
+    handleURLParameters() {
+        const params = new URLSearchParams(window.location.search);
+        const patchFile = params.get('patch');
+        const patchName = params.get('name');
+        
+
+        
+        if (patchFile || patchName) {
+            // Wait for patches to load, then try to find and select
+            setTimeout(() => {
+
+                
+                const patch = this.patches.find(p => 
+                    p.file === patchFile || 
+                    p.title === patchName ||
+                    p.file.includes(patchFile) ||
+                    (patchFile && patchFile.includes(p.file.split('/').pop()))
+                );
+                
+
+                
+                if (patch) {
+                    // Force display patch results
+                    const searchInput = document.getElementById('patchSearch');
+                    const resultsContainer = document.getElementById('patchResults');
+                    
+                    if (searchInput && resultsContainer) {
+                        searchInput.value = patch.title;
+
+                        
+                        // Force search results display
+                        this.handleSearch(patch.title);
+                        
+                        // Force results container to show content - Multiple attempts
+                        setTimeout(() => {
+                            if (resultsContainer.textContent.includes('Start typing')) {
+                                this.renderSearchResults([{ item: patch, score: 0 }]);
+                            }
+                        }, 200);
+                        
+                        setTimeout(() => {
+                            if (resultsContainer.textContent.includes('Start typing')) {
+                                resultsContainer.innerHTML = '';
+                                this.renderSearchResults([{ item: patch, score: 0 }]);
+                            }
+                        }, 600);
+                        
+                        setTimeout(() => {
+                            if (resultsContainer.textContent.includes('Start typing')) {
+                                resultsContainer.style.display = 'none';
+                                setTimeout(() => {
+                                    resultsContainer.style.display = 'block';
+                                    this.renderSearchResults([{ item: patch, score: 0 }]);
+                                }, 50);
+                            }
+                        }, 1000);
+                    }
+                    
+                    // Select the patch after search results appear
+                    setTimeout(() => {
+
+                        this.selectPatch(patch.id);
+                        this.showNotification(`Loaded patch: ${patch.title}`, patchFile);
+                    }, 800);
+                } else {
+
+                    // Create patch info from URL params for direct loading
+                    const patchInfo = {
+                        file: patchFile,
+                        name: patchName || 'Selected Patch',
+                        title: patchName || 'Selected Patch'
+                    };
+                    this.initializeRomPatcherWithPatch(patchInfo);
+                    this.showNotification(`Loaded patch: ${patchInfo.name}`, patchFile);
+                }
+            }, 1200);
         }
+    }
+    
+    showNotification(message, patchFile = null) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        
+        let displayMessage = message;
+        if (patchFile) {
+            const fileName = patchFile.split('/').pop().replace(/\.(bps|ips|ups|xdelta)$/i, '');
+            displayMessage = `${message}<br><small style="opacity: 0.8;">${fileName}</small>`;
+        }
+        
+        notification.innerHTML = `
+            <i data-lucide="info" width="16" height="16"></i>
+            <span>${displayMessage}</span>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 8000);
+        
         this.initializeIcons();
     }
     
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    showLoadedPatchInfo(patchInfo) {
+        const infoContainer = document.getElementById('rom-patcher-loaded-patch-info');
+        const nameElement = document.getElementById('rom-patcher-loaded-patch-name');
+        
+        if (infoContainer && nameElement && patchInfo.file) {
+            const fileName = patchInfo.file.split('/').pop();
+            nameElement.textContent = fileName;
+            infoContainer.style.display = 'block';
+        }
     }
+    
+
 }
 
 function initializeApp() {

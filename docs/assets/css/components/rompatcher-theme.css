@@ -49,30 +49,56 @@
     font-size: 0.9rem;
 }
 
-/* Button styling */
+/* Button styling - Liquid Glass Effect */
 #rom-patcher-button-apply {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: var(--spacing-md) var(--spacing-xl);
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
+    width: 100% !important;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.1) 0%, 
+        rgba(118, 75, 162, 0.1) 100%) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(102, 126, 234, 0.3) !important;
+    border-radius: 12px !important;
+    color: var(--accent-primary) !important;
+    font-weight: 600 !important;
+    padding: 1rem 2rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
     cursor: pointer;
-    transition: all 0.2s ease;
+}
+
+#rom-patcher-button-apply:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transition: left 0.5s ease;
 }
 
 #rom-patcher-button-apply:hover:not(:disabled) {
-    background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.2) 0%, 
+        rgba(118, 75, 162, 0.2) 100%) !important;
+    border-color: rgba(102, 126, 234, 0.5) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+}
+
+#rom-patcher-button-apply:hover:before {
+    left: 100%;
 }
 
 #rom-patcher-button-apply:disabled {
-    background: var(--bg-tertiary);
-    color: var(--text-muted);
-    cursor: not-allowed;
-    transform: none;
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
 }
 
 /* CRC info styling */

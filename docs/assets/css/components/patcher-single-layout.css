@@ -1,0 +1,48 @@
+/* Single Column Patcher Layout */
+
+.patcher-layout-single {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+}
+
+.patcher-main-single {
+    width: 100%;
+}
+
+.patch-interface {
+    margin-top: calc(var(--spacing-lg) * 2);
+    padding: var(--spacing-lg);
+    background: var(--surface-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Remove left padding from ROM file input */
+.rom-patcher-row {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+.rom-patcher-row .text-right {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .patcher-layout-single {
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+    }
+    
+    .patch-interface {
+        margin-top: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+}
