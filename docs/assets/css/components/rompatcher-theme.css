@@ -5,6 +5,7 @@
     background: var(--bg-secondary);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
+    min-width: 420px;
 }
 
 /* File input styling */
@@ -50,11 +51,11 @@
 
 /* Button styling */
 #rom-patcher-button-apply {
-    background: var(--accent-primary);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
     padding: var(--spacing-md) var(--spacing-xl);
-    border-radius: var(--radius-md);
+    border-radius: 12px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -62,9 +63,9 @@
 }
 
 #rom-patcher-button-apply:hover:not(:disabled) {
-    background: var(--accent-hover);
+    background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
 }
 
 #rom-patcher-button-apply:disabled {
