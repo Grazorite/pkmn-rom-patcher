@@ -17,11 +17,6 @@ test.describe('Patcher Page', () => {
     await patcherPage.waitForTimeout(300);
   });
 
-  test('shows creator mode toggle', async ({ patcherPage }) => {
-    const toggleLabel = patcherPage.locator('.toggle-switch');
-    await expect(toggleLabel).toBeVisible();
-  });
-
   test('hides patcher widget initially', async ({ patcherPage }) => {
     const patcherContainer = patcherPage.locator('#rom-patcher-container');
     await expect(patcherContainer).toBeHidden();

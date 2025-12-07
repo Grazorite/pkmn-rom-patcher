@@ -4,7 +4,7 @@ This project uses a modular CSS architecture based on ITCSS (Inverted Triangle C
 
 ## Structure
 
-```
+```css
 styles/
 ├── main.css              # Entry point - imports all modules
 ├── base/                 # Foundation styles

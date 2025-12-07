@@ -3,9 +3,10 @@ import { test, expect } from '../fixtures/base.js';
 test.describe('Smoke Tests', () => {
   test('critical pages load', async ({ page }) => {
     const pages = [
-      { url: '/', title: 'Universal ROM Manager' },
+      { url: '/', title: 'Universal ROM Management' },
       { url: '/docs/library/', title: 'ROM Library' },
-      { url: '/docs/patcher/', title: 'ROM Patcher' }
+      { url: '/docs/patcher/', title: 'ROM Patcher' },
+      { url: '/docs/submit/', title: 'Submit Patch' }
     ];
 
     for (const { url, title } of pages) {

@@ -20,6 +20,8 @@
 @import 'components/loading.css';
 @import 'components/tooltip.css';
 @import 'components/mobile.css';
+@import 'components/submit-form.css';
+@import 'components/auth-modal.css';
 
 /* Themes */
 @import 'themes/dark.css';

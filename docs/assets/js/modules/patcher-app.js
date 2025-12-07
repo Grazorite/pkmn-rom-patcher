@@ -58,6 +58,8 @@ class ROMPatcherApp {
             if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             
             this.patches = await response.json();
+            // Sort alphabetically by title
+            this.patches.sort((a, b) => a.title.localeCompare(b.title));
             this.setupFuse();
         } catch (error) {
             console.error('Failed to load patches:', error);

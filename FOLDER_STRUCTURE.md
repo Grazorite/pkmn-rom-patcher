@@ -6,7 +6,7 @@ The project is organized by base ROM to support scalability with thousands of pa
 
 ## Directory Structure
 
-```text
+```css
 ├── patches/                    # ROM patch files organized by base ROM
 │   ├── crystal/               # Pokemon Crystal patches
 │   ├── emerald/               # Pokemon Emerald patches

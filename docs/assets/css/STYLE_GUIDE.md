@@ -3,13 +3,16 @@
 ## Animation System
 
 ### Timing Standards
+
 All page load animations follow landing page timing:
+
 - **Duration**: 1s (`--anim-duration-slow`)
 - **Easing**: ease-out (`--anim-easing-standard`)
 - **Stagger**: 0.2s intervals (`--anim-delay-1` through `--anim-delay-5`)
 - **Distance**: 30px translateY for fadeInUp
 
 ### Animation Variables
+
 ```css
 --anim-duration-instant: 0.15s;  /* Button clicks */
 --anim-duration-fast: 0.3s;      /* Hover effects */
@@ -28,6 +31,7 @@ All page load animations follow landing page timing:
 ```
 
 ### Usage Pattern
+
 ```css
 .element {
     opacity: 0;
@@ -37,6 +41,7 @@ All page load animations follow landing page timing:
 ```
 
 ### Utility Classes
+
 ```html
 <div class="anim-fade-in-up anim-delay-2">Content</div>
 ```
@@ -44,6 +49,7 @@ All page load animations follow landing page timing:
 ## Design Tokens
 
 ### Spacing
+
 ```css
 --spacing-xs: 4px;
 --spacing-sm: 8px;
@@ -53,6 +59,7 @@ All page load animations follow landing page timing:
 ```
 
 ### Border Radius
+
 ```css
 --radius-sm: 8px;
 --radius-md: 12px;
@@ -63,7 +70,9 @@ All page load animations follow landing page timing:
 ## Component Patterns
 
 ### Button Shimmer Effect
+
 All interactive elements include shimmer on hover:
+
 ```css
 .button {
     position: relative;
@@ -87,13 +96,14 @@ All interactive elements include shimmer on hover:
 ```
 
 ### Badge System
+
 - ROM badges: `badge-rom[data-rom="Crystal"]`
 - System badges: `badge-system[data-system="GBA"]`
 - Difficulty badges: `badge-difficulty[data-difficulty="Hard"]`
 
 ## File Architecture
 
-```
+```cssß
 css/
 ├── base/
 │   ├── variables.css    # All CSS custom properties

@@ -151,7 +151,7 @@ Reduced animation durations and transforms on mobile devices:
 ### Hack Grid Cards
 
 - **Fixed Issue**: Cards now properly animate on hover with consistent timing
-- **Enhancements**: 
+- **Enhancements**:
   - Staggered entrance animations
   - Shimmer effect on image hover
   - Ripple effect on click
