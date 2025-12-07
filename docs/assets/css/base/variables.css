@@ -17,6 +17,37 @@
     --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
     
+    /* Animation timing */
+    --anim-duration-instant: 0.15s;
+    --anim-duration-fast: 0.3s;
+    --anim-duration-normal: 0.6s;
+    --anim-duration-slow: 1s;
+    
+    /* Animation easing */
+    --anim-easing-standard: ease-out;
+    --anim-easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --anim-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Staggered delays */
+    --anim-delay-1: 0.2s;
+    --anim-delay-2: 0.4s;
+    --anim-delay-3: 0.6s;
+    --anim-delay-4: 0.8s;
+    --anim-delay-5: 1s;
+    
+    /* Spacing tokens */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Border radius tokens */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+    
     /* Mobile breakpoints */
     --mobile-sm: 480px;
     --mobile-md: 768px;

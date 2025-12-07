@@ -9,7 +9,6 @@
 @import 'layout/app.css';
 
 /* Components */
-@import 'components/animations.css';
 @import 'components/button-standard.css';
 @import 'components/navigation.css';
 @import 'components/sidebar.css';

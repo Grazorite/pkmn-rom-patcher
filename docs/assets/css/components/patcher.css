@@ -467,19 +467,19 @@ input:checked + .toggle-slider:before {
 .search-section {
     opacity: 0;
     transform: translateY(30px);
-    animation: fadeInUp 1s ease-out 0.6s both;
+    animation: fadeInUp var(--anim-duration-slow) var(--anim-easing-standard) var(--anim-delay-3) both;
 }
 
 .patcher-sidebar {
     opacity: 0;
     transform: translateY(30px);
-    animation: fadeInUp 1s ease-out 0.8s both;
+    animation: fadeInUp var(--anim-duration-slow) var(--anim-easing-standard) var(--anim-delay-4) both;
 }
 
 .patch-results {
     opacity: 0;
     transform: translateY(30px);
-    animation: fadeInUp 1s ease-out 1s both;
+    animation: fadeInUp var(--anim-duration-slow) var(--anim-easing-standard) var(--anim-delay-5) both;
 }
 
 /* Mobile responsiveness */

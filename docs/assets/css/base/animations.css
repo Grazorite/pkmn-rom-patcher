@@ -1,19 +1,15 @@
-/* Reusable animations */
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* =============================================================================
+   ANIMATION SYSTEM - Single Source of Truth
+   ============================================================================= */
 
-@keyframes slideDown {
+/* =============================================================================
+   KEYFRAME ANIMATIONS
+   ============================================================================= */
+
+@keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -54,23 +50,77 @@
     }
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
-}
-
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* =============================================================================
+   UTILITY ANIMATION CLASSES
+   ============================================================================= */
+
+.anim-fade-in-up {
+    animation: fadeInUp var(--anim-duration-slow) var(--anim-easing-standard) both;
+}
+
+.anim-slide-in-left {
+    animation: slideInLeft var(--anim-duration-slow) var(--anim-easing-standard) both;
+}
+
+.anim-slide-in-right {
+    animation: slideInRight var(--anim-duration-slow) var(--anim-easing-standard) both;
+}
+
+.anim-scale-in {
+    animation: scaleIn var(--anim-duration-slow) var(--anim-easing-standard) both;
+}
+
+/* Staggered delay classes */
+.anim-delay-1 { animation-delay: var(--anim-delay-1); }
+.anim-delay-2 { animation-delay: var(--anim-delay-2); }
+.anim-delay-3 { animation-delay: var(--anim-delay-3); }
+.anim-delay-4 { animation-delay: var(--anim-delay-4); }
+.anim-delay-5 { animation-delay: var(--anim-delay-5); }
+
+/* Continuous animations */
+.anim-pulse { animation: pulse 2s infinite; }
+.anim-spin { animation: spin 1s linear infinite; }
+
+/* =============================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================================================= */
+
+.anim-gpu {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+/* =============================================================================
+   ACCESSIBILITY - REDUCED MOTION
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .anim-pulse,
+    .anim-spin {
+        animation: none !important;
+    }
 }
