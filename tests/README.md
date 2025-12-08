@@ -2,7 +2,7 @@
 
 ## Structure
 
-```markdown
+```css
 tests/
 ├── fixtures/base.js          # Custom fixtures for page setup and selectors
 ├── core/                     # Core functionality tests
