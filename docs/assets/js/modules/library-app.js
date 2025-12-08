@@ -7,6 +7,7 @@ import { CacheManager } from './cache.js';
 import { PerformanceMonitor } from './monitor.js';
 import { DebugPanel } from './debug.js';
 import { AnimationUtils } from '../utils/animations.js';
+import animationEngine from '../utils/animation-engine.js';
 
 const ICON_INIT_DELAY_SHORT = 100;
 const ICON_INIT_DELAY_LONG = 1000;
@@ -126,9 +127,14 @@ class ROMLibraryApp {
         // Search
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
+            const searchWrapper = searchInput.closest('.search-wrapper');
             searchInput.addEventListener('input', Utils.debounce((e) => {
+                if (searchWrapper) searchWrapper.classList.add('searching');
                 this.applyFilters();
-            }, 150));
+                setTimeout(() => {
+                    if (searchWrapper) searchWrapper.classList.remove('searching');
+                }, 300);
+            }, 400));
         }
         
         // Theme toggles handled by unified theme system
@@ -270,13 +276,29 @@ class ROMLibraryApp {
     }
     
     renderHacks() {
-        this.uiManager.renderHacks(this.filteredHacks, this.viewMode);
+        const hackGrid = document.getElementById('hackGrid');
+        const existingCards = hackGrid ? hackGrid.querySelectorAll('.hack-card') : [];
         
-        // Add staggered animations to hack cards after rendering
-        setTimeout(() => {
-            const hackCards = document.querySelectorAll('.hack-card');
-            AnimationUtils.animateHackCards(hackCards);
-        }, 50);
+        if (existingCards.length > 0) {
+            // Fade out existing cards
+            animationEngine.fadeOut(Array.from(existingCards), 150).then(() => {
+                this.uiManager.renderHacks(this.filteredHacks, this.viewMode);
+                
+                // Fade in new cards
+                setTimeout(() => {
+                    const hackCards = document.querySelectorAll('.hack-card');
+                    AnimationUtils.animateHackCards(hackCards);
+                }, 50);
+            });
+        } else {
+            // First render, no fade out needed
+            this.uiManager.renderHacks(this.filteredHacks, this.viewMode);
+            
+            setTimeout(() => {
+                const hackCards = document.querySelectorAll('.hack-card');
+                AnimationUtils.animateHackCards(hackCards);
+            }, 50);
+        }
     }
     
     toggleView() {

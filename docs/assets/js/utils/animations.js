@@ -1,6 +1,7 @@
 /**
  * Animation Utilities - Modular animation helpers
  */
+import animationEngine from './animation-engine.js';
 
 export class AnimationUtils {
     /**
@@ -13,18 +14,14 @@ export class AnimationUtils {
     static staggerElements(elements, animationClass = 'anim-fade-in-up', delay = 100, startDelay = 0) {
         if (!elements || elements.length === 0) return;
         
-        elements.forEach((element, index) => {
-            if (element) {
-                // Set CSS custom property for stagger delay
-                element.style.setProperty('--stagger-index', index);
-                element.style.setProperty('--stagger-delay', `${delay}ms`);
-                
-                // Add animation class with delay
-                setTimeout(() => {
-                    element.classList.add(animationClass);
-                }, startDelay + (index * delay));
-            }
-        });
+        // Use RAF-based animation engine
+        if (startDelay > 0) {
+            setTimeout(() => {
+                animationEngine.fadeIn(Array.from(elements), delay);
+            }, startDelay);
+        } else {
+            animationEngine.fadeIn(Array.from(elements), delay);
+        }
     }
     
     /**
@@ -34,23 +31,8 @@ export class AnimationUtils {
     static animateHackCards(cards) {
         if (!cards || cards.length === 0) return;
         
-        // Remove existing animation classes
-        cards.forEach(card => {
-            card.classList.remove('anim-scale-in', 'anim-fade-in-up');
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px) scale(0.9)';
-        });
-        
-        // Add staggered entrance animations
-        this.staggerElements(cards, 'anim-scale-in', 80, 100);
-        
-        // Reset styles after animation
-        setTimeout(() => {
-            cards.forEach(card => {
-                card.style.opacity = '';
-                card.style.transform = '';
-            });
-        }, 100 + (cards.length * 80) + 600);
+        // Use RAF-based fade in with stagger
+        animationEngine.fadeIn(Array.from(cards), 60);
     }
     
     /**
