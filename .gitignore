@@ -45,4 +45,6 @@ Thumbs.db
 *.temp
 
 # Test files
-test-manual.js
+test-manual.js*_ANALYSIS.md
+*_IMPLEMENTATION.md
+FOLDER_STRUCTURE.md

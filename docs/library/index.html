@@ -69,13 +69,7 @@
     </nav>
     
     <div class="app-container">
-        <nav class="breadcrumb">
-            <a href="../" class="breadcrumb-link">
-                <i data-lucide="arrow-left" width="16" height="16"></i>
-                Home
-            </a>
-        </nav>
-        
+        <div class="app-content-wrapper">
         <header class="app-header">
             <h1><i data-lucide="book-open" width="48" height="48"></i> ROM Library</h1>
             <p>Discover and patch your favorite ROM hacks</p>
@@ -205,10 +199,14 @@
             <main class="main-content">
                 <div class="results-header">
                     <span id="resultsCount">Loading...</span>
-                    <button id="clearFilters" class="clear-btn">
-                        <i data-lucide="x" width="16" height="16"></i>
-                        Clear Filters
-                    </button>
+                    <div class="header-actions">
+                        <button id="viewToggle" class="view-toggle-btn" title="Toggle view">
+                            <i data-lucide="grid-3x3" width="16" height="16"></i>
+                        </button>
+                        <button id="clearFilters" class="clear-btn" title="Clear filters">
+                            <i data-lucide="filter-x" width="16" height="16"></i>
+                        </button>
+                    </div>
                 </div>
                 
                 <div id="hackGrid" class="hack-grid">
@@ -220,6 +218,7 @@
                     Load More
                 </button>
             </main>
+        </div>
         </div>
     </div>
     

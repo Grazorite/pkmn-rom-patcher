@@ -21,6 +21,7 @@ class ROMLibraryApp {
         this.cacheManager = new CacheManager();
         this.performanceMonitor = new PerformanceMonitor();
         this.selectedHack = null;
+        this.viewMode = localStorage.getItem('libraryViewMode') || 'card';
         
         this.init();
     }
@@ -167,6 +168,13 @@ class ROMLibraryApp {
             clearBtn.addEventListener('click', () => this.clearAllFilters());
         }
         
+        // View toggle
+        const viewToggle = document.getElementById('viewToggle');
+        if (viewToggle) {
+            viewToggle.addEventListener('click', () => this.toggleView());
+            this.updateViewIcon();
+        }
+        
         // Sidebar toggle
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.querySelector('.sidebar');
@@ -262,13 +270,49 @@ class ROMLibraryApp {
     }
     
     renderHacks() {
-        this.uiManager.renderHacks(this.filteredHacks);
+        this.uiManager.renderHacks(this.filteredHacks, this.viewMode);
         
         // Add staggered animations to hack cards after rendering
         setTimeout(() => {
             const hackCards = document.querySelectorAll('.hack-card');
             AnimationUtils.animateHackCards(hackCards);
         }, 50);
+    }
+    
+    toggleView() {
+        this.viewMode = this.viewMode === 'card' ? 'grid' : 'card';
+        localStorage.setItem('libraryViewMode', this.viewMode);
+        const hackGrid = document.getElementById('hackGrid');
+        if (hackGrid) {
+            hackGrid.classList.toggle('grid-view', this.viewMode === 'grid');
+        }
+        this.renderHacks();
+        this.updateViewIcon();
+    }
+    
+    updateViewIcon() {
+        const viewToggle = document.getElementById('viewToggle');
+        if (viewToggle) {
+            const newIcon = this.viewMode === 'grid' ? 'layout-list' : 'grid-3x3';
+            
+            // Remove ALL children (i and svg elements)
+            while (viewToggle.firstChild) {
+                viewToggle.removeChild(viewToggle.firstChild);
+            }
+            
+            // Create fresh icon element
+            const iconEl = document.createElement('i');
+            iconEl.setAttribute('data-lucide', newIcon);
+            iconEl.setAttribute('width', '16');
+            iconEl.setAttribute('height', '16');
+            viewToggle.appendChild(iconEl);
+            
+            // Ensure tooltip persists
+            viewToggle.setAttribute('title', 'Toggle view');
+            
+            // Initialize icons
+            this.initializeIcons();
+        }
     }
     
     updateFilterCheckbox(filterType, value, checked) {

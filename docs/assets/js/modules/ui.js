@@ -27,6 +27,22 @@ export class UIManager {
         `).join('');
     }
 
+    createGridCard(hack) {
+        const imageUrl = hack.meta?.images?.boxArt || hack.meta?.images?.banner;
+        const cachedImage = imageUrl ? imageCache.getCachedImage(imageUrl) : null;
+        
+        return `
+            <div class="hack-card grid-card" data-hack-id="${hack.id}" title="${hack.title}">
+                <div class="grid-card-image">
+                    ${imageUrl ? 
+                        `<img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy">` :
+                        `<div class="grid-placeholder"><i data-lucide="image" width="32" height="32"></i></div>`
+                    }
+                </div>
+            </div>
+        `;
+    }
+    
     createHackCard(hack) {
         // Use boxArt for cards, fallback to banner, then placeholder
         const imageUrl = hack.meta?.images?.boxArt || hack.meta?.images?.banner;
@@ -62,9 +78,11 @@ export class UIManager {
         `;
     }
 
-    async renderHacks(hacks, append = false) {
+    async renderHacks(hacks, viewMode = 'card', append = false) {
         const grid = document.getElementById('hackGrid');
         if (!grid) return;
+        
+        grid.classList.toggle('grid-view', viewMode === 'grid');
 
         const startIndex = append ? this.currentPage * this.itemsPerPage : 0;
         const endIndex = startIndex + this.itemsPerPage;
@@ -81,7 +99,9 @@ export class UIManager {
         // Batch DOM updates for better performance
         await this.performanceManager.batchDOMUpdates([
             () => {
-                const cardsHtml = hacksToShow.map(hack => this.createHackCard(hack)).join('');
+                const cardsHtml = hacksToShow.map(hack => 
+                    viewMode === 'grid' ? this.createGridCard(hack) : this.createHackCard(hack)
+                ).join('');
                 
                 if (append) {
                     grid.insertAdjacentHTML('beforeend', cardsHtml);
@@ -128,11 +148,7 @@ export class UIManager {
     updateResultsCount(count) {
         const element = document.getElementById('resultsCount');
         if (element) {
-            if (count === 0) {
-                element.textContent = 'No hacks found';
-            } else {
-                element.textContent = `${count} hack${count !== 1 ? 's' : ''} found`;
-            }
+            element.textContent = count === 0 ? 'No hacks found' : `${count} hack${count !== 1 ? 's' : ''} found`;
         }
     }
     
