@@ -1,6 +1,7 @@
 // ROM Patcher App - Dedicated patching interface
 import { Utils } from './utils.js';
 import { imagePopup } from './image-popup.js';
+import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
 
 class ROMPatcherApp {
     constructor() {
@@ -18,6 +19,7 @@ class ROMPatcherApp {
     }
     
     async init() {
+        await initBadgeRenderer();
         this.initializeIcons();
         await this.loadPatches();
         this.setupEventListeners();
@@ -207,8 +209,8 @@ class ROMPatcherApp {
                         <p class="patch-description">${description}</p>
                         <div class="patch-meta-row">
                             <div class="patch-badges">
-                                ${patch.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${patch.meta.baseRom}">${patch.meta.baseRom}</span>` : ''}
-                                ${patch.meta?.system ? `<span class="badge badge-system" data-system="${patch.meta.system}">${patch.meta.system}</span>` : ''}
+                                ${renderBadge('rom', patch.meta?.baseRom)}
+                                ${renderBadge('system', patch.meta?.system)}
                             </div>
                             <div class="status-indicator">
                                 <div class="status-dot ${statusClass}"></div>

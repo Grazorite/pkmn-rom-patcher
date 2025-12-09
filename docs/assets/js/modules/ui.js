@@ -2,6 +2,7 @@
 import { PerformanceManager } from './performance.js';
 import { imageCache } from './image-cache.js';
 import { imagePopup } from './image-popup.js';
+import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
 
 export class UIManager {
     constructor() {
@@ -10,6 +11,7 @@ export class UIManager {
         this.performanceManager = new PerformanceManager();
         this.renderQueue = [];
         this.isRendering = false;
+        initBadgeRenderer();
     }
 
     renderFilterOptions(filterType, options) {
@@ -65,9 +67,9 @@ export class UIManager {
                     <div class="hack-card-title">${hack.title}</div>
                     <div class="hack-card-author">by ${hack.meta?.author || 'Unknown'}</div>
                     <div class="hack-card-badges">
-                        ${hack.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${hack.meta.baseRom}">${hack.meta.baseRom}</span>` : ''}
-                        ${hack.meta?.system ? `<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>` : ''}
-                        ${hack.meta?.difficulty ? `<span class="badge badge-difficulty" data-difficulty="${hack.meta.difficulty}">${hack.meta.difficulty}</span>` : ''}
+                        ${renderBadge('rom', hack.meta?.baseRom)}
+                        ${renderBadge('system', hack.meta?.system)}
+                        ${renderBadge('difficulty', hack.meta?.difficulty)}
                     </div>
                     <div class="status-indicator">
                         <div class="status-dot ${statusClass}"></div>
@@ -179,10 +181,11 @@ export class UIManager {
         
         // Add badges to header
         if (badgesEl) {
-            const badges = [];
-            if (hack.meta?.baseRom) badges.push(`<span class="badge badge-rom" data-rom="${hack.meta.baseRom}">${hack.meta.baseRom}</span>`);
-            if (hack.meta?.system) badges.push(`<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>`);
-            if (hack.meta?.difficulty) badges.push(`<span class="badge badge-difficulty" data-difficulty="${hack.meta.difficulty}">${hack.meta.difficulty}</span>`);
+            const badges = [
+                renderBadge('rom', hack.meta?.baseRom),
+                renderBadge('system', hack.meta?.system),
+                renderBadge('difficulty', hack.meta?.difficulty)
+            ].filter(Boolean);
             badgesEl.innerHTML = badges.join('');
         }
         

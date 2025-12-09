@@ -24,6 +24,9 @@
 @import 'components/auth-modal.css';
 @import 'components/back-to-top.css';
 
+/* Generated */
+@import 'generated/badges.css';
+
 /* Themes */
 @import 'themes/dark.css';
 

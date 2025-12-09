@@ -46,3 +46,4 @@ ENV/
 
 # Virtual environment path
 .venv-path
+.DS_Store

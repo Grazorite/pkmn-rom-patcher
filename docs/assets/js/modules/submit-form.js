@@ -1,5 +1,8 @@
 // Submit Form Module
 import { SubmissionHandler } from '../services/submission-handler.js';
+import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
+import { renderDetailsStep } from '../utils/form-renderer.js';
+import { STATUS_COLORS } from '../config/metadata-fields.js';
 
 class SubmitForm {
     constructor() {
@@ -12,28 +15,35 @@ class SubmitForm {
     }
     
     async init() {
+        await initBadgeRenderer();
         await this.loadBaseRoms();
+        this.renderDynamicFields();
         this.setupEventListeners();
         this.updateUI();
         this.initializeIcons();
     }
     
+    renderDynamicFields() {
+        const container = document.getElementById('detailsFieldsContainer');
+        if (container) {
+            container.innerHTML = renderDetailsStep();
+            this.initializeIcons();
+        }
+    }
+    
     async loadBaseRoms() {
-        // Complete list from ui-elements.css badge-rom data attributes
-        this.baseRoms = [
-            'Alpha Sapphire', 'Black', 'Black 2', 'Blue', 'Brilliant Diamond',
-            'Colosseum', 'Conquest', 'Crystal', 'Diamond', 'Emerald',
-            'Fire Emblem: The Sacred Stones', 'FireRed', 'Gold', 'Green',
-            'HeartGold', 'LeafGreen', "Let's Go! Eevee", 'Moon', 'Omega Ruby',
-            'Pinball', 'Platinum', 'Pokemon Mystery Dungeon: Explorers of Sky',
-            'Pokemon Mystery Dungeon: Go For It! Light Adventure Squad!',
-            'Pokemon Mystery Dungeon: Red Rescue Team',
-            'Pokemon Mystery Dungeon: Rescue Team DX', 'Red', 'Ruby', 'Rumble',
-            'Scarlet', 'Silver', 'SoulSilver', 'Super Mystery Dungeon', 'Sword',
-            'Trading Card Game', 'Trading Card Game 2: The Invasion of Team GR!',
-            'Ultra Moon', 'Ultra Sun', 'White', 'White 2', 'X',
-            'XD: Gale of Darkness', 'Y', 'Yellow'
-        ];
+        const { loadSystems, loadBaseRoms, getBaseRomSystem, getBaseRomVariants } = await import('../config/loader.js');
+        
+        this.systems = await loadSystems();
+        this.baseRomsConfig = await loadBaseRoms();
+        
+        this.baseRoms = Object.entries(this.baseRomsConfig).map(([key, data]) => ({
+            key,
+            fullName: data.fullName,
+            system: data.system,
+            variants: data.variants || []
+        }));
+        
         this.populateBaseRomDropdown();
     }
     
@@ -41,12 +51,62 @@ class SubmitForm {
         const select = document.getElementById('baseRom');
         if (!select) return;
         
+        this.baseRoms.sort((a, b) => a.fullName.localeCompare(b.fullName));
+        
         this.baseRoms.forEach(rom => {
             const option = document.createElement('option');
-            option.value = rom;
-            option.textContent = rom;
+            option.value = rom.key;
+            option.textContent = `${rom.fullName} (${rom.system})`;
+            option.dataset.system = rom.system;
+            option.dataset.variants = JSON.stringify(rom.variants);
             select.appendChild(option);
         });
+        
+        select.addEventListener('change', (e) => this.onBaseRomChange(e));
+    }
+    
+    onBaseRomChange(e) {
+        const option = e.target.selectedOptions[0];
+        if (!option) return;
+        
+        // Remove existing variant selector
+        const existingSelector = document.getElementById('crcVariantGroup');
+        if (existingSelector) existingSelector.remove();
+        
+        const variants = JSON.parse(option.dataset.variants || '[]');
+        const system = option.dataset.system;
+        
+        if (variants.length > 1) {
+            this.showVariantSelector(variants, option.value);
+        }
+    }
+    
+    showVariantSelector(variants, romKey) {
+        const existingSelector = document.getElementById('crcVariantGroup');
+        if (existingSelector) existingSelector.remove();
+        
+        const baseRomGroup = document.getElementById('baseRom').closest('.form-group');
+        const variantGroup = document.createElement('div');
+        variantGroup.id = 'crcVariantGroup';
+        variantGroup.className = 'form-group';
+        variantGroup.innerHTML = `
+            <label for="crcVariant">
+                <i data-lucide="cpu" width="16" height="16"></i>
+                ROM Variant *
+            </label>
+            <select id="crcVariant" name="crcVariant" required>
+                <option value="">Select ROM variant...</option>
+                ${variants.map(v => `
+                    <option value="${v.crc}">
+                        ${v.region}${v.revision ? ` (${v.revision})` : ''} - CRC: ${v.crc}
+                    </option>
+                `).join('')}
+            </select>
+            <small class="form-hint">Multiple ROM versions detected. Select the one you're using.</small>
+        `;
+        
+        baseRomGroup.after(variantGroup);
+        this.initializeIcons();
     }
     
     setupEventListeners() {
@@ -114,21 +174,37 @@ class SubmitForm {
         const currentStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
         const requiredInputs = currentStepEl.querySelectorAll('[required]');
         
-        let isValid = true;
+        const missingFields = [];
         requiredInputs.forEach(input => {
             if (!input.value.trim()) {
                 input.style.borderColor = 'var(--error-color, #ef4444)';
-                isValid = false;
+                const label = currentStepEl.querySelector(`label[for="${input.id}"]`);
+                const fieldName = label ? label.textContent.replace('*', '').trim() : input.name;
+                missingFields.push({ element: input, name: fieldName });
             } else {
                 input.style.borderColor = '';
             }
         });
         
-        if (!isValid) {
-            alert('Please fill in all required fields');
+        if (missingFields.length > 0) {
+            this.showValidationError(missingFields);
+            return false;
         }
         
-        return isValid;
+        return true;
+    }
+    
+    showValidationError(missingFields) {
+        const fieldNames = missingFields.map(f => f.name).join(', ');
+        const message = `Please fill in the following required field${missingFields.length > 1 ? 's' : ''}: ${fieldNames}`;
+        
+        if (confirm(message + '\n\nClick OK to scroll to the first missing field.')) {
+            missingFields[0].element.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            missingFields[0].element.focus();
+        }
     }
     
     updateUI() {
@@ -198,8 +274,25 @@ class SubmitForm {
         const data = {};
         
         for (let [key, value] of formData.entries()) {
-            data[key] = value;
+            if (key.endsWith('[]')) {
+                const fieldName = key.slice(0, -2);
+                if (!data[fieldName]) data[fieldName] = [];
+                data[fieldName].push(value);
+            } else {
+                data[key] = value;
+            }
         }
+        
+        // Process multi-checkbox fields
+        ['tags', 'mechanics', 'variants', 'typeChanges'].forEach(fieldName => {
+            const selected = data[fieldName] || [];
+            const customInput = document.getElementById(`${fieldName}Custom`);
+            if (customInput && customInput.value.trim()) {
+                const customValues = customInput.value.split(',').map(v => v.trim()).filter(Boolean);
+                selected.push(...customValues);
+            }
+            data[fieldName] = selected.join(', ');
+        });
         
         this.formData = data;
         localStorage.setItem('submitFormData', JSON.stringify(data));
@@ -215,18 +308,27 @@ class SubmitForm {
         if (!preview) return;
         
         const data = this.formData;
+        const romData = this.baseRoms.find(r => r.key === data.baseRom);
+        const romName = romData?.fullName || data.baseRom;
+        const statusColor = STATUS_COLORS[data.status];
         
         preview.innerHTML = `
             <h3 style="margin-bottom: 1rem; color: var(--text-primary);">${data.title || 'Untitled'}</h3>
-            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
-                ${data.baseRom ? `<span class="badge badge-rom">${data.baseRom}</span>` : ''}
-                ${data.difficulty ? `<span class="badge badge-difficulty">${data.difficulty}</span>` : ''}
-                ${data.status ? `<span class="badge badge-status">${data.status}</span>` : ''}
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center;">
+                ${renderBadge('system', romData?.system)}
+                ${renderBadge('rom', romName)}
+                ${data.crcVariant ? `<span class="badge" style="background: rgba(102,126,234,0.2); color: var(--text-primary);">CRC: ${data.crcVariant}</span>` : ''}
+                ${renderBadge('difficulty', data.difficulty)}
+                ${statusColor ? `<div class="status-indicator"><div class="status-dot" style="background: ${statusColor.bg};"></div><span>${statusColor.label}</span></div>` : ''}
             </div>
             <p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>Author:</strong> ${data.author || 'Unknown'}</p>
             ${data.version ? `<p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>Version:</strong> ${data.version}</p>` : ''}
+            ${data.released ? `<p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>Released:</strong> ${data.released}</p>` : ''}
             ${data.description ? `<p style="color: var(--text-secondary); margin-bottom: 1rem;">${data.description}</p>` : ''}
-            ${data.boxArt ? `<p style="color: var(--text-secondary);"><strong>Box Art:</strong> ${data.boxArt}</p>` : ''}
+            ${data.hackType ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Type:</strong> ${data.hackType}</p>` : ''}
+            ${data.tags ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Tags:</strong> ${data.tags}</p>` : ''}
+            ${data.mechanics ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Mechanics:</strong> ${data.mechanics}</p>` : ''}
+            ${data.boxArt ? `<p style="color: var(--text-secondary); margin-top: 1rem;"><strong>Box Art:</strong> ${data.boxArt}</p>` : ''}
             ${data.patchUrl ? `<p style="color: var(--text-secondary);"><strong>Patch URL:</strong> ${data.patchUrl}</p>` : ''}
         `;
     }
