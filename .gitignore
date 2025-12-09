@@ -1,25 +1,18 @@
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Python
+venv/  # Old venv on external storage (deprecated)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
 
-# Testing
-/coverage/
-/test-results/
-/playwright-report/
-/playwright/.cache/
-
-# Production builds
-/build/
-/dist/
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Backups
+.backup/
 
 # IDE
 .vscode/
@@ -30,21 +23,26 @@ yarn-error.log*
 
 # OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Logs
-*.log
+# Node
+node_modules/
+package-lock.json
 
-# Temporary files
-*.tmp
-*.temp
+# Test
+.pytest_cache/
+playwright-report/
+test-results/
 
-# Test files
-test-manual.js*_ANALYSIS.md
-*_IMPLEMENTATION.md
-FOLDER_STRUCTURE.md
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+.venv/
+
+# Virtual environment path
+.venv-path

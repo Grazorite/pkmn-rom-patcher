@@ -1,0 +1,27 @@
+/* Patcher Widget Positioning and Stacking */
+
+/* Patcher widget always above search */
+#rom-patcher-container {
+    position: relative;
+    z-index: 100 !important;
+    isolation: isolate;
+    margin-bottom: 2rem;
+}
+
+/* Search section always below patcher */
+.search-section {
+    position: relative;
+    z-index: 1 !important;
+}
+
+/* Patch results below search */
+.patch-results {
+    position: relative;
+    z-index: 1;
+}
+
+/* Selected patch description */
+.selected-patch {
+    position: relative;
+    z-index: 2;
+}

@@ -133,15 +133,13 @@ export class UIManager {
 
     initializeIcons() {
         if (typeof window.initIcons === 'function') {
-            requestAnimationFrame(() => window.initIcons());
+            window.initIcons();
         } else if (typeof lucide !== 'undefined') {
-            requestAnimationFrame(() => {
-                try {
-                    lucide.createIcons();
-                } catch (e) {
-                    console.warn('Icon initialization failed:', e);
-                }
-            });
+            try {
+                lucide.createIcons();
+            } catch (e) {
+                console.warn('Icon initialization failed:', e);
+            }
         }
     }
 
@@ -156,8 +154,7 @@ export class UIManager {
         const grid = document.getElementById('hackGrid');
         if (grid) {
             grid.innerHTML = '<div class="loading"><i data-lucide="loader" width="32" height="32" class="loading-spinner"></i><p>Loading ROM hacks...</p></div>';
-            // Re-initialize icons
-            setTimeout(() => this.initializeIcons(), 100);
+            this.initializeIcons();
         }
     }
 
@@ -226,7 +223,14 @@ export class UIManager {
                 const titlePattern = new RegExp(`^#\s*${hack.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*\n`, 'i');
                 cleanedChangelog = cleanedChangelog.replace(titlePattern, '');
                 
-                descEl.innerHTML = typeof marked !== 'undefined' ? marked.parse(cleanedChangelog) : cleanedChangelog;
+                if (typeof marked !== 'undefined') {
+                    descEl.innerHTML = '<div class="loading-text">Loading description...</div>';
+                    requestAnimationFrame(() => {
+                        descEl.innerHTML = marked.parse(cleanedChangelog);
+                    });
+                } else {
+                    descEl.innerHTML = cleanedChangelog;
+                }
             } else {
                 descEl.innerHTML = '<p>No description available.</p>';
             }
@@ -242,17 +246,22 @@ export class UIManager {
         this.populateCollapsedPanel(hack);
         
         // Setup tab listeners
-        setTimeout(() => {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.onclick = (e) => {
-                    e.preventDefault();
-                    this.switchTab(btn.dataset.tab);
-                };
-            });
-        }, 50);
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                this.switchTab(btn.dataset.tab);
+            };
+        });
         
-        // Re-initialize icons
-        setTimeout(() => this.initializeIcons(), 100);
+        // Initialize icons only within detail panel
+        const panel = document.getElementById('detailPanel');
+        if (panel && typeof lucide !== 'undefined') {
+            try {
+                lucide.createIcons({ attrs: { 'data-lucide': true } }, panel);
+            } catch (e) {
+                console.warn('Icon initialization failed:', e);
+            }
+        }
     }
     
     populateCollapsedPanel(hack) {
@@ -282,21 +291,6 @@ export class UIManager {
         const table = document.getElementById('metadataTable');
         if (!table || !meta) return;
         
-        const fieldIcons = {
-            'Base ROM': 'disc',
-            'System': 'cpu',
-            'Difficulty': 'trending-up',
-            'Graphics': 'image',
-            'Story': 'book-open',
-            'Maps': 'map',
-            'Postgame': 'plus-circle',
-            'Mechanics': 'settings',
-            'Fakemons': 'star',
-            'Tags': 'tag',
-            'Released': 'calendar',
-            'Rating': 'award'
-        };
-        
         const fields = [
             ['Graphics', meta.graphics],
             ['Story', meta.story],
@@ -310,10 +304,7 @@ export class UIManager {
         
         table.innerHTML = fields.map(([label, value]) => `
             <tr>
-                <td>
-                    <i data-lucide="${fieldIcons[label] || 'info'}" width="14" height="14"></i>
-                    ${label}
-                </td>
+                <td>${label}</td>
                 <td${label === 'Base ROM' ? ' style="white-space: nowrap;"' : ''}>${value}</td>
             </tr>
         `).join('');

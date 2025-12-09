@@ -1,5 +1,6 @@
 ---
 title: "Emerald Enhanced"
+file: "../patches/emerald/EMERALD-ENHANCED_GBA_EM-1961_11.010_2025.xdelta"
 baseRom: "Emerald"
 system: "GBA"
 status: "Perpetual Beta"

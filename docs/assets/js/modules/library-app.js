@@ -28,23 +28,25 @@ class ROMLibraryApp {
     }
     
     async init() {
-        this.initializeIcons();
         await this.loadHacks();
         this.setupEventListeners();
         this.generateFilters();
         this.renderHacks();
         
         this.debugPanel = new DebugPanel(this);
-        setTimeout(() => this.initializeIcons(), ICON_INIT_DELAY_SHORT);
-        setTimeout(() => this.initializeIcons(), ICON_INIT_DELAY_LONG);
+        setTimeout(() => this.initializeIcons(), 200);
     }
     
-    initializeIcons() {
+    initializeIcons(container) {
         if (typeof window.initIcons === 'function') {
             window.initIcons();
         } else if (typeof lucide !== 'undefined') {
             try {
-                lucide.createIcons();
+                if (container) {
+                    lucide.createIcons({ attrs: { 'data-lucide': true } }, container);
+                } else {
+                    lucide.createIcons();
+                }
             } catch (e) {
                 console.warn('Icon initialization failed:', e);
             }
@@ -73,8 +75,7 @@ class ROMLibraryApp {
                 AnimationUtils.hideLoadingSkeleton(hackGrid);
             }
             
-            // Generate filters for cached data
-            setTimeout(() => this.generateFilters(), ICON_INIT_DELAY_SHORT);
+            this.generateFilters();
             return;
         }
 
@@ -276,29 +277,9 @@ class ROMLibraryApp {
     }
     
     renderHacks() {
-        const hackGrid = document.getElementById('hackGrid');
-        const existingCards = hackGrid ? hackGrid.querySelectorAll('.hack-card') : [];
-        
-        if (existingCards.length > 0) {
-            // Fade out existing cards
-            animationEngine.fadeOut(Array.from(existingCards), 150).then(() => {
-                this.uiManager.renderHacks(this.filteredHacks, this.viewMode);
-                
-                // Fade in new cards
-                setTimeout(() => {
-                    const hackCards = document.querySelectorAll('.hack-card');
-                    AnimationUtils.animateHackCards(hackCards);
-                }, 50);
-            });
-        } else {
-            // First render, no fade out needed
-            this.uiManager.renderHacks(this.filteredHacks, this.viewMode);
-            
-            setTimeout(() => {
-                const hackCards = document.querySelectorAll('.hack-card');
-                AnimationUtils.animateHackCards(hackCards);
-            }, 50);
-        }
+        this.uiManager.renderHacks(this.filteredHacks, this.viewMode);
+        const grid = document.getElementById('hackGrid');
+        if (grid) this.initializeIcons(grid);
     }
     
     toggleView() {
@@ -360,8 +341,7 @@ class ROMLibraryApp {
         this.patchManager.setSelectedHack(this.selectedHack);
         this.uiManager.renderDetailPanel(this.selectedHack);
         this.uiManager.openDetailPanel();
-        setTimeout(() => this.initializeIcons(), 50);
-        setTimeout(() => this.initializeIcons(), 200);
+        setTimeout(() => this.initializeIcons(), 100);
     }
     
     closeDetailPanel() {
@@ -398,7 +378,7 @@ class ROMLibraryApp {
                     </button>
                 </div>
             `;
-            setTimeout(() => this.initializeIcons(), 50);
+            this.initializeIcons();
         }
     }
     

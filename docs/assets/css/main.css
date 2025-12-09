@@ -105,7 +105,8 @@
     opacity: 0;
     transition: all 0.3s ease;
     z-index: 1000;
-    max-width: 300px;
+    max-width: 400px;
+    min-width: 300px;
 }
 
 .notification.show {
@@ -121,6 +122,20 @@
 .notification span {
     color: var(--text-primary);
     font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    line-height: 1.4;
+}
+
+.notification small {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* High contrast primary button */

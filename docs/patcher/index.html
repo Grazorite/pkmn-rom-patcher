@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../assets/css/components/patcher-results.css?v=2">
     <link rel="stylesheet" href="../assets/css/components/loaded-patch-info.css?v=2">
     <link rel="stylesheet" href="../assets/css/components/patcher-single-layout.css?v=2">
+    <link rel="stylesheet" href="../assets/css/components/patcher-widget-position.css?v=2">
 
     <link rel="stylesheet" href="./rom-patcher-js/style.css">
     <link rel="stylesheet" href="../assets/css/components/rompatcher-theme.css?v=2">
@@ -178,8 +179,8 @@
                     <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, transparent, var(--bg-secondary)); pointer-events: none;"></div>
                 </div>
                 
-                <div class="patch-interface" id="rom-patcher-container" style="display: none;">
-                    <!-- RomPatcher.webapp.js required elements -->
+                <div id="rom-patcher-content-placeholder" style="display: none;">
+                    <!-- RomPatcher.webapp.js required elements will be moved here -->
                     <div class="rom-patcher-row margin-bottom" id="rom-patcher-row-file-rom">
                         <div class="text-right"><label for="rom-patcher-input-file-rom"><i data-lucide="disc" width="16" height="16" style="display: inline-block; vertical-align: middle; margin-right: 4px;"></i>ROM file:</label></div>
                         <div class="rom-patcher-container-input">
@@ -243,6 +244,10 @@
                         <button id="rom-patcher-button-apply" class="liquid-glass-btn" disabled><i data-lucide="zap" width="16" height="16" style="margin-right: 8px;"></i>Apply patch</button>
                     </div>
                 </div>
+            </div>
+            
+            <div class="patch-interface" id="rom-patcher-container">
+                <!-- RomPatcher widget in right column -->
             </div>
         </div>
         </div>

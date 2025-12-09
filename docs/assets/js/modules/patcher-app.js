@@ -121,11 +121,18 @@ class ROMPatcherApp {
                 }
             }
             
-            // Show the patcher container
+            // Move patcher content to container
             const container = document.getElementById('rom-patcher-container');
+            const placeholder = document.getElementById('rom-patcher-content-placeholder');
+            
+            // Move all content from placeholder to main container
+            while (placeholder && placeholder.firstChild) {
+                container.appendChild(placeholder.firstChild);
+            }
+            
+            // Show the patcher container
             if (container) {
                 container.style.display = 'block';
-                container.style.visibility = 'visible';
             }
             
             // Show loaded patch info
@@ -276,7 +283,18 @@ class ROMPatcherApp {
         this.selectedPatch = null;
         this.hideSelectedPatchWithAnimation();
         
-        // Hide patcher widget when no patch selected
+        // Unload patch from patcher widget
+        if (typeof RomPatcherWeb !== 'undefined' && typeof RomPatcherWeb.providePatchFile === 'function') {
+            RomPatcherWeb.providePatchFile(null);
+        }
+        
+        // Hide loaded patch info
+        const infoContainer = document.getElementById('rom-patcher-loaded-patch-info');
+        if (infoContainer) {
+            infoContainer.style.display = 'none';
+        }
+        
+        // Hide patcher widget
         const container = document.getElementById('rom-patcher-container');
         if (container) {
             container.style.display = 'none';
@@ -454,7 +472,7 @@ class ROMPatcherApp {
         
         let displayMessage = message;
         if (patchFile) {
-            const fileName = patchFile.split('/').pop().replace(/\.(bps|ips|ups|xdelta)$/i, '');
+            const fileName = patchFile.split('/').pop();
             displayMessage = `${message}<br><small style="opacity: 0.8;">${fileName}</small>`;
         }
         
