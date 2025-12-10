@@ -19,8 +19,22 @@ class BaseFixtures {
             patchSearch: '#patchSearch',
             patchResults: '#patchResults',
             romFileInput: '#romFileInput',
-            applyPatchBtn: '#applyPatchBtn'
+            applyPatchBtn: '#applyPatchBtn',
+            
+            // Batch 2.5
+            backToTop: '.back-to-top',
+            checkbox: '.checkbox-label input[type="checkbox"]'
         };
+    }
+    
+    async fillSubmitStep1(page) {
+        await page.fill('#title', 'Test Hack');
+        await page.selectOption('#baseRom', { index: 1 });
+        await page.fill('#author', 'Test Author');
+    }
+    
+    async scrollToBottom(page) {
+        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     }
 
     async landingPage({ page }) {

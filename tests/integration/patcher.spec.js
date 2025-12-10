@@ -1,121 +1,142 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '../fixtures/base.js';
 const path = require('path');
 
-test.describe('Patcher Integration Tests', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.goto('http://localhost:3000/docs/patcher/');
-        await page.waitForLoadState('networkidle');
-    });
-
-    test('hides patcher widget until patch is selected', async ({ page }) => {
-        const patcherContainer = page.locator('#rom-patcher-container');
-        await expect(patcherContainer).toBeHidden();
-    });
-
-    test('shows patcher widget after selecting a patch', async ({ page }) => {
-        await page.fill('#patchSearch', 'Emerald');
-        await page.waitForTimeout(500);
-        await page.locator('.patch-result').first().click();
-        
-        const patcherContainer = page.locator('#rom-patcher-container');
-        await expect(patcherContainer).toBeVisible();
-        
-        const romInput = page.locator('#rom-patcher-input-file-rom');
-        await expect(romInput).toBeEnabled();
-    });
-
-    test('hides widget when patch is deselected', async ({ page }) => {
-        await page.fill('#patchSearch', 'Emerald');
-        await page.waitForTimeout(500);
-        await page.locator('.patch-result').first().click();
-        
-        const widget = page.locator('#rom-patcher-container');
-        await expect(widget).toBeVisible();
-        
-        await page.locator('#closePatchDescription').click();
-        await page.waitForTimeout(300);
-        
-        await expect(widget).toBeHidden();
-    });
-
-    test('calculates CRC after ROM upload', async ({ page }) => {
-        await page.fill('#patchSearch', 'Emerald');
-        await page.waitForTimeout(500);
-        await page.locator('.patch-result').first().click();
-        await page.waitForSelector('#rom-patcher-container', { state: 'visible' });
-
-        const testRomPath = path.join(__dirname, '..', 'fixtures', 'test-rom.gba');
-        await page.locator('#rom-patcher-input-file-rom').setInputFiles(testRomPath);
-        await page.waitForTimeout(2000);
-
-        const crc32Span = page.locator('#rom-patcher-span-crc32');
-        const crc32Text = await crc32Span.textContent();
-        expect(crc32Text).not.toBe('Calculating...');
-        expect(crc32Text).not.toBe('');
-    });
-
-    test('enables apply button after ROM is loaded', async ({ page }) => {
-        await page.fill('#patchSearch', 'Emerald');
-        await page.waitForTimeout(500);
-        await page.locator('.patch-result').first().click();
-
-        const testRomPath = path.join(__dirname, '..', 'fixtures', 'test-rom.gba');
-        await page.locator('#rom-patcher-input-file-rom').setInputFiles(testRomPath);
-        await page.waitForTimeout(2000);
-
-        const applyButton = page.locator('#rom-patcher-button-apply');
-        await expect(applyButton).toBeEnabled();
-    });
-
-    test('shows patch description when selected', async ({ page }) => {
-        await page.fill('#patchSearch', 'Emerald');
-        await page.waitForTimeout(500);
-        await page.locator('.patch-result').first().click();
-
-        const selectedPatch = page.locator('#selectedPatch');
-        await expect(selectedPatch).toBeVisible();
-
-        const description = page.locator('#selectedPatchDescription');
-        await expect(description).not.toBeEmpty();
-    });
-
-    test('updates patch name when switching patches', async ({ page }) => {
-        await page.fill('#patchSearch', 'Emerald');
-        await page.waitForTimeout(500);
-        const firstPatch = page.locator('.patch-result').first();
-        const firstName = await firstPatch.locator('h4').textContent();
-        await firstPatch.click();
-        await page.waitForTimeout(500);
-        
-        await page.locator('#closePatchDescription').click();
-        await page.waitForTimeout(300);
-        
-        await page.fill('#patchSearch', 'Gold');
-        await page.waitForTimeout(500);
-        const secondPatch = page.locator('.patch-result').first();
-        const secondName = await secondPatch.locator('h4').textContent();
-        await secondPatch.click();
-        await page.waitForTimeout(500);
-        
-        expect(firstName).not.toBe(secondName);
-        
-        const widget = page.locator('#rom-patcher-container');
-        await expect(widget).toBeVisible();
-    });
-
-    test('styles apply button correctly', async ({ page }) => {
-        await page.fill('#patchSearch', 'Emerald');
-        await page.waitForTimeout(500);
-        await page.locator('.patch-result').first().click();
-        
-        const applyButton = page.locator('#rom-patcher-button-apply');
-        await expect(applyButton).toBeVisible();
-        await expect(applyButton).toBeDisabled();
-        
-        const hasStyles = await applyButton.evaluate(el => {
-            const styles = window.getComputedStyle(el);
-            return styles.padding !== '0px' && styles.borderRadius !== '0px';
+test.describe('Integration Tests', () => {
+    test.describe('Cross-Page Navigation', () => {
+        test('maintains independent state per page', async ({ page }) => {
+            await page.goto('/docs/library/');
+            await page.fill('#searchInput', 'library search');
+            await page.waitForTimeout(500);
+            
+            await page.goto('/docs/patcher/');
+            await page.fill('#patchSearch', 'patcher search');
+            await page.waitForTimeout(500);
+            
+            await page.goto('/docs/library/');
+            await page.waitForTimeout(500);
+            await expect(page.locator('#searchInput')).toHaveValue('library search');
+            
+            await page.goto('/docs/patcher/');
+            await page.waitForTimeout(500);
+            await expect(page.locator('#patchSearch')).toHaveValue('patcher search');
         });
-        expect(hasStyles).toBeTruthy();
+    });
+
+    test.describe('Patcher Integration', () => {
+        test.beforeEach(async ({ patcherPage }) => {
+            // Use patcherPage fixture for better reliability
+        });
+
+        test('hides patcher widget until patch is selected', async ({ patcherPage }) => {
+            const patcherContainer = patcherPage.locator('#rom-patcher-container');
+            await expect(patcherContainer).toBeHidden();
+        });
+
+        test('shows patcher widget after selecting a patch', async ({ patcherPage }) => {
+            await patcherPage.fill('#patchSearch', 'Emerald');
+            await patcherPage.waitForTimeout(500);
+            await patcherPage.locator('.patch-result').first().click();
+            
+            const patcherContainer = patcherPage.locator('#rom-patcher-container');
+            await expect(patcherContainer).toBeVisible();
+            
+            const romInput = patcherPage.locator('#rom-patcher-input-file-rom');
+            await expect(romInput).toBeEnabled();
+        });
+
+        test('hides widget when patch is deselected', async ({ patcherPage }) => {
+            await patcherPage.fill('#patchSearch', 'Emerald');
+            await patcherPage.waitForTimeout(500);
+            await patcherPage.locator('.patch-result').first().click();
+            
+            const widget = patcherPage.locator('#rom-patcher-container');
+            await expect(widget).toBeVisible();
+            
+            await patcherPage.locator('#closePatchDescription').click();
+            await patcherPage.waitForTimeout(300);
+            
+            await expect(widget).toBeHidden();
+        });
+
+        test('calculates CRC after ROM upload', async ({ patcherPage }) => {
+            await patcherPage.fill('#patchSearch', 'Emerald');
+            await patcherPage.waitForTimeout(500);
+            await patcherPage.locator('.patch-result').first().click();
+            await patcherPage.waitForSelector('#rom-patcher-container', { state: 'visible' });
+
+            const testRomPath = path.join(__dirname, '..', 'fixtures', 'test-rom.gba');
+            await patcherPage.locator('#rom-patcher-input-file-rom').setInputFiles(testRomPath);
+            await patcherPage.waitForTimeout(2000);
+
+            const crc32Span = patcherPage.locator('#rom-patcher-span-crc32');
+            const crc32Text = await crc32Span.textContent();
+            expect(crc32Text).not.toBe('Calculating...');
+            expect(crc32Text).not.toBe('');
+        });
+
+        test('enables apply button after ROM is loaded', async ({ patcherPage }) => {
+            await patcherPage.fill('#patchSearch', 'Emerald');
+            await patcherPage.waitForTimeout(500);
+            await patcherPage.locator('.patch-result').first().click();
+
+            const testRomPath = path.join(__dirname, '..', 'fixtures', 'test-rom.gba');
+            await patcherPage.locator('#rom-patcher-input-file-rom').setInputFiles(testRomPath);
+            await patcherPage.waitForTimeout(2000);
+
+            const applyButton = patcherPage.locator('#rom-patcher-button-apply');
+            await expect(applyButton).toBeEnabled();
+        });
+
+        test('shows patch description when selected', async ({ patcherPage }) => {
+            await patcherPage.fill('#patchSearch', 'Emerald');
+            await patcherPage.waitForTimeout(500);
+            await patcherPage.locator('.patch-result').first().click();
+
+            const selectedPatch = patcherPage.locator('#selectedPatch');
+            await expect(selectedPatch).toBeVisible();
+
+            const description = patcherPage.locator('#selectedPatchDescription');
+            await expect(description).not.toBeEmpty();
+        });
+
+        test('updates patch name when switching patches', async ({ patcherPage }) => {
+            await patcherPage.fill('#patchSearch', 'Emerald');
+            await patcherPage.waitForTimeout(500);
+            const firstPatch = patcherPage.locator('.patch-result').first();
+            const firstName = await firstPatch.locator('h4').textContent();
+            await firstPatch.click();
+            await patcherPage.waitForTimeout(500);
+            
+            await patcherPage.locator('#closePatchDescription').click();
+            await patcherPage.waitForTimeout(300);
+            
+            await patcherPage.fill('#patchSearch', 'Gold');
+            await patcherPage.waitForTimeout(500);
+            const secondPatch = patcherPage.locator('.patch-result').first();
+            const secondName = await secondPatch.locator('h4').textContent();
+            await secondPatch.click();
+            await patcherPage.waitForTimeout(500);
+            
+            expect(firstName).not.toBe(secondName);
+            
+            const widget = patcherPage.locator('#rom-patcher-container');
+            await expect(widget).toBeVisible();
+        });
+
+        test('styles apply button correctly', async ({ patcherPage }) => {
+            await patcherPage.fill('#patchSearch', 'Emerald');
+            await patcherPage.waitForTimeout(500);
+            await patcherPage.locator('.patch-result').first().click();
+            
+            const applyButton = patcherPage.locator('#rom-patcher-button-apply');
+            await expect(applyButton).toBeVisible();
+            await expect(applyButton).toBeDisabled();
+            
+            const hasStyles = await applyButton.evaluate(el => {
+                const styles = window.getComputedStyle(el);
+                return styles.padding !== '0px' && styles.borderRadius !== '0px';
+            });
+            expect(hasStyles).toBeTruthy();
+        });
     });
 });

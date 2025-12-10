@@ -2,6 +2,7 @@
 import { PerformanceManager } from './performance.js';
 import { imageCache } from './image-cache.js';
 import { imagePopup } from './image-popup.js';
+import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
 
 export class UIManager {
     constructor() {
@@ -10,6 +11,7 @@ export class UIManager {
         this.performanceManager = new PerformanceManager();
         this.renderQueue = [];
         this.isRendering = false;
+        initBadgeRenderer();
     }
 
     renderFilterOptions(filterType, options) {
@@ -20,7 +22,7 @@ export class UIManager {
         
         container.innerHTML = sortedOptions.map(([value, count]) => `
             <div class="filter-option">
-                <input type="checkbox" id="${filterType}-${value}" value="${value}">
+                <input type="checkbox" class="custom-checkbox" id="${filterType}-${value}" value="${value}">
                 <label for="${filterType}-${value}">${value}</label>
                 <span class="filter-count">(${count})</span>
             </div>
@@ -30,14 +32,20 @@ export class UIManager {
     createGridCard(hack) {
         const imageUrl = hack.meta?.images?.boxArt || hack.meta?.images?.banner;
         const cachedImage = imageUrl ? imageCache.getCachedImage(imageUrl) : null;
+        const imageHtml = imageUrl ? 
+            `<div class="image-container">
+                <img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy" onerror="this.parentElement.classList.add('has-broken-image')">
+                <div class="image-fallback"><i data-lucide="image-off" width="32" height="32"></i></div>
+            </div>` :
+            `<div class="image-fallback"><i data-lucide="image-off" width="32" height="32"></i></div>`;
         
         return `
-            <div class="hack-card grid-card" data-hack-id="${hack.id}" title="${hack.title}">
-                <div class="grid-card-image">
-                    ${imageUrl ? 
-                        `<img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy">` :
-                        `<div class="grid-placeholder"><i data-lucide="image" width="32" height="32"></i></div>`
-                    }
+            <div class="hack-card" data-hack-id="${hack.id}" title="${hack.title}">
+                <div class="hack-card-image">
+                    ${imageHtml}
+                </div>
+                <div class="hack-card-content" style="display: none;">
+                    <!-- Hidden in grid view -->
                 </div>
             </div>
         `;
@@ -50,9 +58,10 @@ export class UIManager {
         const imageHtml = imageUrl ? 
             `<div class="image-container">
                 <div class="image-placeholder"><i data-lucide="image" width="24" height="24"></i></div>
-                <img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy">
+                <img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy" onerror="this.parentElement.classList.add('has-broken-image')">
+                <div class="image-fallback"><i data-lucide="image-off" width="24" height="24"></i></div>
             </div>` : 
-            `<div class="hack-card-placeholder"><i data-lucide="image" width="24" height="24"></i><span>${hack.title}</span></div>`;
+            `<div class="image-fallback"><i data-lucide="image-off" width="24" height="24"></i></div>`;
             
         const statusClass = hack.meta?.status ? `status-${hack.meta.status.toLowerCase().replace(' ', '-')}` : 'status-completed';
         
@@ -65,9 +74,9 @@ export class UIManager {
                     <div class="hack-card-title">${hack.title}</div>
                     <div class="hack-card-author">by ${hack.meta?.author || 'Unknown'}</div>
                     <div class="hack-card-badges">
-                        ${hack.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${hack.meta.baseRom}">${hack.meta.baseRom}</span>` : ''}
-                        ${hack.meta?.system ? `<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>` : ''}
-                        ${hack.meta?.difficulty ? `<span class="badge badge-difficulty" data-difficulty="${hack.meta.difficulty}">${hack.meta.difficulty}</span>` : ''}
+                        ${renderBadge('rom', hack.meta?.baseRom)}
+                        ${renderBadge('system', hack.meta?.system)}
+                        ${renderBadge('difficulty', hack.meta?.difficulty)}
                     </div>
                     <div class="status-indicator">
                         <div class="status-dot ${statusClass}"></div>
@@ -133,15 +142,13 @@ export class UIManager {
 
     initializeIcons() {
         if (typeof window.initIcons === 'function') {
-            requestAnimationFrame(() => window.initIcons());
+            window.initIcons();
         } else if (typeof lucide !== 'undefined') {
-            requestAnimationFrame(() => {
-                try {
-                    lucide.createIcons();
-                } catch (e) {
-                    console.warn('Icon initialization failed:', e);
-                }
-            });
+            try {
+                lucide.createIcons();
+            } catch (e) {
+                console.warn('Icon initialization failed:', e);
+            }
         }
     }
 
@@ -156,8 +163,7 @@ export class UIManager {
         const grid = document.getElementById('hackGrid');
         if (grid) {
             grid.innerHTML = '<div class="loading"><i data-lucide="loader" width="32" height="32" class="loading-spinner"></i><p>Loading ROM hacks...</p></div>';
-            // Re-initialize icons
-            setTimeout(() => this.initializeIcons(), 100);
+            this.initializeIcons();
         }
     }
 
@@ -182,10 +188,11 @@ export class UIManager {
         
         // Add badges to header
         if (badgesEl) {
-            const badges = [];
-            if (hack.meta?.baseRom) badges.push(`<span class="badge badge-rom" data-rom="${hack.meta.baseRom}">${hack.meta.baseRom}</span>`);
-            if (hack.meta?.system) badges.push(`<span class="badge badge-system" data-system="${hack.meta.system}">${hack.meta.system}</span>`);
-            if (hack.meta?.difficulty) badges.push(`<span class="badge badge-difficulty" data-difficulty="${hack.meta.difficulty}">${hack.meta.difficulty}</span>`);
+            const badges = [
+                renderBadge('rom', hack.meta?.baseRom),
+                renderBadge('system', hack.meta?.system),
+                renderBadge('difficulty', hack.meta?.difficulty)
+            ].filter(Boolean);
             badgesEl.innerHTML = badges.join('');
         }
         
@@ -226,7 +233,14 @@ export class UIManager {
                 const titlePattern = new RegExp(`^#\s*${hack.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*\n`, 'i');
                 cleanedChangelog = cleanedChangelog.replace(titlePattern, '');
                 
-                descEl.innerHTML = typeof marked !== 'undefined' ? marked.parse(cleanedChangelog) : cleanedChangelog;
+                if (typeof marked !== 'undefined') {
+                    descEl.innerHTML = '<div class="loading-text">Loading description...</div>';
+                    requestAnimationFrame(() => {
+                        descEl.innerHTML = marked.parse(cleanedChangelog);
+                    });
+                } else {
+                    descEl.innerHTML = cleanedChangelog;
+                }
             } else {
                 descEl.innerHTML = '<p>No description available.</p>';
             }
@@ -242,17 +256,22 @@ export class UIManager {
         this.populateCollapsedPanel(hack);
         
         // Setup tab listeners
-        setTimeout(() => {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.onclick = (e) => {
-                    e.preventDefault();
-                    this.switchTab(btn.dataset.tab);
-                };
-            });
-        }, 50);
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                this.switchTab(btn.dataset.tab);
+            };
+        });
         
-        // Re-initialize icons
-        setTimeout(() => this.initializeIcons(), 100);
+        // Initialize icons only within detail panel
+        const panel = document.getElementById('detailPanel');
+        if (panel && typeof lucide !== 'undefined') {
+            try {
+                lucide.createIcons({ attrs: { 'data-lucide': true } }, panel);
+            } catch (e) {
+                console.warn('Icon initialization failed:', e);
+            }
+        }
     }
     
     populateCollapsedPanel(hack) {
@@ -282,21 +301,6 @@ export class UIManager {
         const table = document.getElementById('metadataTable');
         if (!table || !meta) return;
         
-        const fieldIcons = {
-            'Base ROM': 'disc',
-            'System': 'cpu',
-            'Difficulty': 'trending-up',
-            'Graphics': 'image',
-            'Story': 'book-open',
-            'Maps': 'map',
-            'Postgame': 'plus-circle',
-            'Mechanics': 'settings',
-            'Fakemons': 'star',
-            'Tags': 'tag',
-            'Released': 'calendar',
-            'Rating': 'award'
-        };
-        
         const fields = [
             ['Graphics', meta.graphics],
             ['Story', meta.story],
@@ -310,10 +314,7 @@ export class UIManager {
         
         table.innerHTML = fields.map(([label, value]) => `
             <tr>
-                <td>
-                    <i data-lucide="${fieldIcons[label] || 'info'}" width="14" height="14"></i>
-                    ${label}
-                </td>
+                <td>${label}</td>
                 <td${label === 'Base ROM' ? ' style="white-space: nowrap;"' : ''}>${value}</td>
             </tr>
         `).join('');

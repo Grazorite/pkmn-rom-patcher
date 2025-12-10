@@ -1,0 +1,82 @@
+{
+  "GB": {
+    "name": "Game Boy",
+    "abbreviation": "GB",
+    "released": 1989,
+    "colors": {
+      "primary": "#9BBB58",
+      "secondary": "#8BAE68",
+      "text": "#2d4016"
+    }
+  },
+  "GBC": {
+    "name": "Game Boy Color",
+    "abbreviation": "GBC",
+    "released": 1998,
+    "colors": {
+      "primary": "#FFD700",
+      "secondary": "#FFA500",
+      "text": "#8B4513"
+    }
+  },
+  "GBA": {
+    "name": "Game Boy Advance",
+    "abbreviation": "GBA",
+    "released": 2001,
+    "colors": {
+      "primary": "#6A5ACD",
+      "secondary": "#483D8B",
+      "text": "#E6E6FA"
+    }
+  },
+  "NDS": {
+    "name": "Nintendo DS",
+    "abbreviation": "NDS",
+    "released": 2004,
+    "colors": {
+      "primary": "#C0C0C0",
+      "secondary": "#4682B4",
+      "text": "#191970"
+    }
+  },
+  "3DS": {
+    "name": "Nintendo 3DS",
+    "abbreviation": "3DS",
+    "released": 2011,
+    "colors": {
+      "primary": "#00CED1",
+      "secondary": "#20B2AA",
+      "text": "#003333"
+    }
+  },
+  "GC": {
+    "name": "GameCube",
+    "abbreviation": "GC",
+    "released": 2001,
+    "colors": {
+      "primary": "#663399",
+      "secondary": "#2F1B69",
+      "text": "#E6E0FF"
+    }
+  },
+  "WII": {
+    "name": "Nintendo Wii",
+    "abbreviation": "WII",
+    "released": 2006,
+    "colors": {
+      "primary": "#F0F8FF",
+      "secondary": "#87CEEB",
+      "text": "#191970"
+    }
+  },
+  "NSW": {
+    "name": "Nintendo Switch",
+    "abbreviation": "NSW",
+    "released": 2017,
+    "colors": {
+      "primary": "#FF6B6B",
+      "secondary": "#4ECDC4",
+      "text": "#2C3E50"
+    }
+  }
+}

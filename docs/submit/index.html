@@ -154,44 +154,8 @@
                         <small class="form-hint">Supports Markdown formatting</small>
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="difficulty">
-                                <i data-lucide="trending-up" width="16" height="16"></i>
-                                Difficulty
-                            </label>
-                            <select id="difficulty" name="difficulty">
-                                <option value="">Select...</option>
-                                <option value="Easy">Easy</option>
-                                <option value="Normal">Normal</option>
-                                <option value="Hard">Hard</option>
-                                <option value="Very Hard">Very Hard</option>
-                                <option value="Extreme">Extreme</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="status">
-                                <i data-lucide="activity" width="16" height="16"></i>
-                                Status
-                            </label>
-                            <select id="status" name="status">
-                                <option value="">Select...</option>
-                                <option value="Complete">Complete</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Beta">Beta</option>
-                                <option value="Alpha">Alpha</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="released">
-                            <i data-lucide="calendar" width="16" height="16"></i>
-                            Release Date
-                        </label>
-                        <input type="date" id="released" name="released">
-                    </div>
+                    <!-- Dynamic fields will be inserted here -->
+                    <div id="detailsFieldsContainer"></div>
                 </div>
 
                 <!-- Step 3: Media -->
@@ -284,7 +248,7 @@
                         <i data-lucide="chevron-left" width="20" height="20"></i>
                         Previous
                     </button>
-                    <button type="button" class="btn-primary" id="nextBtn">
+                    <button type="button" class="btn-secondary" id="nextBtn">
                         Next
                         <i data-lucide="chevron-right" width="20" height="20"></i>
                     </button>

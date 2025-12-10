@@ -1,0 +1,285 @@
+/* Auto-generated from config/systems.json and config/base-roms.json */
+/* DO NOT EDIT MANUALLY - Run: python scripts/generate_badge_css.py */
+
+/* System badges */
+.badge-system {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #ffffff;
+}
+
+/* Game Boy (1989) */
+.badge-system[data-system="Game Boy"],
+.badge-system[data-system="GB"] {
+    background: linear-gradient(135deg, #9BBB58, #8BAE68);
+    color: #2d4016;
+}
+
+/* Game Boy Color (1998) */
+.badge-system[data-system="Game Boy Color"],
+.badge-system[data-system="GBC"] {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #8B4513;
+}
+
+/* Game Boy Advance (2001) */
+.badge-system[data-system="Game Boy Advance"],
+.badge-system[data-system="GBA"] {
+    background: linear-gradient(135deg, #6A5ACD, #483D8B);
+    color: #E6E6FA;
+}
+
+/* Nintendo DS (2004) */
+.badge-system[data-system="Nintendo DS"],
+.badge-system[data-system="NDS"] {
+    background: linear-gradient(135deg, #C0C0C0, #4682B4);
+    color: #191970;
+}
+
+/* Nintendo 3DS (2011) */
+.badge-system[data-system="Nintendo 3DS"],
+.badge-system[data-system="3DS"] {
+    background: linear-gradient(135deg, #00CED1, #20B2AA);
+    color: #003333;
+}
+
+/* GameCube (2001) */
+.badge-system[data-system="GameCube"],
+.badge-system[data-system="GC"] {
+    background: linear-gradient(135deg, #663399, #2F1B69);
+    color: #E6E0FF;
+}
+
+/* Nintendo Wii (2006) */
+.badge-system[data-system="Nintendo Wii"],
+.badge-system[data-system="WII"] {
+    background: linear-gradient(135deg, #F0F8FF, #87CEEB);
+    color: #191970;
+}
+
+/* Nintendo Switch (2017) */
+.badge-system[data-system="Nintendo Switch"],
+.badge-system[data-system="NSW"] {
+    background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+    color: #2C3E50;
+}
+
+/* ROM badges */
+.badge-rom {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Alpha Sapphire"] {
+    background: linear-gradient(135deg, #4682B4, #2F4F4F);
+    color: #E6F3FF;
+}
+
+.badge-rom[data-rom="Black"] {
+    background: linear-gradient(135deg, #2F4F4F, #000000);
+    color: #F0F0F0;
+}
+
+.badge-rom[data-rom="Black 2"] {
+    background: linear-gradient(135deg, #191970, #000080);
+    color: #E6E6FF;
+}
+
+.badge-rom[data-rom="Blue"] {
+    background: linear-gradient(135deg, #0066FF, #0044CC);
+    color: #E6F3FF;
+}
+
+.badge-rom[data-rom="Brilliant Diamond"] {
+    background: linear-gradient(135deg, #87CEEB, #4682B4);
+    color: #F0F8FF;
+}
+
+.badge-rom[data-rom="Colosseum"] {
+    background: linear-gradient(135deg, #8A2BE2, #6A1B9A);
+    color: #F3E8FF;
+}
+
+.badge-rom[data-rom="Conquest"] {
+    background: linear-gradient(135deg, #800080, #4B0082);
+    color: #F3E8FF;
+}
+
+.badge-rom[data-rom="Crystal"] {
+    background: linear-gradient(135deg, #4FD0FF, #00BFFF);
+    color: #003D4D;
+}
+
+.badge-rom[data-rom="Diamond"] {
+    background: linear-gradient(135deg, #87CEEB, #4682B4);
+    color: #F0F8FF;
+}
+
+.badge-rom[data-rom="Emerald"] {
+    background: linear-gradient(135deg, #00A000, #007700);
+    color: #E6FFE6;
+}
+
+.badge-rom[data-rom="Fire Emblem: The Sacred Stones"] {
+    background: linear-gradient(135deg, #B22222, #8B0000);
+    color: #FFE6E6;
+}
+
+.badge-rom[data-rom="FireRed"] {
+    background: linear-gradient(135deg, #FF4500, #FF6347);
+    color: #FFF0E6;
+}
+
+.badge-rom[data-rom="Gold"] {
+    background: linear-gradient(135deg, #DAA520, #B8860B);
+    color: #2D1B05;
+}
+
+.badge-rom[data-rom="Green"] {
+    background: linear-gradient(135deg, #00BB00, #008800);
+    color: #E6FFE6;
+}
+
+.badge-rom[data-rom="HeartGold"] {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #8B4513;
+}
+
+.badge-rom[data-rom="LeafGreen"] {
+    background: linear-gradient(135deg, #32CD32, #228B22);
+    color: #E6FFE6;
+}
+
+.badge-rom[data-rom="Let's Go! Eevee"] {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #8B4513;
+}
+
+.badge-rom[data-rom="Moon"] {
+    background: linear-gradient(135deg, #4B0082, #2F1B69);
+    color: #F3E8FF;
+}
+
+.badge-rom[data-rom="Omega Ruby"] {
+    background: linear-gradient(135deg, #FF4500, #FF6347);
+    color: #FFF0E6;
+}
+
+.badge-rom[data-rom="Pinball"] {
+    background: linear-gradient(135deg, #FF69B4, #FF1493);
+    color: #4D0026;
+}
+
+.badge-rom[data-rom="Platinum"] {
+    background: linear-gradient(135deg, #C0C0C0, #808080);
+    color: #2F2F2F;
+}
+
+.badge-rom[data-rom="Mystery Dungeon: Explorers of Sky"] {
+    background: linear-gradient(135deg, #FFA500, #FF8C00);
+    color: #4D2600;
+}
+
+.badge-rom[data-rom="Mystery Dungeon: Go For It! Light Adventure Squad!"] {
+    background: linear-gradient(135deg, #FFA500, #FF8C00);
+    color: #4D2600;
+}
+
+.badge-rom[data-rom="Mystery Dungeon: Red Rescue Team"] {
+    background: linear-gradient(135deg, #FF1111, #CC0000);
+    color: #FFE6E6;
+}
+
+.badge-rom[data-rom="Mystery Dungeon: Rescue Team DX"] {
+    background: linear-gradient(135deg, #FFA500, #FF8C00);
+    color: #4D2600;
+}
+
+.badge-rom[data-rom="Red"] {
+    background: linear-gradient(135deg, #FF1111, #CC0000);
+    color: #FFE6E6;
+}
+
+.badge-rom[data-rom="Ruby"] {
+    background: linear-gradient(135deg, #A00000, #800000);
+    color: #FFE6E6;
+}
+
+.badge-rom[data-rom="Rumble"] {
+    background: linear-gradient(135deg, #FF6347, #FF4500);
+    color: #4D1A00;
+}
+
+.badge-rom[data-rom="Scarlet"] {
+    background: linear-gradient(135deg, #DC143C, #B22222);
+    color: #FFE6E6;
+}
+
+.badge-rom[data-rom="Silver"] {
+    background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+    color: #2F2F2F;
+}
+
+.badge-rom[data-rom="SoulSilver"] {
+    background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+    color: #2F2F2F;
+}
+
+.badge-rom[data-rom="Super Mystery Dungeon"] {
+    background: linear-gradient(135deg, #FFA500, #FF8C00);
+    color: #4D2600;
+}
+
+.badge-rom[data-rom="Sword"] {
+    background: linear-gradient(135deg, #4682B4, #2F4F4F);
+    color: #E6F3FF;
+}
+
+.badge-rom[data-rom="Trading Card Game"] {
+    background: linear-gradient(135deg, #FF1493, #DC143C);
+    color: #4D0026;
+}
+
+.badge-rom[data-rom="Trading Card Game 2: The Invasion of Team GR!"] {
+    background: linear-gradient(135deg, #FF1493, #DC143C);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="Ultra Moon"] {
+    background: linear-gradient(135deg, #483D8B, #2F1B69);
+    color: #E6E0FF;
+}
+
+.badge-rom[data-rom="Ultra Sun"] {
+    background: linear-gradient(135deg, #FF8C00, #FF7F50);
+    color: #4D2600;
+}
+
+.badge-rom[data-rom="White"] {
+    background: linear-gradient(135deg, #F8F8FF, #E6E6FA);
+    color: #2F4F4F;
+}
+
+.badge-rom[data-rom="White 2"] {
+    background: linear-gradient(135deg, #FFFAFA, #E6E6FA);
+    color: #2F4F4F;
+}
+
+.badge-rom[data-rom="X"] {
+    background: linear-gradient(135deg, #1E90FF, #0066CC);
+    color: #ffffff;
+}
+
+.badge-rom[data-rom="XD: Gale of Darkness"] {
+    background: linear-gradient(135deg, #4B0082, #2F1B69);
+    color: #E6E0FF;
+}
+
+.badge-rom[data-rom="Y"] {
+    background: linear-gradient(135deg, #DC143C, #B22222);
+    color: #FFE6E6;
+}
+
+.badge-rom[data-rom="Yellow"] {
+    background: linear-gradient(135deg, #FFDD00, #FFB000);
+    color: #8B4513;
+}

@@ -1,6 +1,8 @@
 // ROM Patcher App - Dedicated patching interface
 import { Utils } from './utils.js';
 import { imagePopup } from './image-popup.js';
+import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
+import { StateManager } from '../utils/state-manager.js';
 
 class ROMPatcherApp {
     constructor() {
@@ -18,11 +20,35 @@ class ROMPatcherApp {
     }
     
     async init() {
+        await initBadgeRenderer();
         this.initializeIcons();
         await this.loadPatches();
         this.setupEventListeners();
         this.setupSearch();
+        this.restoreState();
         this.handleURLParameters();
+    }
+    
+    restoreState() {
+        const state = StateManager.loadState('patcher');
+        if (!state) return;
+        
+        const searchInput = document.getElementById('patchSearch');
+        if (searchInput && state.searchQuery) {
+            searchInput.value = state.searchQuery;
+            this.handleSearch(state.searchQuery);
+        }
+        
+        if (state.selectedPatchId) {
+            setTimeout(() => this.selectPatch(state.selectedPatchId), 500);
+        }
+    }
+    
+    saveState() {
+        StateManager.saveState('patcher', {
+            searchQuery: document.getElementById('patchSearch')?.value || '',
+            selectedPatchId: this.selectedPatch?.id || null
+        });
     }
     
     initializeIcons() {
@@ -83,6 +109,7 @@ class ROMPatcherApp {
         if (searchInput) {
             searchInput.addEventListener('input', Utils.debounce((e) => {
                 this.handleSearch(e.target.value);
+                this.saveState();
             }, 300));
         }
         
@@ -121,11 +148,18 @@ class ROMPatcherApp {
                 }
             }
             
-            // Show the patcher container
+            // Move patcher content to container
             const container = document.getElementById('rom-patcher-container');
+            const placeholder = document.getElementById('rom-patcher-content-placeholder');
+            
+            // Move all content from placeholder to main container
+            while (placeholder && placeholder.firstChild) {
+                container.appendChild(placeholder.firstChild);
+            }
+            
+            // Show the patcher container
             if (container) {
                 container.style.display = 'block';
-                container.style.visibility = 'visible';
             }
             
             // Show loaded patch info
@@ -193,15 +227,21 @@ class ROMPatcherApp {
             return `
                 <div class="patch-result clickable" data-patch-id="${patch.id}">
                     <div class="patch-result-boxart">
-                        ${boxArt ? `<img src="${boxArt}" class="patch-boxart" alt="${patch.title}">` : `<div class="patch-boxart-placeholder"><i data-lucide="image" width="24" height="24"></i></div>`}
+                        ${boxArt ? 
+                            `<div class="image-container">
+                                <img src="${boxArt}" class="patch-boxart" alt="${patch.title}" onerror="this.parentElement.classList.add('has-broken-image')">
+                                <div class="image-fallback"><i data-lucide="image-off" width="24" height="24"></i></div>
+                            </div>` : 
+                            `<div class="image-fallback"><i data-lucide="image-off" width="24" height="24"></i></div>`
+                        }
                     </div>
                     <div class="patch-result-content">
                         <h4>${patch.title}</h4>
                         <p class="patch-description">${description}</p>
                         <div class="patch-meta-row">
                             <div class="patch-badges">
-                                ${patch.meta?.baseRom ? `<span class="badge badge-rom" data-rom="${patch.meta.baseRom}">${patch.meta.baseRom}</span>` : ''}
-                                ${patch.meta?.system ? `<span class="badge badge-system" data-system="${patch.meta.system}">${patch.meta.system}</span>` : ''}
+                                ${renderBadge('rom', patch.meta?.baseRom)}
+                                ${renderBadge('system', patch.meta?.system)}
                             </div>
                             <div class="status-indicator">
                                 <div class="status-dot ${statusClass}"></div>
@@ -233,6 +273,8 @@ class ROMPatcherApp {
         
         this.selectedPatch = this.patches.find(p => p.id === patchId);
         if (!this.selectedPatch) return;
+        
+        this.saveState();
         
         this.hideOtherResults(patchId);
         this.positionAndShowDetails(patchId);
@@ -274,9 +316,21 @@ class ROMPatcherApp {
     
     deselectPatch() {
         this.selectedPatch = null;
+        this.saveState();
         this.hideSelectedPatchWithAnimation();
         
-        // Hide patcher widget when no patch selected
+        // Unload patch from patcher widget
+        if (typeof RomPatcherWeb !== 'undefined' && typeof RomPatcherWeb.providePatchFile === 'function') {
+            RomPatcherWeb.providePatchFile(null);
+        }
+        
+        // Hide loaded patch info
+        const infoContainer = document.getElementById('rom-patcher-loaded-patch-info');
+        if (infoContainer) {
+            infoContainer.style.display = 'none';
+        }
+        
+        // Hide patcher widget
         const container = document.getElementById('rom-patcher-container');
         if (container) {
             container.style.display = 'none';
@@ -454,7 +508,7 @@ class ROMPatcherApp {
         
         let displayMessage = message;
         if (patchFile) {
-            const fileName = patchFile.split('/').pop().replace(/\.(bps|ips|ups|xdelta)$/i, '');
+            const fileName = patchFile.split('/').pop();
             displayMessage = `${message}<br><small style="opacity: 0.8;">${fileName}</small>`;
         }
         

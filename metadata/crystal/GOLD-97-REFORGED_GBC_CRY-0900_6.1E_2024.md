@@ -1,5 +1,6 @@
 ---
 title: "Gold 97: Reforged"
+file: "../patches/crystal/GOLD-97-REFORGED_GBC_CRY-0900_6.1E_2024.ips"
 baseRom: "Crystal"
 system: "GBC"
 status: "Completed"

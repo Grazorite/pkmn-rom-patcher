@@ -1,0 +1,35 @@
+name: Generate Badge CSS
+
+on:
+  push:
+    paths:
+      - 'config/systems.json'
+      - 'config/base-roms.json'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Generate CSS
+        run: python scripts/generate_badge_css.py
+      
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/assets/css/generated/badges.css
+          git diff --staged --quiet || git commit -m "chore: regenerate badge CSS from configs"
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

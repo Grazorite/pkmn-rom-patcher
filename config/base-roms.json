@@ -1,0 +1,393 @@
+{
+  "Alpha Sapphire": {
+    "abbreviation": "AS",
+    "system": "3DS",
+    "fullName": "Alpha Sapphire",
+    "variants": [
+      {"crc": "1123", "region": "US", "revision": "rev2"},
+      {"crc": "1128", "region": "EU", "revision": "rev2"}
+    ],
+    "colors": {"primary": "#4682B4", "secondary": "#2F4F4F", "text": "#E6F3FF"}
+  },
+  "Black": {
+    "abbreviation": "B",
+    "system": "NDS",
+    "fullName": "Black",
+    "variants": [
+      {"crc": "5585", "region": "US, EU", "revision": null}
+    ],
+    "colors": {"primary": "#2F4F4F", "secondary": "#000000", "text": "#F0F0F0"}
+  },
+  "Black 2": {
+    "abbreviation": "B2",
+    "system": "NDS",
+    "fullName": "Black 2",
+    "variants": [
+      {"crc": "6149", "region": "US, EU", "revision": null}
+    ],
+    "colors": {"primary": "#191970", "secondary": "#000080", "text": "#E6E6FF"}
+  },
+  "Blue": {
+    "abbreviation": "BL",
+    "system": "GB",
+    "fullName": "Blue",
+    "variants": [
+      {"crc": "1035", "region": "US, EU", "revision": null}
+    ],
+    "colors": {"primary": "#0066FF", "secondary": "#0044CC", "text": "#E6F3FF"}
+  },
+  "Brilliant Diamond": {
+    "abbreviation": "BD",
+    "system": "NSW",
+    "fullName": "Brilliant Diamond",
+    "variants": [],
+    "colors": {"primary": "#87CEEB", "secondary": "#4682B4", "text": "#F0F8FF"}
+  },
+  "Colosseum": {
+    "abbreviation": "COL",
+    "system": "GC",
+    "fullName": "Colosseum",
+    "variants": [],
+    "colors": {"primary": "#8A2BE2", "secondary": "#6A1B9A", "text": "#F3E8FF"}
+  },
+  "Conquest": {
+    "abbreviation": "CONQ",
+    "system": "NDS",
+    "fullName": "Conquest",
+    "variants": [
+      {"crc": "6073", "region": "EU", "revision": null},
+      {"crc": "6093", "region": "US, AU", "revision": null},
+      {"crc": "6583", "region": "US, AU", "revision": "rev1"}
+    ],
+    "colors": {"primary": "#800080", "secondary": "#4B0082", "text": "#F3E8FF"}
+  },
+  "Crystal": {
+    "abbreviation": "CRY",
+    "system": "GBC",
+    "fullName": "Crystal",
+    "variants": [
+      {"crc": "0900", "region": "US", "revision": null},
+      {"crc": "0901", "region": "US, EU", "revision": "rev1"},
+      {"crc": "1472", "region": "AU", "revision": null}
+    ],
+    "colors": {"primary": "#4FD0FF", "secondary": "#00BFFF", "text": "#003D4D"}
+  },
+  "Diamond": {
+    "abbreviation": "D",
+    "system": "NDS",
+    "fullName": "Diamond",
+    "variants": [
+      {"crc": "1015", "region": "US", "revision": "rev5"},
+      {"crc": "1284", "region": "EU", "revision": "rev5"}
+    ],
+    "colors": {"primary": "#87CEEB", "secondary": "#4682B4", "text": "#F0F8FF"}
+  },
+  "Emerald": {
+    "abbreviation": "EM",
+    "system": "GBA",
+    "fullName": "Emerald",
+    "variants": [
+      {"crc": "1961", "region": "US, EU", "revision": null}
+    ],
+    "colors": {"primary": "#00A000", "secondary": "#007700", "text": "#E6FFE6"}
+  },
+  "Fire Emblem: The Sacred Stones": {
+    "abbreviation": "FE8",
+    "system": "GBA",
+    "fullName": "Fire Emblem: The Sacred Stones",
+    "variants": [],
+    "colors": {"primary": "#B22222", "secondary": "#8B0000", "text": "#FFE6E6"}
+  },
+  "FireRed": {
+    "abbreviation": "FR",
+    "system": "GBA",
+    "fullName": "FireRed",
+    "variants": [
+      {"crc": "1616", "region": "US, EU", "revision": null},
+      {"crc": "1672", "region": "US, EU", "revision": "rev1"}
+    ],
+    "colors": {"primary": "#FF4500", "secondary": "#FF6347", "text": "#FFF0E6"}
+  },
+  "Gold": {
+    "abbreviation": "G",
+    "system": "GBC",
+    "fullName": "Gold",
+    "variants": [
+      {"crc": "0907", "region": "US, EU", "revision": null}
+    ],
+    "colors": {"primary": "#DAA520", "secondary": "#B8860B", "text": "#2D1B05"}
+  },
+  "Green": {
+    "abbreviation": "GR",
+    "system": "GB",
+    "fullName": "Green",
+    "variants": [],
+    "colors": {"primary": "#00BB00", "secondary": "#008800", "text": "#E6FFE6"}
+  },
+  "HeartGold": {
+    "abbreviation": "HG",
+    "system": "NDS",
+    "fullName": "HeartGold",
+    "variants": [
+      {"crc": "4787", "region": "US", "revision": null},
+      {"crc": "4832", "region": "SP", "revision": null},
+      {"crc": "4839", "region": "EU", "revision": null}
+    ],
+    "colors": {"primary": "#FFD700", "secondary": "#FFA500", "text": "#8B4513"}
+  },
+  "LeafGreen": {
+    "abbreviation": "LG",
+    "system": "GBA",
+    "fullName": "LeafGreen",
+    "variants": [
+      {"crc": "1617", "region": "US, EU", "revision": null},
+      {"crc": "1668", "region": "US, EU", "revision": "rev1"}
+    ],
+    "colors": {"primary": "#32CD32", "secondary": "#228B22", "text": "#E6FFE6"}
+  },
+  "Let's Go! Eevee": {
+    "abbreviation": "LGE",
+    "system": "NSW",
+    "fullName": "Let's Go! Eevee",
+    "variants": [],
+    "colors": {"primary": "#FFD700", "secondary": "#FFA500", "text": "#8B4513"}
+  },
+  "Moon": {
+    "abbreviation": "M",
+    "system": "3DS",
+    "fullName": "Moon",
+    "variants": [
+      {"crc": "1605", "region": "EU", "revision": null},
+      {"crc": "1610", "region": "US", "revision": null}
+    ],
+    "colors": {"primary": "#4B0082", "secondary": "#2F1B69", "text": "#F3E8FF"}
+  },
+  "Omega Ruby": {
+    "abbreviation": "OR",
+    "system": "3DS",
+    "fullName": "Omega Ruby",
+    "variants": [
+      {"crc": "1124", "region": "US", "revision": "rev2"},
+      {"crc": "1129", "region": "EU", "revision": "rev2"}
+    ],
+    "colors": {"primary": "#FF4500", "secondary": "#FF6347", "text": "#FFF0E6"}
+  },
+  "Pinball": {
+    "abbreviation": "PB",
+    "system": "GBC",
+    "fullName": "Pinball",
+    "variants": [
+      {"crc": "0924", "region": "EU", "revision": null},
+      {"crc": "0926", "region": "US", "revision": null}
+    ],
+    "colors": {"primary": "#FF69B4", "secondary": "#FF1493", "text": "#4D0026"}
+  },
+  "Platinum": {
+    "abbreviation": "PT",
+    "system": "NDS",
+    "fullName": "Platinum",
+    "variants": [
+      {"crc": "3541", "region": "US", "revision": null},
+      {"crc": "3797", "region": "EU", "revision": null},
+      {"crc": "4997", "region": "US", "revision": "rev1"}
+    ],
+    "colors": {"primary": "#C0C0C0", "secondary": "#808080", "text": "#2F2F2F"}
+  },
+  "Pokemon Mystery Dungeon: Explorers of Sky": {
+    "abbreviation": "PMD-EOS",
+    "system": "NDS",
+    "fullName": "Mystery Dungeon: Explorers of Sky",
+    "variants": [
+      {"crc": "4273", "region": "US", "revision": null},
+      {"crc": "4468", "region": "EU", "revision": null}
+    ],
+    "colors": {"primary": "#FFA500", "secondary": "#FF8C00", "text": "#4D2600"}
+  },
+  "Pokemon Mystery Dungeon: Go For It! Light Adventure Squad!": {
+    "abbreviation": "PMD-LAS",
+    "system": "WII",
+    "fullName": "Mystery Dungeon: Go For It! Light Adventure Squad!",
+    "variants": [
+      {"crc": "02321", "region": "JP", "revision": null}
+    ],
+    "colors": {"primary": "#FFA500", "secondary": "#FF8C00", "text": "#4D2600"}
+  },
+  "Pokemon Mystery Dungeon: Red Rescue Team": {
+    "abbreviation": "PMD-R",
+    "system": "GBA",
+    "fullName": "Mystery Dungeon: Red Rescue Team",
+    "variants": [
+      {"crc": "2455", "region": "US, AU", "revision": null},
+      {"crc": "2536", "region": "EU", "revision": null}
+    ],
+    "colors": {"primary": "#FF1111", "secondary": "#CC0000", "text": "#FFE6E6"}
+  },
+  "Pokemon Mystery Dungeon: Rescue Team DX": {
+    "abbreviation": "PMD-DX",
+    "system": "NSW",
+    "fullName": "Mystery Dungeon: Rescue Team DX",
+    "variants": [],
+    "colors": {"primary": "#FFA500", "secondary": "#FF8C00", "text": "#4D2600"}
+  },
+  "Red": {
+    "abbreviation": "R",
+    "system": "GB",
+    "fullName": "Red",
+    "variants": [
+      {"crc": "1038", "region": "US, EU", "revision": null}
+    ],
+    "colors": {"primary": "#FF1111", "secondary": "#CC0000", "text": "#FFE6E6"}
+  },
+  "Ruby": {
+    "abbreviation": "RU",
+    "system": "GBA",
+    "fullName": "Ruby",
+    "variants": [
+      {"crc": "0891", "region": "US, EU", "revision": null},
+      {"crc": "1223", "region": "US, EU", "revision": "rev1"},
+      {"crc": "1981", "region": "US, EU", "revision": "rev2"}
+    ],
+    "colors": {"primary": "#A00000", "secondary": "#800000", "text": "#FFE6E6"}
+  },
+  "Rumble": {
+    "abbreviation": "RMB",
+    "system": "WII",
+    "fullName": "Rumble",
+    "variants": [
+      {"crc": "02340", "region": "US", "revision": null},
+      {"crc": "02342", "region": "EU", "revision": null}
+    ],
+    "colors": {"primary": "#FF6347", "secondary": "#FF4500", "text": "#4D1A00"}
+  },
+  "Scarlet": {
+    "abbreviation": "SC",
+    "system": "NSW",
+    "fullName": "Scarlet",
+    "variants": [],
+    "colors": {"primary": "#DC143C", "secondary": "#B22222", "text": "#FFE6E6"}
+  },
+  "Silver": {
+    "abbreviation": "S",
+    "system": "GBC",
+    "fullName": "Silver",
+    "variants": [
+      {"crc": "0911", "region": "US, EU", "revision": null}
+    ],
+    "colors": {"primary": "#C0C0C0", "secondary": "#A0A0A0", "text": "#2F2F2F"}
+  },
+  "SoulSilver": {
+    "abbreviation": "SS",
+    "system": "NDS",
+    "fullName": "SoulSilver",
+    "variants": [
+      {"crc": "4788", "region": "US, AU", "revision": null},
+      {"crc": "4791", "region": "FR", "revision": null},
+      {"crc": "4840", "region": "EU", "revision": null}
+    ],
+    "colors": {"primary": "#C0C0C0", "secondary": "#A0A0A0", "text": "#2F2F2F"}
+  },
+  "Super Mystery Dungeon": {
+    "abbreviation": "PMD-SMD",
+    "system": "3DS",
+    "fullName": "Super Mystery Dungeon",
+    "variants": [
+      {"crc": "1400", "region": "US", "revision": null},
+      {"crc": "1452", "region": "EU", "revision": null}
+    ],
+    "colors": {"primary": "#FFA500", "secondary": "#FF8C00", "text": "#4D2600"}
+  },
+  "Sword": {
+    "abbreviation": "SW",
+    "system": "NSW",
+    "fullName": "Sword",
+    "variants": [],
+    "colors": {"primary": "#4682B4", "secondary": "#2F4F4F", "text": "#E6F3FF"}
+  },
+  "Trading Card Game": {
+    "abbreviation": "TCG",
+    "system": "GBC",
+    "fullName": "Trading Card Game",
+    "variants": [],
+    "colors": {"primary": "#FF1493", "secondary": "#DC143C", "text": "#4D0026"}
+  },
+  "Trading Card Game 2: The Invasion of Team GR!": {
+    "abbreviation": "TCG2",
+    "system": "GBC",
+    "fullName": "Trading Card Game 2: The Invasion of Team GR!",
+    "variants": [],
+    "colors": {"primary": "#FF1493", "secondary": "#DC143C", "text": "#ffffff"}
+  },
+  "Ultra Moon": {
+    "abbreviation": "UM",
+    "system": "3DS",
+    "fullName": "Ultra Moon",
+    "variants": [
+      {"crc": "1772", "region": "EU", "revision": null},
+      {"crc": "1776", "region": "US", "revision": null}
+    ],
+    "colors": {"primary": "#483D8B", "secondary": "#2F1B69", "text": "#E6E0FF"}
+  },
+  "Ultra Sun": {
+    "abbreviation": "US",
+    "system": "3DS",
+    "fullName": "Ultra Sun",
+    "variants": [
+      {"crc": "1773", "region": "EU", "revision": null},
+      {"crc": "1777", "region": "US", "revision": null}
+    ],
+    "colors": {"primary": "#FF8C00", "secondary": "#FF7F50", "text": "#4D2600"}
+  },
+  "White": {
+    "abbreviation": "W",
+    "system": "NDS",
+    "fullName": "White",
+    "variants": [
+      {"crc": "5584", "region": "US, EU", "revision": null},
+      {"crc": "5596", "region": "SP", "revision": null}
+    ],
+    "colors": {"primary": "#F8F8FF", "secondary": "#E6E6FA", "text": "#2F4F4F"}
+  },
+  "White 2": {
+    "abbreviation": "W2",
+    "system": "NDS",
+    "fullName": "White 2",
+    "variants": [
+      {"crc": "6150", "region": "US, EU", "revision": null}
+    ],
+    "colors": {"primary": "#FFFAFA", "secondary": "#E6E6FA", "text": "#2F4F4F"}
+  },
+  "X": {
+    "abbreviation": "X",
+    "system": "3DS",
+    "fullName": "X",
+    "variants": [
+      {"crc": "0450", "region": "EU", "revision": null},
+      {"crc": "0511", "region": "US", "revision": null}
+    ],
+    "colors": {"primary": "#1E90FF", "secondary": "#0066CC", "text": "#ffffff"}
+  },
+  "XD: Gale of Darkness": {
+    "abbreviation": "XD",
+    "system": "GC",
+    "fullName": "XD: Gale of Darkness",
+    "variants": [],
+    "colors": {"primary": "#4B0082", "secondary": "#2F1B69", "text": "#E6E0FF"}
+  },
+  "Y": {
+    "abbreviation": "Y",
+    "system": "3DS",
+    "fullName": "Y",
+    "variants": [
+      {"crc": "0451", "region": "EU", "revision": null},
+      {"crc": "0510", "region": "US", "revision": null}
+    ],
+    "colors": {"primary": "#DC143C", "secondary": "#B22222", "text": "#FFE6E6"}
+  },
+  "Yellow": {
+    "abbreviation": "YEL",
+    "system": "GB",
+    "fullName": "Yellow",
+    "variants": [],
+    "colors": {"primary": "#FFDD00", "secondary": "#FFB000", "text": "#8B4513"}
+  }
+}
