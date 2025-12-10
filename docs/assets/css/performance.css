@@ -1,5 +1,16 @@
 /* Performance optimizations */
 
+/* Critical rendering optimizations */
+.hack-grid {
+    contain: layout style paint;
+    will-change: contents;
+}
+
+.hack-card {
+    contain: layout style;
+    will-change: transform;
+}
+
 /* Lazy loading styles */
 .lazy-load {
     opacity: 0;
@@ -8,6 +19,25 @@
 
 .lazy-load.loaded {
     opacity: 1;
+}
+
+/* Reduce layout thrashing */
+.search-input {
+    contain: layout;
+}
+
+.filter-options {
+    contain: layout;
+}
+
+/* Optimize text rendering */
+html {
+    text-rendering: optimizeSpeed;
+}
+
+.hack-card-title,
+.hack-card-author {
+    text-rendering: optimizeLegibility;
 }
 
 /* Placeholder for missing images */
@@ -26,12 +56,33 @@
 
 /* Optimize animations for performance */
 .hack-card {
-    will-change: transform;
     backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .hack-card:hover {
     transform: translateZ(0) scale(1.02);
+}
+
+/* Optimize scrolling performance */
+.main-content {
+    overflow-anchor: none;
+}
+
+/* Fix scroll anchoring issues */
+body,
+.app-container,
+.hack-grid {
+    overflow-anchor: none;
+}
+
+/* Reduce paint complexity */
+.status-dot {
+    contain: layout style paint;
+}
+
+.badge {
+    contain: layout style paint;
 }
 
 /* Reduce paint on scroll */
@@ -39,14 +90,56 @@
     contain: layout style paint;
 }
 
-/* Optimize image rendering */
+/* Optimize image rendering - object-fit moved to design-system/image-display.css */
 .hack-card-image img {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
 }
 
 .hack-card-image img.low-res {
     image-rendering: pixelated;
+}
+
+.hack-card-image img[loading="lazy"] {
+    opacity: 0;
+}
+
+.hack-card-image img[loading="lazy"].loaded {
+    opacity: 1;
+}
+
+/* Intersection Observer loading states */
+.hack-card-image {
+    position: relative;
+    background: var(--surface-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.hack-card-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        var(--surface-color) 25%, 
+        var(--border-color) 50%, 
+        var(--surface-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-bg 1.5s infinite;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.hack-card-image.loaded::before {
+    opacity: 0;
 }
 
 /* GPU acceleration for smooth animations */
@@ -83,35 +176,7 @@
     to { transform: rotate(360deg); }
 }
 
-/* Intersection observer loading placeholder */
-.hack-card-image {
-    position: relative;
-    overflow: hidden;
-}
+/* Duplicate rules removed - already defined above */
 
-.hack-card-image::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, 
-        var(--surface-color) 25%, 
-        var(--border-color) 50%, 
-        var(--surface-color) 75%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
 
-.hack-card-image:has(.lazy-load:not(.loaded))::before {
-    opacity: 1;
-}
 
-@keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}

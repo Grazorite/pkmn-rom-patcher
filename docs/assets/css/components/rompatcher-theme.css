@@ -6,6 +6,50 @@
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     min-width: 420px;
+    border: none !important;
+}
+
+/* Remove any pink/magenta borders from RomPatcher.js */
+#rom-patcher-container *,
+#rom-patcher-container *:before,
+#rom-patcher-container *:after {
+    border-color: var(--border-color) !important;
+}
+
+/* Override any default RomPatcher.js styling */
+#rom-patcher-container .rom-patcher-row,
+#rom-patcher-container .margin-bottom,
+#rom-patcher-container .text-center,
+#rom-patcher-container .text-selectable,
+#rom-patcher-container .text-mono,
+#rom-patcher-container .text-muted,
+#rom-patcher-row-file-rom,
+#rom-patcher-rom-info,
+#rom-patcher-row-apply,
+#rom-patcher-loaded-patch-info {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Force override any pink/magenta styling */
+#rom-patcher-container,
+#rom-patcher-container *,
+#rom-patcher-container *:before,
+#rom-patcher-container *:after {
+    border-color: var(--border-color, #2a2a3e) !important;
+}
+
+/* Specific overrides for common RomPatcher elements */
+.rom-patcher-row,
+.margin-bottom,
+.text-center,
+.text-selectable,
+.text-mono,
+.text-muted {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* File input styling */

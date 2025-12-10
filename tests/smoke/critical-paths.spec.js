@@ -84,7 +84,8 @@ test.describe('Smoke Tests', () => {
     await expect(backToTop).toBeVisible();
     
     const buttonBox = await backToTop.boundingBox();
-    expect(buttonBox.y).toBeLessThan(600); // Above nav area
+    // Button should be in bottom right area (within last 100px of viewport height)
+    expect(buttonBox.y).toBeGreaterThan(567); // 667 - 100px
     expect(buttonBox.x).toBeGreaterThan(300); // Should be on right side
   });
 

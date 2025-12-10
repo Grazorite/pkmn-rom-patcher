@@ -251,10 +251,7 @@
     transform: translateZ(0);
 }
 
-.status-completed { background: var(--success); }
-.status-beta { background: var(--warning); }
-.status-alpha { background: var(--error); }
-.status-perpetual-beta { background: var(--warning); }
+/* Status colors moved to design-system/status-system.css for consistency */
 
 .star-filled {
     color: #fbbf24;

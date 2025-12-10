@@ -1,0 +1,40 @@
+/* Centralized Status System - Single source of truth for status colors */
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+}
+
+/* Status Colors - Using CSS variables for consistency */
+.status-completed,
+.status-complete { 
+    background: var(--success); 
+}
+
+.status-beta,
+.status-perpetual-beta { 
+    background: var(--warning); 
+}
+
+.status-alpha,
+.status-in-progress { 
+    background: var(--error); 
+}
+
+/* Ensure patcher page uses same colors */
+.status-dot.status-completed,
+.status-dot.status-complete { 
+    background: var(--success); 
+}
+
+.status-dot.status-beta,
+.status-dot.status-perpetual-beta { 
+    background: var(--warning); 
+}
+
+.status-dot.status-alpha,
+.status-dot.status-in-progress { 
+    background: var(--error); 
+}

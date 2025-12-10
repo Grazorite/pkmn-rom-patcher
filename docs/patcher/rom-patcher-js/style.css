@@ -22,6 +22,9 @@
 	color: black;
 	max-width: 640px;
 	margin: 0 auto;
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
 }
 
 /* Rom Pacher JS - text classes */
@@ -515,4 +518,21 @@
 #rom-patcher-powered a:hover {
 	text-decoration: underline;
 	opacity: 1;
+}
+
+/* UNIVERSAL BORDER OVERRIDE - Remove all pink/magenta borders */
+#rom-patcher-container,
+#rom-patcher-container *,
+#rom-patcher-container *:before,
+#rom-patcher-container *:after,
+.rom-patcher-row,
+.margin-bottom,
+.text-center,
+.text-selectable,
+.text-mono,
+.text-muted {
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	border-color: transparent !important;
 }

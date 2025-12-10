@@ -68,13 +68,14 @@ export class PerformanceMonitor {
         this.metrics.get(name).push({
             value,
             timestamp: Date.now(),
-            entry
+            entry,
+            url: entry.url || window.location.href
         });
 
-        // Keep only last 100 entries per metric
+        // Keep only last 50 entries per metric (reduced memory usage)
         const entries = this.metrics.get(name);
-        if (entries.length > 100) {
-            entries.splice(0, entries.length - 100);
+        if (entries.length > 50) {
+            entries.splice(0, entries.length - 50);
         }
 
         // Log significant performance issues
@@ -83,14 +84,42 @@ export class PerformanceMonitor {
 
     checkThresholds(name, value) {
         const thresholds = {
-            LCP: 2500, // 2.5s
-            FID: 100,  // 100ms
-            CLS: 0.1,  // 0.1
-            longtask: 50 // 50ms
+            LCP: 2500, // 2.5s (realistic target)
+            FID: 80,   // 80ms
+            CLS: 0.08, // 0.08
+            longtask: 40 // 40ms
         };
 
         if (thresholds[name] && value > thresholds[name]) {
-            console.warn(`Performance threshold exceeded for ${name}: ${value}ms (threshold: ${thresholds[name]}ms)`);
+            console.warn(`Performance threshold exceeded for ${name}: ${Math.round(value)}ms (threshold: ${thresholds[name]}ms)`);
+            
+            // Identify LCP element for debugging
+            if (name === 'LCP') {
+                this.identifyLCPElement(value);
+                if (value > 2500) {
+                    console.error('Critical LCP performance issue detected');
+                }
+            }
+        } else if (thresholds[name]) {
+            console.log(`✓ ${name}: ${Math.round(value)}ms (under ${thresholds[name]}ms threshold)`);
+        }
+    }
+
+    identifyLCPElement(lcpTime) {
+        // Get LCP element details for debugging
+        const lcpEntries = this.metrics.get('LCP');
+        if (lcpEntries && lcpEntries.length > 0) {
+            const latestLCP = lcpEntries[lcpEntries.length - 1];
+            const element = latestLCP.entry.element;
+            if (element) {
+                console.group(`🎯 LCP Element Analysis (${Math.round(lcpTime)}ms)`);
+                console.log('Element:', element);
+                console.log('Tag:', element.tagName);
+                console.log('Classes:', element.className);
+                console.log('ID:', element.id);
+                console.log('Size:', latestLCP.entry.size);
+                console.groupEnd();
+            }
         }
     }
 
