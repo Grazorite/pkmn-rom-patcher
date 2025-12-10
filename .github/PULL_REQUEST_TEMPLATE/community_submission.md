@@ -15,6 +15,7 @@
 - [ ] No copyright violations (original work or properly licensed)
 - [ ] Tested and working with specified base ROM
 - [ ] All links are valid and accessible
+- [ ] Filename follows [naming convention](../NAMING_CONVENTION.md) (auto-validated)
 
 ## Additional Information
 
