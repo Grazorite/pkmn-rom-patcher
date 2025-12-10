@@ -83,17 +83,11 @@
                 </div>
                 <div class="progress-step" data-step="3">
                     <div class="step-circle">
-                        <i data-lucide="image" width="20" height="20"></i>
+                        <i data-lucide="folder-plus" width="20" height="20"></i>
                     </div>
-                    <span>Media</span>
+                    <span>Assets & Files</span>
                 </div>
                 <div class="progress-step" data-step="4">
-                    <div class="step-circle">
-                        <i data-lucide="package" width="20" height="20"></i>
-                    </div>
-                    <span>Patch File</span>
-                </div>
-                <div class="progress-step" data-step="5">
                     <div class="step-circle">
                         <i data-lucide="check-circle" width="20" height="20"></i>
                     </div>
@@ -106,77 +100,129 @@
                 <!-- Step 1: Basic Info -->
                 <div class="form-step active" data-step="1">
                     <h2>Basic Information</h2>
-                    <div class="form-group">
-                        <label for="title">
-                            <i data-lucide="type" width="16" height="16"></i>
-                            Hack Title *
-                        </label>
-                        <input type="text" id="title" name="title" required placeholder="e.g., Crystal Clear">
-                        <small class="form-hint">The name of your ROM hack</small>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title">
+                                <i data-lucide="type" width="16" height="16"></i>
+                                Hack Title *
+                            </label>
+                            <input type="text" id="title" name="title" required placeholder="e.g., Crystal Clear">
+                            <small class="form-hint">The name of your ROM hack</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="baseRom">
+                                <i data-lucide="disc" width="16" height="16"></i>
+                                Base ROM *
+                            </label>
+                            <select id="baseRom" name="baseRom" required>
+                                <option value="">Select base ROM...</option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="baseRom">
-                            <i data-lucide="disc" width="16" height="16"></i>
-                            Base ROM *
-                        </label>
-                        <select id="baseRom" name="baseRom" required>
-                            <option value="">Select base ROM...</option>
-                        </select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="author">
+                                <i data-lucide="user" width="16" height="16"></i>
+                                Author *
+                            </label>
+                            <input type="text" id="author" name="author" required placeholder="Your name or username">
+                        </div>
+                        <div class="form-group">
+                            <label for="version">
+                                <i data-lucide="git-branch" width="16" height="16"></i>
+                                Version
+                            </label>
+                            <input type="text" id="version" name="version" placeholder="e.g., 2.0.3">
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="author">
-                            <i data-lucide="user" width="16" height="16"></i>
-                            Author *
-                        </label>
-                        <input type="text" id="author" name="author" required placeholder="Your name or username">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="status">
+                                <i data-lucide="activity" width="16" height="16"></i>
+                                Status *
+                            </label>
+                            <select id="status" name="status" required>
+                                <option value="">Select status...</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Perpetual Beta">Perpetual Beta</option>
+                                <option value="Updating">Updating</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="In Development">In Development</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="difficulty">
+                                <i data-lucide="trending-up" width="16" height="16"></i>
+                                Difficulty *
+                            </label>
+                            <select id="difficulty" name="difficulty" required>
+                                <option value="">Select difficulty...</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Hard">Hard</option>
+                                <option value="Challenging">Challenging</option>
+                                <option value="Kaizo">Kaizo</option>
+                                <option value="Customisable">Customisable</option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="version">
-                            <i data-lucide="git-branch" width="16" height="16"></i>
-                            Version
-                        </label>
-                        <input type="text" id="version" name="version" placeholder="e.g., 2.0.3">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="released">
+                                <i data-lucide="calendar" width="16" height="16"></i>
+                                Release Date *
+                            </label>
+                            <input type="date" id="released" name="released" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="playtime">
+                                <i data-lucide="clock" width="16" height="16"></i>
+                                Playtime
+                            </label>
+                            <input type="text" id="playtime" name="playtime" placeholder="e.g., 8 gyms + E4">
+                        </div>
                     </div>
-                </div>
-
-                <!-- Step 2: Details -->
-                <div class="form-step" data-step="2">
-                    <h2>Hack Details</h2>
+                    
                     <div class="form-group">
                         <label for="description">
                             <i data-lucide="align-left" width="16" height="16"></i>
                             Description *
                         </label>
-                        <textarea id="description" name="description" required rows="6" placeholder="Describe your ROM hack..."></textarea>
+                        <textarea id="description" name="description" required rows="4" placeholder="Describe your ROM hack..."></textarea>
                         <small class="form-hint">Supports Markdown formatting</small>
                     </div>
-                    
+                </div>
+
+                <!-- Step 2: Details -->
+                <div class="form-step" data-step="2">
+                    <h2>Additional Details</h2>
                     <!-- Dynamic fields will be inserted here -->
                     <div id="detailsFieldsContainer"></div>
                 </div>
 
-                <!-- Step 3: Media -->
+                <!-- Step 3: Assets & Files -->
                 <div class="form-step" data-step="3">
-                    <h2>Media & Images</h2>
-                    <div class="form-group">
-                        <label for="boxArt">
-                            <i data-lucide="image" width="16" height="16"></i>
-                            Box Art URL
-                        </label>
-                        <input type="url" id="boxArt" name="boxArt" placeholder="https://example.com/boxart.png">
-                        <small class="form-hint">Direct link to box art image</small>
-                    </div>
+                    <h2>Assets & Files</h2>
                     
-                    <div class="form-group">
-                        <label for="banner">
-                            <i data-lucide="layout" width="16" height="16"></i>
-                            Banner URL
-                        </label>
-                        <input type="url" id="banner" name="banner" placeholder="https://example.com/banner.png">
-                        <small class="form-hint">Wide banner image for detail view</small>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="boxArt">
+                                <i data-lucide="image" width="16" height="16"></i>
+                                Box Art URL
+                            </label>
+                            <input type="url" id="boxArt" name="boxArt" placeholder="https://example.com/boxart.png">
+                            <small class="form-hint">Direct link to box art image</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="banner">
+                                <i data-lucide="layout" width="16" height="16"></i>
+                                Banner URL
+                            </label>
+                            <input type="url" id="banner" name="banner" placeholder="https://example.com/banner.png">
+                            <small class="form-hint">Wide banner image for detail view</small>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -184,15 +230,11 @@
                             <i data-lucide="link" width="16" height="16"></i>
                             External Links
                         </label>
-                        <input type="url" id="website" name="website" placeholder="Website URL">
-                        <input type="url" id="discord" name="discord" placeholder="Discord invite URL" style="margin-top: 8px;">
-                        <input type="url" id="documentation" name="documentation" placeholder="Documentation URL" style="margin-top: 8px;">
+                        <input type="url" id="website" name="website" placeholder="Website URL" style="margin-bottom: 8px;">
+                        <input type="url" id="discord" name="discord" placeholder="Discord invite URL" style="margin-bottom: 8px;">
+                        <input type="url" id="documentation" name="documentation" placeholder="Documentation URL">
                     </div>
-                </div>
-
-                <!-- Step 4: Patch File -->
-                <div class="form-step" data-step="4">
-                    <h2>Patch File</h2>
+                    
                     <div class="form-group">
                         <label>
                             <i data-lucide="package" width="16" height="16"></i>
@@ -229,8 +271,8 @@
                     </div>
                 </div>
 
-                <!-- Step 5: Review -->
-                <div class="form-step" data-step="5">
+                <!-- Step 4: Review -->
+                <div class="form-step" data-step="4">
                     <h2>Review & Submit</h2>
                     <div class="preview-card">
                         <div id="previewContent"></div>
