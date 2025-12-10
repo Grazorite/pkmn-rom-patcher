@@ -6,6 +6,7 @@
     z-index: 100 !important;
     isolation: isolate;
     margin-bottom: 2rem;
+    display: none; /* Hidden by default until patch selected */
 }
 
 /* Search section always below patcher */

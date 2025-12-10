@@ -3,6 +3,7 @@ import { SubmissionHandler } from '../services/submission-handler.js';
 import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
 import { renderDetailsStep } from '../utils/form-renderer.js';
 import { STATUS_COLORS } from '../config/metadata-fields.js';
+import { StateManager } from '../utils/state-manager.js';
 
 class SubmitForm {
     constructor() {
@@ -18,9 +19,17 @@ class SubmitForm {
         await initBadgeRenderer();
         await this.loadBaseRoms();
         this.renderDynamicFields();
+        
+        await this.waitForDOM();
+        this.restoreFormValues();
+        
         this.setupEventListeners();
         this.updateUI();
         this.initializeIcons();
+    }
+    
+    waitForDOM() {
+        return new Promise(resolve => requestAnimationFrame(resolve));
     }
     
     renderDynamicFields() {
@@ -172,6 +181,8 @@ class SubmitForm {
     
     validateStep(step) {
         const currentStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
+        if (!currentStepEl) return false;
+        
         const requiredInputs = currentStepEl.querySelectorAll('[required]');
         
         const missingFields = [];
@@ -294,13 +305,53 @@ class SubmitForm {
             data[fieldName] = selected.join(', ');
         });
         
+        data.currentStep = this.currentStep;
         this.formData = data;
-        localStorage.setItem('submitFormData', JSON.stringify(data));
+        StateManager.saveState('submitForm', data);
     }
     
     loadFromStorage() {
-        const saved = localStorage.getItem('submitFormData');
-        return saved ? JSON.parse(saved) : null;
+        return StateManager.loadState('submitForm');
+    }
+    
+    restoreFormValues() {
+        if (!this.formData) return;
+        
+        try {
+            Object.entries(this.formData).forEach(([key, value]) => {
+                if (key === 'currentStep') return;
+                
+                const input = document.getElementById(key);
+                if (!input || !input.isConnected) return;
+                
+                if (input.type === 'checkbox') {
+                    input.checked = value === 'on' || value === true;
+                } else if (input.type === 'radio') {
+                    const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
+                    if (radio && radio.isConnected) radio.checked = true;
+                } else if (input.type !== 'file') {
+                    input.value = value;
+                }
+            });
+            
+            // Restore multi-checkbox fields
+            ['tags', 'mechanics', 'variants', 'typeChanges'].forEach(fieldName => {
+                const values = this.formData[fieldName];
+                if (!values) return;
+                
+                const valueArray = values.split(',').map(v => v.trim());
+                valueArray.forEach(val => {
+                    const checkbox = document.querySelector(`input[name="${fieldName}[]"][value="${val}"]`);
+                    if (checkbox && checkbox.isConnected) checkbox.checked = true;
+                });
+            });
+            
+            // Don't restore currentStep - always start at Step 1
+            // This prevents validation issues with dynamically added fields
+            this.currentStep = 1;
+        } catch (error) {
+            console.warn('State restoration failed:', error.message);
+        }
     }
     
     renderPreview() {
@@ -345,7 +396,7 @@ class SubmitForm {
         
         if (result.success) {
             this.showSuccessModal(result.prUrl, result.prNumber);
-            localStorage.removeItem('submitFormData');
+            StateManager.clearState('submitForm');
         } else {
             this.showErrorModal(result.error);
         }

@@ -12,14 +12,19 @@
     gap: 16px;
 }
 
-.grid-card {
+.hack-grid.grid-view .hack-card {
     aspect-ratio: 1;
     padding: 0;
     overflow: hidden;
 }
 
-.grid-card .hack-card-content {
-    display: none;
+.hack-grid.grid-view .hack-card-content {
+    display: none !important;
+}
+
+.hack-grid.grid-view .hack-card-image {
+    height: 100%;
+    border-radius: 16px;
 }
 
 .grid-card-image {

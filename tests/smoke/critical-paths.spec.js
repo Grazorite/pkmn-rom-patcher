@@ -31,4 +31,23 @@ test.describe('Smoke Tests', () => {
     
     expect(errors).toHaveLength(0);
   });
+
+  test('back-to-top button appears after scroll', async ({ libraryPage }) => {
+    const backToTop = libraryPage.locator('.back-to-top');
+    
+    await libraryPage.evaluate(() => window.scrollTo(0, 500));
+    await libraryPage.waitForTimeout(200);
+    
+    await expect(backToTop).toHaveClass(/visible/);
+  });
+
+  test('state persistence does not break page load', async ({ page }) => {
+    await page.goto('/docs/library/');
+    await page.fill('#searchInput', 'test');
+    
+    await page.goto('/docs/patcher/');
+    await page.goto('/docs/library/');
+    
+    await expect(page.locator('h1')).toBeVisible();
+  });
 });

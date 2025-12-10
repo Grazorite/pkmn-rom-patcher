@@ -1,8 +1,21 @@
 // Form field renderer - Generates HTML from metadata config
 import { METADATA_FIELDS } from '../config/metadata-fields.js';
 
-function renderTooltip(text) {
-    return text ? `<i data-lucide="help-circle" class="field-tooltip" title="${text}"></i>` : '';
+function getTooltipAttrs(tooltip, fieldName) {
+    // Move tooltip to label for specific fields
+    const labelTooltipFields = ['released', 'graphics', 'antiCheat', 'playtime'];
+    if (labelTooltipFields.includes(fieldName)) {
+        return '';
+    }
+    return tooltip ? `class="tooltip" data-tooltip="${tooltip}"` : '';
+}
+
+function getLabelTooltipAttrs(tooltip, fieldName) {
+    const labelTooltipFields = ['released', 'graphics', 'antiCheat', 'playtime'];
+    if (labelTooltipFields.includes(fieldName) && tooltip) {
+        return `class="tooltip" data-tooltip="${tooltip}"`;
+    }
+    return '';
 }
 
 export function renderFormField(fieldName, config) {
@@ -15,7 +28,7 @@ export function renderFormField(fieldName, config) {
     switch (type) {
         case 'select':
             fieldHTML = `
-                <select id="${fieldName}" name="${fieldName}" ${requiredAttr}>
+                <select id="${fieldName}" name="${fieldName}" ${requiredAttr} ${getTooltipAttrs(tooltip, fieldName)}>
                     <option value="">Select...</option>
                     ${options.map(opt => {
                         const optTooltip = optionTooltips?.[opt] || '';
@@ -41,7 +54,8 @@ export function renderFormField(fieldName, config) {
                     ${options.map(opt => {
                         const optTooltip = optionTooltips?.[opt] || '';
                         return `
-                            <label class="checkbox-label" title="${optTooltip}">
+                            <label class="checkbox-label ${optTooltip ? 'tooltip' : ''}" 
+                                   ${optTooltip ? `data-tooltip="${optTooltip}"` : ''}>
                                 <input type="checkbox" name="${fieldName}[]" value="${opt}">
                                 <span>${opt}</span>
                             </label>
@@ -59,7 +73,7 @@ export function renderFormField(fieldName, config) {
         case 'text-with-options':
             fieldHTML = `
                 <input type="text" id="${fieldName}" name="${fieldName}" ${requiredAttr} 
-                       list="${fieldName}Options" placeholder="${placeholder || ''}">
+                       list="${fieldName}Options" placeholder="${placeholder || ''}" ${getTooltipAttrs(tooltip, fieldName)}>
                 <datalist id="${fieldName}Options">
                     ${options.map(opt => `<option value="${opt}">`).join('')}
                 </datalist>
@@ -69,30 +83,29 @@ export function renderFormField(fieldName, config) {
         case 'text':
             fieldHTML = `
                 <input type="text" id="${fieldName}" name="${fieldName}" ${requiredAttr} 
-                       placeholder="${placeholder || ''}">
+                       placeholder="${placeholder || ''}" ${getTooltipAttrs(tooltip, fieldName)}>
             `;
             break;
             
         case 'number':
             fieldHTML = `
                 <input type="number" id="${fieldName}" name="${fieldName}" ${requiredAttr} 
-                       placeholder="${placeholder || ''}" min="0">
+                       placeholder="${placeholder || ''}" min="0" ${getTooltipAttrs(tooltip, fieldName)}>
             `;
             break;
             
         case 'date':
             fieldHTML = `
-                <input type="date" id="${fieldName}" name="${fieldName}" ${requiredAttr}>
+                <input type="date" id="${fieldName}" name="${fieldName}" ${requiredAttr} ${getTooltipAttrs(tooltip, fieldName)}>
             `;
             break;
     }
     
     return `
         <div class="form-group">
-            <label for="${fieldName}">
+            <label for="${fieldName}" ${getLabelTooltipAttrs(tooltip, fieldName)}>
                 <i data-lucide="${icon}" width="16" height="16"></i>
                 ${label}${requiredMark}
-                ${renderTooltip(tooltip)}
             </label>
             ${fieldHTML}
             ${hint ? `<small class="form-hint">${hint}</small>` : ''}

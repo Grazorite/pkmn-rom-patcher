@@ -49,3 +49,14 @@
     opacity: 1;
     visibility: visible;
 }
+
+/* Form label tooltips - position at start of label */
+.form-group label.tooltip::after {
+    left: 0;
+    transform: none;
+}
+
+.form-group label.tooltip::before {
+    left: 12px;
+    transform: none;
+}

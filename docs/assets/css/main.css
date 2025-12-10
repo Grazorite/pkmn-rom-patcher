@@ -10,6 +10,7 @@
 
 /* Components */
 @import 'components/button-standard.css';
+@import 'components/checkbox.css';
 @import 'components/navigation.css';
 @import 'components/sidebar.css';
 @import 'components/hack-grid.css';
@@ -23,6 +24,7 @@
 @import 'components/submit-form.css';
 @import 'components/auth-modal.css';
 @import 'components/back-to-top.css';
+@import 'components/image-fallback.css';
 
 /* Generated */
 @import 'generated/badges.css';

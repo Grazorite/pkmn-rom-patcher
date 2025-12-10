@@ -22,7 +22,7 @@ export class UIManager {
         
         container.innerHTML = sortedOptions.map(([value, count]) => `
             <div class="filter-option">
-                <input type="checkbox" id="${filterType}-${value}" value="${value}">
+                <input type="checkbox" class="custom-checkbox" id="${filterType}-${value}" value="${value}">
                 <label for="${filterType}-${value}">${value}</label>
                 <span class="filter-count">(${count})</span>
             </div>
@@ -32,14 +32,20 @@ export class UIManager {
     createGridCard(hack) {
         const imageUrl = hack.meta?.images?.boxArt || hack.meta?.images?.banner;
         const cachedImage = imageUrl ? imageCache.getCachedImage(imageUrl) : null;
+        const imageHtml = imageUrl ? 
+            `<div class="image-container">
+                <img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy" onerror="this.parentElement.classList.add('has-broken-image')">
+                <div class="image-fallback"><i data-lucide="image-off" width="32" height="32"></i></div>
+            </div>` :
+            `<div class="image-fallback"><i data-lucide="image-off" width="32" height="32"></i></div>`;
         
         return `
-            <div class="hack-card grid-card" data-hack-id="${hack.id}" title="${hack.title}">
-                <div class="grid-card-image">
-                    ${imageUrl ? 
-                        `<img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy">` :
-                        `<div class="grid-placeholder"><i data-lucide="image" width="32" height="32"></i></div>`
-                    }
+            <div class="hack-card" data-hack-id="${hack.id}" title="${hack.title}">
+                <div class="hack-card-image">
+                    ${imageHtml}
+                </div>
+                <div class="hack-card-content" style="display: none;">
+                    <!-- Hidden in grid view -->
                 </div>
             </div>
         `;
@@ -52,9 +58,10 @@ export class UIManager {
         const imageHtml = imageUrl ? 
             `<div class="image-container">
                 <div class="image-placeholder"><i data-lucide="image" width="24" height="24"></i></div>
-                <img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy">
+                <img ${cachedImage ? `src="${imageUrl}"` : `data-src="${imageUrl}"`} alt="${hack.title}" class="${cachedImage ? 'loaded' : 'lazy-load'}" loading="lazy" onerror="this.parentElement.classList.add('has-broken-image')">
+                <div class="image-fallback"><i data-lucide="image-off" width="24" height="24"></i></div>
             </div>` : 
-            `<div class="hack-card-placeholder"><i data-lucide="image" width="24" height="24"></i><span>${hack.title}</span></div>`;
+            `<div class="image-fallback"><i data-lucide="image-off" width="24" height="24"></i></div>`;
             
         const statusClass = hack.meta?.status ? `status-${hack.meta.status.toLowerCase().replace(' ', '-')}` : 'status-completed';
         

@@ -8,6 +8,7 @@ import { PerformanceMonitor } from './monitor.js';
 import { DebugPanel } from './debug.js';
 import { AnimationUtils } from '../utils/animations.js';
 import animationEngine from '../utils/animation-engine.js';
+import { StateManager } from '../utils/state-manager.js';
 
 const ICON_INIT_DELAY_SHORT = 100;
 const ICON_INIT_DELAY_LONG = 1000;
@@ -31,10 +32,54 @@ class ROMLibraryApp {
         await this.loadHacks();
         this.setupEventListeners();
         this.generateFilters();
+        this.restoreState();
         this.renderHacks();
         
         this.debugPanel = new DebugPanel(this);
         setTimeout(() => this.initializeIcons(), 200);
+    }
+    
+    restoreState() {
+        const state = StateManager.loadState('library');
+        if (!state) return;
+        
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput && state.searchQuery) {
+            searchInput.value = state.searchQuery;
+        }
+        
+        if (state.filters) {
+            Object.entries(state.filters).forEach(([filterType, values]) => {
+                values.forEach(value => {
+                    this.searchManager.setFilter(filterType, value, true);
+                    this.updateFilterCheckbox(filterType, value, true);
+                });
+            });
+        }
+        
+        if (state.viewMode) {
+            this.viewMode = state.viewMode;
+            this.updateViewIcon();
+        }
+        
+        if (state.scrollPosition) {
+            setTimeout(() => window.scrollTo(0, state.scrollPosition), 100);
+        }
+        
+        // Apply filters after restoration
+        if (state.searchQuery || (state.filters && Object.keys(state.filters).length > 0)) {
+            this.applyFilters();
+        }
+    }
+    
+    saveState() {
+        const searchInput = document.getElementById('searchInput');
+        StateManager.saveState('library', {
+            searchQuery: searchInput?.value || '',
+            filters: this.searchManager.getActiveFilters(),
+            viewMode: this.viewMode,
+            scrollPosition: window.scrollY
+        });
     }
     
     initializeIcons(container) {
@@ -132,11 +177,17 @@ class ROMLibraryApp {
             searchInput.addEventListener('input', Utils.debounce((e) => {
                 if (searchWrapper) searchWrapper.classList.add('searching');
                 this.applyFilters();
+                this.saveState();
                 setTimeout(() => {
                     if (searchWrapper) searchWrapper.classList.remove('searching');
                 }, 300);
             }, 400));
         }
+        
+        // Save scroll position
+        window.addEventListener('scroll', Utils.debounce(() => {
+            this.saveState();
+        }, 500));
         
         // Theme toggles handled by unified theme system
         
@@ -165,6 +216,7 @@ class ROMLibraryApp {
                 const filterType = filterId.replace('Filters', '');
                 this.searchManager.setFilter(filterType, e.target.value, e.target.checked);
                 this.applyFilters();
+                this.saveState();
             }
         });
         
@@ -188,11 +240,22 @@ class ROMLibraryApp {
         if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('collapsed');
-                const icon = sidebarToggle.querySelector('i');
-                if (sidebar.classList.contains('collapsed')) {
-                    icon.setAttribute('data-lucide', 'chevron-right');
-                } else {
-                    icon.setAttribute('data-lucide', 'chevron-left');
+                
+                // Defensive icon management - handle both i and svg elements
+                let icon = sidebarToggle.querySelector('i, svg, .collapse-icon');
+                if (!icon) {
+                    // Recreate icon if missing
+                    icon = document.createElement('i');
+                    icon.className = 'collapse-icon';
+                    sidebarToggle.appendChild(icon);
+                }
+                
+                if (icon && icon.setAttribute) {
+                    if (sidebar.classList.contains('collapsed')) {
+                        icon.setAttribute('data-lucide', 'chevron-right');
+                    } else {
+                        icon.setAttribute('data-lucide', 'chevron-left');
+                    }
                 }
                 this.initializeIcons();
             });
@@ -285,12 +348,9 @@ class ROMLibraryApp {
     toggleView() {
         this.viewMode = this.viewMode === 'card' ? 'grid' : 'card';
         localStorage.setItem('libraryViewMode', this.viewMode);
-        const hackGrid = document.getElementById('hackGrid');
-        if (hackGrid) {
-            hackGrid.classList.toggle('grid-view', this.viewMode === 'grid');
-        }
         this.renderHacks();
         this.updateViewIcon();
+        this.saveState();
     }
     
     updateViewIcon() {
@@ -332,6 +392,7 @@ class ROMLibraryApp {
         this.filteredHacks = [...this.hacks];
         this.uiManager.resetPagination();
         this.renderHacks();
+        this.saveState();
     }
     
     openDetailPanel(hackId) {

@@ -82,6 +82,16 @@ export class SearchManager {
             this.activeFilters[key].clear();
         });
     }
+    
+    getActiveFilters() {
+        const active = {};
+        Object.entries(this.activeFilters).forEach(([key, set]) => {
+            if (set.size > 0) {
+                active[key] = Array.from(set);
+            }
+        });
+        return active;
+    }
 
     generateFilterOptions(data) {
         const filters = {
