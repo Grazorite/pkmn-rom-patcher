@@ -142,7 +142,7 @@ export const METADATA_FIELDS = {
         options: ['Yes', 'No']
     },
     antiCheat: {
-        label: 'Anti-cheat',
+        label: 'Anti-Cheat',
         icon: 'shield',
         type: 'select',
         required: true,

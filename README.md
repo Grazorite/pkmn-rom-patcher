@@ -197,6 +197,18 @@ npm run test:smoke
 npm run test:ui
 ```
 
+## Patch Naming Convention
+
+All patches follow a standardized naming format for consistency and automation:
+
+```
+{TITLE}_{SYSTEM}_{BASEROM-CRC}_{VERSION}{VARIANT}_{YEAR}.{ext}
+```
+
+**Example**: `EMERALD-ENHANCED_GBA_EM-1961_v11.010_2025.bps`
+
+See [NAMING_CONVENTION.md](NAMING_CONVENTION.md) for complete details and tools.
+
 ## Contributing
 
 ### Adding Patches (Maintainers)

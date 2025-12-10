@@ -1,5 +1,6 @@
 // Form field renderer - Generates HTML from metadata config
 import { METADATA_FIELDS } from '../config/metadata-fields.js';
+import { STEP_LAYOUTS } from '../config/form-layout.js';
 
 function getTooltipAttrs(tooltip, fieldName) {
     // Move tooltip to label for specific fields
@@ -121,15 +122,16 @@ export function renderFormRow(fields) {
     `;
 }
 
+export function renderFormLayout(layout) {
+    return layout.map(group => {
+        if (Array.isArray(group)) {
+            return renderFormRow(group);
+        } else {
+            return renderFormField(group, METADATA_FIELDS[group]);
+        }
+    }).join('');
+}
+
 export function renderDetailsStep() {
-    const fields = [
-        'hackType', 'status', 'difficulty', 'released',
-        'graphics', 'story', 'maps', 'postgame',
-        'tags', 'mechanics', 'fakemons', 'variants',
-        'typeChanges', 'physicalSpecialSplit', 'antiCheat',
-        'playtime', 'totalCatchable', 'pokedexIncludes',
-        'openWorld', 'randomizer', 'nuzlocke'
-    ];
-    
-    return fields.map(fieldName => renderFormField(fieldName, METADATA_FIELDS[fieldName])).join('');
+    return renderFormLayout(STEP_LAYOUTS[2]);
 }

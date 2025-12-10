@@ -2,7 +2,7 @@
 import { Utils } from './utils.js';
 import { SearchManager } from './search.js';
 import { UIManager } from './ui.js';
-import { PatchManager } from './patcher.js';
+
 import { CacheManager } from './cache.js';
 import { PerformanceMonitor } from './monitor.js';
 import { DebugPanel } from './debug.js';
@@ -19,7 +19,7 @@ class ROMLibraryApp {
         this.filteredHacks = [];
         this.searchManager = new SearchManager();
         this.uiManager = new UIManager();
-        this.patchManager = new PatchManager();
+
         this.cacheManager = new CacheManager();
         this.performanceMonitor = new PerformanceMonitor();
         this.selectedHack = null;
@@ -222,10 +222,7 @@ class ROMLibraryApp {
         
 
         
-        const clearBtn = document.getElementById('clearFilters');
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => this.clearAllFilters());
-        }
+        // Clear filters handled by floating filter button
         
         // View toggle
         const viewToggle = document.getElementById('viewToggle');
@@ -290,11 +287,7 @@ class ROMLibraryApp {
                 return;
             }
             
-            // Close button
-            if (e.target.closest('#closeDetail')) {
-                this.closeDetailPanel();
-                return;
-            }
+            // Close button handled by floating-buttons.js
             
             // Click outside to close detail panel
             const panel = document.getElementById('detailPanel');
@@ -399,7 +392,7 @@ class ROMLibraryApp {
         this.selectedHack = this.hacks.find(hack => hack.id === hackId);
         if (!this.selectedHack) return;
         
-        this.patchManager.setSelectedHack(this.selectedHack);
+
         this.uiManager.renderDetailPanel(this.selectedHack);
         this.uiManager.openDetailPanel();
         setTimeout(() => this.initializeIcons(), 100);
@@ -408,7 +401,7 @@ class ROMLibraryApp {
     closeDetailPanel() {
         this.uiManager.closeDetailPanel();
         this.selectedHack = null;
-        this.patchManager.setSelectedHack(null);
+
     }
     
     openInPatcher() {

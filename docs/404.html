@@ -5,46 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Not Found - ROM Patcher</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2L2 7l10 5 10-5-10-5z'/><path d='M2 17l10 5 10-5'/><path d='M2 12l10 5 10-5'/></svg>">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        .container {
-            text-align: center;
-            max-width: 500px;
-            padding: 2rem;
-        }
-        h1 { font-size: 4rem; margin-bottom: 1rem; opacity: 0.8; }
-        h2 { font-size: 1.5rem; margin-bottom: 1rem; }
-        p { margin-bottom: 2rem; opacity: 0.9; }
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-        .btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-    </style>
+    <link rel="stylesheet" href="/docs/assets/css/base/reset.css">
+    <link rel="stylesheet" href="/docs/assets/css/components/error-page.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
 </head>
-<body>
-    <div class="container">
+<body class="error-page">
+    <div class="error-container">
         <h1>404</h1>
         <h2>Page Not Found</h2>
         <p>The page you're looking for doesn't exist or has been moved.</p>
-        <a href="/docs/" class="btn">Go Home</a>
+        <a href="/docs/" class="error-btn">
+            <i data-lucide="home" width="20" height="20"></i>
+            Go Home
+        </a>
     </div>
+    <script>
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
 </body>
 </html>

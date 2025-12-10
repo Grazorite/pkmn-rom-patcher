@@ -2,13 +2,14 @@
 import { SubmissionHandler } from '../services/submission-handler.js';
 import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
 import { renderDetailsStep } from '../utils/form-renderer.js';
-import { STATUS_COLORS } from '../config/metadata-fields.js';
+import { STATUS_COLORS, METADATA_FIELDS } from '../config/metadata-fields.js';
 import { StateManager } from '../utils/state-manager.js';
+import { UrlValidator } from '../utils/url-validator.js';
 
 class SubmitForm {
     constructor() {
         this.currentStep = 1;
-        this.totalSteps = 5;
+        this.totalSteps = 4;
         this.formData = this.loadFromStorage() || {};
         this.baseRoms = [];
         this.submissionHandler = new SubmissionHandler();
@@ -97,7 +98,7 @@ class SubmitForm {
         const baseRomGroup = document.getElementById('baseRom').closest('.form-group');
         const variantGroup = document.createElement('div');
         variantGroup.id = 'crcVariantGroup';
-        variantGroup.className = 'form-group';
+        variantGroup.className = 'form-group full-width';
         variantGroup.innerHTML = `
             <label for="crcVariant">
                 <i data-lucide="cpu" width="16" height="16"></i>
@@ -132,9 +133,12 @@ class SubmitForm {
             });
         });
         
-        // Form inputs - auto-save
+        // Form inputs - auto-save and URL validation
         document.getElementById('submitForm')?.addEventListener('input', (e) => {
             this.saveFormData();
+            if (e.target.type === 'url') {
+                this.validateUrl(e.target);
+            }
         });
         
         // Patch source toggle
@@ -363,8 +367,19 @@ class SubmitForm {
         const romName = romData?.fullName || data.baseRom;
         const statusColor = STATUS_COLORS[data.status];
         
+
+        
+        // Render all metadata fields that have values, excluding status
+        const metadataHtml = Object.keys(METADATA_FIELDS)
+            .filter(field => field !== 'status' && data[field] && data[field] !== '')
+            .map(field => {
+                const config = METADATA_FIELDS[field];
+                const value = Array.isArray(data[field]) ? data[field].join(', ') : data[field];
+                return `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>${config.label}:</strong> ${value}</p>`;
+            }).join('');
+        
         preview.innerHTML = `
-            <h3 style="margin-bottom: 1rem; color: var(--text-primary);">${data.title || 'Untitled'}</h3>
+            <h3 style="margin-bottom: 1rem; color: var(--text-primary); word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">${data.title || 'Untitled'}</h3>
             <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center;">
                 ${renderBadge('system', romData?.system)}
                 ${renderBadge('rom', romName)}
@@ -372,14 +387,20 @@ class SubmitForm {
                 ${renderBadge('difficulty', data.difficulty)}
                 ${statusColor ? `<div class="status-indicator"><div class="status-dot" style="background: ${statusColor.bg};"></div><span>${statusColor.label}</span></div>` : ''}
             </div>
-            <p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>Author:</strong> ${data.author || 'Unknown'}</p>
-            ${data.version ? `<p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>Version:</strong> ${data.version}</p>` : ''}
-            ${data.released ? `<p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>Released:</strong> ${data.released}</p>` : ''}
-            ${data.description ? `<p style="color: var(--text-secondary); margin-bottom: 1rem;">${data.description}</p>` : ''}
-            ${data.hackType ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Type:</strong> ${data.hackType}</p>` : ''}
-            ${data.tags ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Tags:</strong> ${data.tags}</p>` : ''}
-            ${data.mechanics ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Mechanics:</strong> ${data.mechanics}</p>` : ''}
-            ${data.boxArt ? `<p style="color: var(--text-secondary); margin-top: 1rem;"><strong>Box Art:</strong> ${data.boxArt}</p>` : ''}
+            <div style="margin-bottom: 1rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Author:</strong> ${data.author || 'Unknown'}</p>
+                ${data.version ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Version:</strong> ${data.version}</p>` : ''}
+                ${data.released ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Released:</strong> ${data.released}</p>` : ''}
+            </div>
+            ${data.description ? `<div style="margin-bottom: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;"><strong>Description:</strong><br>${data.description}</div>` : ''}
+            <div style="margin-bottom: 1rem;">
+                ${metadataHtml}
+            </div>
+            ${data.boxArt ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Box Art:</strong> ${data.boxArt}</p>` : ''}
+            ${data.banner ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Banner:</strong> ${data.banner}</p>` : ''}
+            ${data.website ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Website:</strong> ${data.website}</p>` : ''}
+            ${data.discord ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Discord:</strong> ${data.discord}</p>` : ''}
+            ${data.documentation ? `<p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Documentation:</strong> ${data.documentation}</p>` : ''}
             ${data.patchUrl ? `<p style="color: var(--text-secondary);"><strong>Patch URL:</strong> ${data.patchUrl}</p>` : ''}
         `;
     }
@@ -505,6 +526,35 @@ class SubmitForm {
         
         document.getElementById('errorOk').addEventListener('click', () => {
             modal.remove();
+        });
+    }
+    
+    validateUrl(input) {
+        const url = input.value.trim();
+        if (!url) return;
+        
+        // Remove existing indicator
+        const existingIndicator = input.parentNode.querySelector('.url-validation-indicator');
+        if (existingIndicator) existingIndicator.remove();
+        
+        // HTTPS validation
+        if (!UrlValidator.validateHttps(url)) {
+            input.style.borderColor = 'var(--error-color)';
+            const indicator = UrlValidator.addValidationIndicator(input);
+            UrlValidator.updateValidationIndicator(indicator, false, 'URL must use HTTPS');
+            return;
+        }
+        
+        input.style.borderColor = 'var(--success-color)';
+        const indicator = UrlValidator.addValidationIndicator(input);
+        
+        // Progressive accessibility validation
+        UrlValidator.validateAccessibility(url).then(result => {
+            if (result.valid) {
+                UrlValidator.updateValidationIndicator(indicator, true, 'URL is accessible');
+            } else {
+                UrlValidator.updateValidationIndicator(indicator, false, `URL may not be accessible: ${result.error}`);
+            }
         });
     }
     

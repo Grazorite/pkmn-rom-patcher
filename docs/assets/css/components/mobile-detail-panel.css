@@ -1,0 +1,29 @@
+/* Mobile Detail Panel Optimization */
+@media (max-width: 768px) {
+    .detail-panel.open {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: var(--z-mobile-nav);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent background scroll when panel is open */
+    body.detail-panel-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+    
+    /* Swipe to close gesture */
+    .detail-panel {
+        touch-action: pan-y;
+    }
+    
+    .detail-panel.swiping {
+        transition: transform 0.1s ease-out;
+    }
+}

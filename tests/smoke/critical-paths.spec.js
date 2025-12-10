@@ -32,13 +32,60 @@ test.describe('Smoke Tests', () => {
     expect(errors).toHaveLength(0);
   });
 
-  test('back-to-top button appears after scroll', async ({ libraryPage }) => {
+  test('back-to-top button functionality works', async ({ libraryPage }) => {
     const backToTop = libraryPage.locator('.back-to-top');
     
-    await libraryPage.evaluate(() => window.scrollTo(0, 500));
+    // Ensure button exists
+    await expect(backToTop).toBeAttached();
+    
+    // Scroll down to trigger button visibility
+    await libraryPage.evaluate(() => {
+      // Add some content to ensure scrollable area
+      document.body.style.minHeight = '200vh';
+      window.scrollTo(0, 500);
+    });
+    
+    // Wait for scroll handler to process
     await libraryPage.waitForTimeout(200);
     
+    // Check if button has visible class
     await expect(backToTop).toHaveClass(/visible/);
+    
+    // Test click functionality by forcing click
+    await libraryPage.evaluate(() => {
+      const btn = document.querySelector('.back-to-top');
+      if (btn) btn.click();
+    });
+    
+    // Wait for smooth scroll to complete
+    await libraryPage.waitForTimeout(500);
+    
+    // Verify scroll position is at top
+    const scrollY = await libraryPage.evaluate(() => window.scrollY);
+    expect(scrollY).toBeLessThan(50);
+  });
+  
+  test('viewport navigation positioning works', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/docs/library/');
+    
+    // Check viewport nav exists
+    const navSidebar = page.locator('.nav-sidebar');
+    await expect(navSidebar).toBeVisible();
+    
+    // Check back-to-top viewport positioning
+    await page.evaluate(() => {
+      document.body.style.minHeight = '200vh';
+      window.scrollTo(0, 300);
+    });
+    await page.waitForTimeout(200);
+    
+    const backToTop = page.locator('.back-to-top');
+    await expect(backToTop).toBeVisible();
+    
+    const buttonBox = await backToTop.boundingBox();
+    expect(buttonBox.y).toBeLessThan(600); // Above nav area
+    expect(buttonBox.x).toBeGreaterThan(300); // Should be on right side
   });
 
   test('state persistence does not break page load', async ({ page }) => {

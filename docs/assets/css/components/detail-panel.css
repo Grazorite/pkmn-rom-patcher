@@ -7,7 +7,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.3);
-    z-index: 999;
+    z-index: var(--z-sidebar);
     opacity: 0;
     visibility: hidden;
     transition: all var(--anim-duration-normal) var(--anim-easing-smooth);
@@ -32,7 +32,7 @@
     border-left: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: -8px 0 40px rgba(0, 0, 0, 0.1);
     transition: right var(--anim-duration-normal) var(--anim-easing-smooth);
-    z-index: 1000;
+    z-index: var(--z-mobile-nav);
     overflow-y: auto;
     transform: translateZ(0);
     will-change: right, transform;
@@ -102,21 +102,8 @@
 /* Remove translucent background - boxart now in header */
 
 .close-btn {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    z-index: 100;
+    /* Moved to floating button system - this class is deprecated */
+    display: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateZ(0);
     will-change: transform, background, border-color;
@@ -250,7 +237,7 @@
 
 .detail-tabs {
     display: flex;
-    border-bottom: 2px solid var(--bg-secondary);
+    border-bottom: 1px solid var(--bg-secondary);
     margin-bottom: 24px;
 }
 
@@ -324,15 +311,15 @@
 
 .info-grid {
     display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 40px;
+    grid-template-columns: minmax(300px, 0.6fr) 1fr;
+    gap: 24px;
     padding: 16px 0;
     align-items: start;
 }
 
 .info-description {
     line-height: 1.8;
-    padding: 0 32px 0 24px;
+    padding: 0;
     opacity: 0;
     transform: translateY(30px);
     animation: fadeInUp var(--anim-duration-slow) var(--anim-easing-standard) var(--anim-delay-2) both;
@@ -359,7 +346,7 @@
 }
 
 .info-metadata {
-    padding: 24px;
+    padding: 20px;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(20px);
     border-radius: 16px;
@@ -372,64 +359,70 @@
     align-self: start;
 }
 
-.info-metadata table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
+.metadata-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0;
 }
 
-.info-metadata td {
+.metadata-row {
+    display: contents;
+}
+
+.metadata-label {
     padding: 14px 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    vertical-align: middle;
-}
-
-.info-metadata td:first-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
-    width: auto;
-    min-width: 120px;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 100px;
 }
 
-.info-metadata td:first-child i {
+.metadata-label i {
     flex-shrink: 0;
 }
 
-.info-metadata td:last-child {
-    width: auto;
-    padding-left: 16px;
+.metadata-value {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
-    vertical-align: middle;
     color: rgba(255, 255, 255, 0.95);
     font-weight: 500;
+    align-self: center;
 }
 
-.info-metadata tr:last-child td {
+.metadata-row:last-child .metadata-label,
+.metadata-row:last-child .metadata-value {
     border-bottom: none;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 1024px) {
-    .detail-panel {
-        width: 80%;
-    }
-    
+/* Adaptive layout - stack metadata above description */
+@media (max-width: 900px) {
     .info-grid {
         grid-template-columns: 1fr;
+        grid-template-areas: 
+            "metadata"
+            "description";
         gap: 24px;
     }
     
+    .info-metadata {
+        grid-area: metadata;
+        max-width: none;
+    }
+    
     .info-description {
+        grid-area: description;
         padding: 0;
     }
 }
 
+/* Mobile responsiveness */
 @media (max-width: 768px) {
     .detail-panel {
         width: 100%;
@@ -443,40 +436,73 @@
     
     .detail-content {
         padding: 20px;
-        /* Better touch scrolling */
         -webkit-overflow-scrolling: touch;
     }
     
     .close-btn {
-        top: 16px;
-        right: 16px;
-        width: 44px;
-        height: 44px;
-        /* Better touch target */
+        /* Handled by floating button system */
+        display: none;
+    }
+    
+    /* Remove dark container background and restructure layout */
+    .detail-header {
+        background: transparent !important;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
     }
     
     .detail-banner {
         height: 160px;
-        margin-bottom: 20px;
+        margin-bottom: 0;
         border-radius: 12px;
+        order: 1;
+    }
+    
+    .detail-title {
+        order: 2;
     }
     
     .detail-title h2 {
         font-size: 1.5rem;
         line-height: 1.3;
+        margin-bottom: 16px;
     }
     
+    /* Attributes section - wrap to new lines */
     .detail-meta {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        margin-bottom: 16px;
+        order: 3;
     }
     
-    .detail-header-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+    .detail-meta > span {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 120px;
+        font-size: 14px;
     }
+    
+    /* Tags section - separate row */
+    .detail-header-row {
+        order: 4;
+        margin-bottom: 0;
+    }
+    
+    .detail-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-start;
+    }
+    
+    .detail-status {
+        margin-top: 8px;
+        font-size: 14px;
+    }
+}
     
     .detail-tabs {
         overflow-x: auto;
@@ -520,16 +546,13 @@
     }
     
     .close-btn {
-        width: 40px;
-        height: 40px;
-        top: 12px;
-        right: 12px;
+        /* Handled by floating button system */
+        display: none;
     }
     
     .detail-banner {
         height: 140px;
         border-radius: 12px;
-        margin-bottom: 16px;
     }
     
     .detail-title h2 {
@@ -539,11 +562,17 @@
     }
     
     .detail-meta {
-        gap: 8px;
+        gap: 6px 12px;
     }
     
-    .detail-header-row {
-        gap: 8px;
+    .detail-meta > span {
+        flex: 1 1 100%;
+        min-width: auto;
+        font-size: 13px;
+    }
+    
+    .detail-badges {
+        gap: 6px;
     }
     
     .tab-btn {

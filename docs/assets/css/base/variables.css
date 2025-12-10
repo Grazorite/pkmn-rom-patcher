@@ -1,5 +1,17 @@
 /* CSS Custom Properties - Light theme matching landing page */
 :root {
+    /* Z-Index Hierarchy */
+    --z-background: -1;
+    --z-content: 1;
+    --z-sidebar: 100;
+    --z-mobile-nav: 1000;
+    --z-notifications: 1100;
+    --z-modals: 2000;
+    
+    /* Mobile Navigation */
+    --mobile-nav-height: 60px;
+    --mobile-nav-padding: 20px;
+    
     --primary: #667eea;
     --secondary: #764ba2;
     --accent: #f093fb;

@@ -8,8 +8,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>ROM Library</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>">
-    <link rel="stylesheet" href="../assets/css/main.css?v=2">
-    <link rel="stylesheet" href="../assets/css/performance.css?v=2">
+    <link rel="stylesheet" href="/docs/assets/css/main.css?v=3">
+    <link rel="stylesheet" href="/docs/assets/css/performance.css?v=2">
     
 
     
@@ -53,22 +53,22 @@
         </div>
 
         <div class="nav-collapsed-icons">
-            <a href="../" class="nav-collapsed-icon">
+            <a href="../" class="nav-collapsed-icon" title="Home">
                 <i data-lucide="home" width="20" height="20"></i>
             </a>
-            <a href="../patcher/" class="nav-collapsed-icon">
+            <a href="../patcher/" class="nav-collapsed-icon" title="ROM Patcher">
                 <i data-lucide="download" width="20" height="20"></i>
             </a>
-            <a href="../library/" class="nav-collapsed-icon active">
+            <a href="../library/" class="nav-collapsed-icon active" title="ROM Library">
                 <i data-lucide="book-open" width="20" height="20"></i>
             </a>
-            <a href="../submit/" class="nav-collapsed-icon">
+            <a href="../submit/" class="nav-collapsed-icon" title="Submit Patch">
                 <i data-lucide="upload" width="20" height="20"></i>
             </a>
         </div>
     </nav>
     
-    <div class="app-container">
+    <div class="app-container align-top">
         <div class="app-content-wrapper">
         <header class="app-header">
             <h1><i data-lucide="book-open" width="48" height="48"></i> ROM Library</h1>
@@ -203,9 +203,6 @@
                         <button id="viewToggle" class="view-toggle-btn" title="Toggle view">
                             <i data-lucide="grid-3x3" width="16" height="16"></i>
                         </button>
-                        <button id="clearFilters" class="clear-btn" title="Clear filters">
-                            <i data-lucide="filter-x" width="16" height="16"></i>
-                        </button>
                     </div>
                 </div>
                 
@@ -236,10 +233,6 @@
             </div>
         </div>
         <div class="detail-content">
-            <button class="close-btn" id="closeDetail">
-                <i data-lucide="x" width="24" height="24"></i>
-            </button>
-            
             <div class="detail-header">
                 <div id="detailBanner" class="detail-banner"></div>
                 <div class="detail-title">
@@ -274,11 +267,11 @@
             <div class="tab-content">
                 <div id="infoTab" class="tab-panel active">
                     <div class="info-grid">
+                        <div class="info-metadata">
+                            <div id="metadataTable" class="metadata-grid"></div>
+                        </div>
                         <div class="info-description">
                             <div id="detailDescription"></div>
-                        </div>
-                        <div class="info-metadata">
-                            <table id="metadataTable"></table>
                         </div>
                     </div>
                 </div>
@@ -320,6 +313,19 @@
         </div>
     </div>
     
+    <!-- Floating Buttons -->
+    <div class="floating-buttons" id="floatingButtons">
+        <button class="floating-btn filter-btn" id="floatingFilterBtn" title="Toggle Filters">
+            <i data-lucide="filter" width="20" height="20"></i>
+        </button>
+        <button class="floating-btn close-btn" id="floatingCloseBtn" title="Close Detail Panel" style="display: none;">
+            <i data-lucide="x" width="20" height="20"></i>
+        </button>
+        <button class="floating-btn back-to-top" id="backToTop" title="Back to Top">
+            <i data-lucide="arrow-up" width="20" height="20"></i>
+        </button>
+    </div>
+    
     <!-- Loading overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="loading-content">
@@ -330,12 +336,14 @@
     
     <script>
         // Tell RomPatcher where the worker lives
-        window.CRC32_WORKER_PATH = '../assets/js/vendor/worker_crc.js';
+        window.CRC32_WORKER_PATH = '/docs/assets/js/vendor/worker_crc.js';
     </script>
-    <script src="../assets/js/core.js"></script>
-    <script src="../assets/js/navigation.js"></script>
-    <script src="../assets/js/back-to-top.js"></script>
+    <script src="/docs/assets/js/core.js"></script>
+    <script src="/docs/assets/js/navigation.js"></script>
+
+    <script src="/docs/assets/js/floating-buttons.js?v=3"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
-    <script type="module" src="../assets/js/modules/library-app.js?v=2"></script>
+
+    <script type="module" src="/docs/assets/js/modules/library-app.js?v=2"></script>
 </body>
 </html>

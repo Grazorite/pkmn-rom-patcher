@@ -9,8 +9,6 @@ export class UIManager {
         this.currentPage = 0;
         this.itemsPerPage = 20;
         this.performanceManager = new PerformanceManager();
-        this.renderQueue = [];
-        this.isRendering = false;
         initBadgeRenderer();
     }
 
@@ -301,22 +299,44 @@ export class UIManager {
         const table = document.getElementById('metadataTable');
         if (!table || !meta) return;
         
+        const formatValue = (value, type = 'string') => {
+            if (!value) return 'N/A';
+            switch(type) {
+                case 'array':
+                    return Array.isArray(value) ? value.join(', ') : value;
+                case 'boolean':
+                    return value === true || value === 'Yes' ? 'Yes' : 'No';
+                default:
+                    return value;
+            }
+        };
+        
         const fields = [
-            ['Graphics', meta.graphics],
-            ['Story', meta.story],
-            ['Maps', meta.maps],
-            ['Postgame', meta.postgame],
-            ['Mechanics', Array.isArray(meta.mechanics) ? meta.mechanics.join(', ') : meta.mechanics],
-            ['Fakemons', meta.fakemons],
-            ['Tags', Array.isArray(meta.tags) ? meta.tags.join(', ') : meta.tags],
-            ['Rating', meta.rating ? this.renderStarRating(meta.rating) : null]
-        ].filter(([_, value]) => value);
+            ['<i data-lucide="layers" width="14" height="14"></i>Type', formatValue(meta.hackType)],
+            ['<i data-lucide="image" width="14" height="14"></i>Graphics', formatValue(meta.graphics)],
+            ['<i data-lucide="book" width="14" height="14"></i>Story', formatValue(meta.story)],
+            ['<i data-lucide="map" width="14" height="14"></i>Maps', formatValue(meta.maps)],
+            ['<i data-lucide="flag" width="14" height="14"></i>Postgame', formatValue(meta.postgame)],
+            ['<i data-lucide="settings" width="14" height="14"></i>Mechanics', formatValue(meta.mechanics, 'array')],
+            ['<i data-lucide="sparkles" width="14" height="14"></i>Fakemons', formatValue(meta.fakemons)],
+            ['<i data-lucide="git-branch" width="14" height="14"></i>Variants', formatValue(meta.variants, 'array')],
+            ['<i data-lucide="zap" width="14" height="14"></i>Type Changes', formatValue(meta.typeChanges, 'array')],
+            ['<i data-lucide="divide" width="14" height="14"></i>Phys/Spec Split', formatValue(meta.physicalSpecialSplit, 'boolean')],
+            ['<i data-lucide="shield" width="14" height="14"></i>Anti-Cheat', formatValue(meta.antiCheat, 'boolean')],
+            ['<i data-lucide="hash" width="14" height="14"></i>Total Catchable', formatValue(meta.totalCatchable)],
+            ['<i data-lucide="book-open" width="14" height="14"></i>Pokédex Gen', formatValue(meta.pokedexIncludes)],
+            ['<i data-lucide="globe" width="14" height="14"></i>Open World', formatValue(meta.openWorld, 'boolean')],
+            ['<i data-lucide="shuffle" width="14" height="14"></i>Randomizer', formatValue(meta.randomizer)],
+            ['<i data-lucide="skull" width="14" height="14"></i>Nuzlocke', formatValue(meta.nuzlocke)],
+            ['<i data-lucide="tag" width="14" height="14"></i>Tags', formatValue(meta.tags, 'array')],
+            ['<i data-lucide="award" width="14" height="14"></i>Rating', meta.rating ? this.renderStarRating(meta.rating) : 'N/A']
+        ].filter(([_, value]) => value && value !== 'N/A');
         
         table.innerHTML = fields.map(([label, value]) => `
-            <tr>
-                <td>${label}</td>
-                <td${label === 'Base ROM' ? ' style="white-space: nowrap;"' : ''}>${value}</td>
-            </tr>
+            <div class="metadata-row">
+                <span class="metadata-label">${label}</span>
+                <span class="metadata-value">${value}</span>
+            </div>
         `).join('');
     }
     
