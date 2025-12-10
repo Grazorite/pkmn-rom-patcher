@@ -3,6 +3,7 @@ import { Utils } from './utils.js';
 import { imagePopup } from './image-popup.js';
 import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
 import { StateManager } from '../utils/state-manager.js';
+import { PathResolver } from '../utils/path-resolver.js';
 
 class ROMPatcherApp {
     constructor() {
@@ -220,7 +221,7 @@ class ROMPatcherApp {
         const resultsHtml = results.map(result => {
             const patch = result.item;
             const description = patch.changelog ? patch.changelog.replace(/[#*`]/g, '').substring(0, 100) + '...' : 'No description available';
-            const boxArt = patch.meta?.images?.boxArt || '';
+            const boxArt = PathResolver.resolveImagePath(patch.meta?.images?.boxArt || '', 'patcher');
             const status = patch.meta?.status || 'Completed';
             const statusClass = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
             
@@ -351,12 +352,13 @@ class ROMPatcherApp {
         // Show banner with bannerImage (same as library implementation)
         const banner = document.getElementById('selectedPatchBanner');
         if (banner) {
-            if (this.selectedPatch.meta?.images?.banner) {
+            const bannerImage = PathResolver.resolveImagePath(this.selectedPatch.meta?.images?.banner || '', 'patcher');
+            if (bannerImage) {
                 banner.classList.add('has-banner');
-                banner.style.setProperty('--banner-bg', `url('${this.selectedPatch.meta.images.banner}')`);
+                banner.style.setProperty('--banner-bg', `url('${bannerImage}')`);
                 banner.innerHTML = '';
                 banner.style.cursor = 'pointer';
-                banner.onclick = () => imagePopup.show(this.selectedPatch.meta.images.banner);
+                banner.onclick = () => imagePopup.show(bannerImage);
             } else {
                 banner.classList.remove('has-banner');
                 banner.style.removeProperty('--banner-bg');

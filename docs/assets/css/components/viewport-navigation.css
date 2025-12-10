@@ -1,0 +1,74 @@
+/* Viewport-Based Navigation System */
+:root {
+    --accent-primary: #667eea;
+    --accent-secondary: #764ba2;
+}
+
+@media (max-width: 768px) {
+    /* Hide desktop navigation elements */
+    .nav-sidebar .nav-links,
+    .nav-sidebar .nav-header,
+    .nav-sidebar .nav-toggle {
+        display: none;
+    }
+    
+    /* Transform nav-sidebar to horizontal bar - increased specificity */
+    .nav-sidebar.nav-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: var(--mobile-nav-height) !important;
+        z-index: var(--z-mobile-nav) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(20px) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0 !important;
+        transform: none !important;
+        border-right: none !important;
+    }
+    
+    /* Show collapsed icons as horizontal menu - increased specificity */
+    .nav-sidebar.nav-sidebar .nav-collapsed-icons {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 1.5rem !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .nav-collapsed-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .nav-collapsed-icon:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px) scale(1.05);
+    }
+    
+    .nav-collapsed-icon.active {
+        background: rgba(240, 147, 251, 0.2);
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+    
+    /* Ensure all pages have consistent top padding */
+    .app-container {
+        padding-top: calc(var(--mobile-nav-height) + 24px) !important;
+        margin-left: 0 !important;
+    }
+    
+    /* Fix patcher layout */
+    .patcher-layout {
+        margin-left: 0 !important;
+    }
+}

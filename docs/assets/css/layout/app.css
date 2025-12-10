@@ -20,8 +20,8 @@
 
 .app-layout {
     display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 32px;
+    grid-template-columns: minmax(240px, 280px) 1fr;
+    gap: clamp(20px, 4vw, 32px);
     align-items: start;
     opacity: 0;
     transform: translateY(30px);
@@ -51,16 +51,16 @@
 }
 
 .app-header h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    margin-bottom: clamp(1rem, 3vw, 1.5rem);
     background: linear-gradient(45deg, #fff, #f093fb);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: clamp(8px, 2vw, 12px);
     justify-content: center;
 }
 
@@ -71,14 +71,14 @@
 
 .app-header p {
     color: white;
-    font-size: 1.25rem;
-    margin-bottom: 3rem;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    margin-bottom: clamp(2rem, 4vw, 3rem);
     opacity: 0.9;
     line-height: 1.6;
 }
 
 /* Mobile responsiveness */
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
     .app-layout {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -106,6 +106,7 @@
 @media (max-width: 768px) {
     .app-container {
         padding: 12px;
+        padding-top: calc(var(--mobile-nav-height) + 24px) !important;
         min-height: auto;
         align-items: flex-start;
     }
@@ -132,6 +133,7 @@
 @media (max-width: 480px) {
     .app-container {
         padding: 8px;
+        padding-top: calc(var(--mobile-nav-height) + 20px) !important;
     }
     
     .app-content-wrapper {

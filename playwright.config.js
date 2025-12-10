@@ -41,6 +41,20 @@ export default defineConfig({
         ...devices['Desktop Safari']
       },
     },
+    {
+      name: 'mobile-chrome',
+      use: { 
+        ...devices['Pixel 5']
+      },
+      testMatch: '**/mobile/**/*.spec.js',
+    },
+    {
+      name: 'mobile-safari',
+      use: { 
+        ...devices['iPhone 12']
+      },
+      testMatch: '**/mobile/**/*.spec.js',
+    },
   ],
 
   webServer: {

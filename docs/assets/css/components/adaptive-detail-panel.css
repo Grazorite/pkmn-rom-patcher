@@ -1,0 +1,65 @@
+/* Adaptive Detail Panel with Scroll Lock */
+@media (max-width: 768px) {
+    .detail-panel.open {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1100;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent background scroll when panel is open */
+    body.detail-panel-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+    
+    /* Mobile detail header */
+    .detail-header {
+        position: sticky;
+        top: 0;
+        background: var(--bg-primary);
+        z-index: 1101;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .detail-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-secondary);
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Adaptive metadata layout - horizontal with wrapping */
+    .detail-meta {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        padding: 1rem;
+    }
+    
+    .detail-meta > span {
+        flex: 1 1 calc(50% - 0.25rem);
+        min-width: 120px;
+    }
+    
+    /* Full-width content */
+    .detail-content {
+        padding: 0 1rem 2rem;
+    }
+}

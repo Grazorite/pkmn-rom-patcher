@@ -222,10 +222,7 @@ class ROMLibraryApp {
         
 
         
-        const clearBtn = document.getElementById('clearFilters');
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => this.clearAllFilters());
-        }
+        // Clear filters handled by floating filter button
         
         // View toggle
         const viewToggle = document.getElementById('viewToggle');
@@ -290,11 +287,7 @@ class ROMLibraryApp {
                 return;
             }
             
-            // Close button
-            if (e.target.closest('#closeDetail')) {
-                this.closeDetailPanel();
-                return;
-            }
+            // Close button handled by floating-buttons.js
             
             // Click outside to close detail panel
             const panel = document.getElementById('detailPanel');

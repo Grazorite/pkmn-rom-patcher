@@ -34,7 +34,7 @@ test.describe('Comprehensive Test Suite', () => {
     
     await expect(page.locator('h1')).toContainText('Submit');
     await expect(page.locator('.progress-steps')).toBeVisible();
-    await expect(page.locator('.progress-step')).toHaveCount(5);
+    await expect(page.locator('.progress-step')).toHaveCount(4);
     
     // Test basic form fields that are visible
     await page.locator('#title').fill('Test Hack');

@@ -1,12 +1,12 @@
-/* Two Column Patcher Layout */
+/* Adaptive Two Column Patcher Layout */
 
 .patcher-layout-single {
     display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: var(--spacing-lg);
+    grid-template-columns: minmax(400px, 1fr) minmax(350px, 400px);
+    gap: clamp(1rem, 3vw, 2rem);
     max-width: 1400px;
     margin: 0 auto;
-    padding: var(--spacing-lg);
+    padding: clamp(1rem, 3vw, 2rem);
     align-items: start;
 }
 
@@ -41,13 +41,29 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
     .patcher-layout-single {
         grid-template-columns: 1fr;
+        grid-template-areas: 
+            "interface"
+            "main";
+        gap: 1.5rem;
     }
     
-    #rom-patcher-container {
-        order: -1;
+    .patch-interface {
+        grid-area: interface;
+        margin-top: 0;
+    }
+    
+    .patcher-main-single {
+        grid-area: main;
+    }
+}
+
+@media (max-width: 640px) {
+    .patcher-layout-single {
+        padding: 1rem;
+        gap: 1rem;
     }
 }
 
