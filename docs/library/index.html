@@ -368,7 +368,14 @@
         }
         
         // Critical path optimization - library page only
-        window.CRC32_WORKER_PATH = window.PathResolver ? window.PathResolver.resolveAsset('js/vendor/worker_crc.js') : '../assets/js/vendor/worker_crc.js';
+        function setCRC32Path() {
+            if (window.PathResolver) {
+                window.CRC32_WORKER_PATH = window.PathResolver.resolveAsset('js/vendor/worker_crc.js');
+            } else {
+                setTimeout(setCRC32Path, 50);
+            }
+        }
+        setCRC32Path();
         
         // Register service worker for performance
         if ('serviceWorker' in navigator) {
@@ -412,13 +419,19 @@
         loadAssets();
     </script>
     <script>
-        // Initialize mobile filter sheet on library page
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
+        // Initialize mobile filter sheet after assets load
+        function initMobileFilterSheet() {
+            if (window.MobileFilterSheet) {
                 window.mobileFilterSheet = new MobileFilterSheet();
-            });
+            } else {
+                setTimeout(initMobileFilterSheet, 100);
+            }
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMobileFilterSheet);
         } else {
-            window.mobileFilterSheet = new MobileFilterSheet();
+            initMobileFilterSheet();
         }
     </script>
 
