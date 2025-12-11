@@ -6,7 +6,7 @@ test.describe('Viewport Navigation', () => {
     });
 
     test('should show viewport navigation bar on narrow screens', async ({ page }) => {
-        await page.goto('/docs/library/');
+        await page.goto('/library/');
         
         const navSidebar = page.locator('.nav-sidebar');
         await expect(navSidebar).toBeVisible();
@@ -19,7 +19,7 @@ test.describe('Viewport Navigation', () => {
     });
 
     test('should apply proper padding to app container', async ({ page }) => {
-        await page.goto('/docs/library/');
+        await page.goto('/library/');
         
         const appContainer = page.locator('.app-container');
         const paddingTop = await appContainer.evaluate(el => 
@@ -30,7 +30,7 @@ test.describe('Viewport Navigation', () => {
     });
 
     test('should have proper touch targets for navigation icons', async ({ page }) => {
-        await page.goto('/docs/library/');
+        await page.goto('/library/');
         
         const navIcons = page.locator('.nav-collapsed-icon');
         const count = await navIcons.count();
@@ -46,7 +46,7 @@ test.describe('Viewport Navigation', () => {
     });
 
     test('should work across all pages', async ({ page }) => {
-        const pages = ['/docs/library/', '/docs/patcher/'];
+        const pages = ['/library/', '/patcher/'];
         
         for (const pagePath of pages) {
             await page.goto(pagePath);

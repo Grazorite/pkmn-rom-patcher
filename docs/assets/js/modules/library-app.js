@@ -4,7 +4,7 @@ import { SearchManager } from './search.js';
 import { UIManager } from './ui.js';
 import { CacheManager } from './cache.js';
 import { PerformanceMonitor } from './monitor.js';
-import { DebugPanel } from './debug.js';
+
 import { AnimationUtils } from '../utils/animations.js';
 import animationEngine from '../utils/animation-engine.js';
 import { StateManager } from '../utils/state-manager.js';
@@ -60,7 +60,7 @@ class ROMLibraryApp {
             if (state) {
                 this.applyRestoredFilters(state);
             }
-            this.debugPanel = new DebugPanel(this);
+
         }, { timeout: 1000 });
         
         // Initialize icons after CDN loads

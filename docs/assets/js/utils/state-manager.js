@@ -213,11 +213,7 @@ export const StateManager = {
         if (window.location.hostname === 'localhost' || 
             navigator.userAgent.includes('HeadlessChrome') ||
             window.location.search.includes('debug=true')) {
-            if (data) {
-                console.log(`[StateManager] ${message}`, data);
-            } else {
-                console.log(`[StateManager] ${message}`);
-            }
+            // Silent in production
         }
     }
 };

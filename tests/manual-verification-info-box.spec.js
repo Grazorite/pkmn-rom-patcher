@@ -2,7 +2,7 @@ import { test, expect } from './fixtures/base.js';
 
 test.describe('Info Box Bug Fix Verification', () => {
     test('info box loads after clearing search and typing again', async ({ page }) => {
-        await page.goto('/docs/patcher/');
+        await page.goto('/patcher/');
         await page.waitForLoadState('networkidle');
         await page.waitForSelector('h1', { timeout: 5000 });
         

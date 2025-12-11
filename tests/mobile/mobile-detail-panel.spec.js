@@ -1,13 +1,17 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { mobileTest as test, waitForMobileElement, waitForResponsiveLayout } from '../fixtures/mobile.js';
 
 test.describe('Mobile Detail Panel', () => {
     test.beforeEach(async ({ page }) => {
-        await page.setViewportSize({ width: 375, height: 667 });
+        // Mobile viewport already set by fixture
     });
 
     test('should be full screen on mobile when open', async ({ page }) => {
-        await page.goto('/docs/library/');
-        await page.waitForTimeout(2000); // Wait for library to load
+        await page.goto('/library/');
+        await waitForResponsiveLayout(page);
+        
+        // Wait for hack cards to load
+        await waitForMobileElement(page, '.hack-card');
         
         // Open first hack detail
         const firstHack = page.locator('.hack-card').first();
@@ -25,7 +29,7 @@ test.describe('Mobile Detail Panel', () => {
     });
 
     test('should lock background scroll when panel is open', async ({ page }) => {
-        await page.goto('/docs/library/');
+        await page.goto('/library/');
         await page.waitForTimeout(2000);
         
         const firstHack = page.locator('.hack-card').first();
@@ -44,7 +48,7 @@ test.describe('Mobile Detail Panel', () => {
     });
 
     test('should have proper metadata layout on mobile', async ({ page }) => {
-        await page.goto('/docs/library/');
+        await page.goto('/library/');
         await page.waitForTimeout(2000);
         
         const firstHack = page.locator('.hack-card').first();
@@ -66,7 +70,7 @@ test.describe('Mobile Detail Panel', () => {
     });
 
     test('should have close button with proper touch target', async ({ page }) => {
-        await page.goto('/docs/library/');
+        await page.goto('/library/');
         await page.waitForTimeout(2000);
         
         const firstHack = page.locator('.hack-card').first();
@@ -81,7 +85,7 @@ test.describe('Mobile Detail Panel', () => {
     });
 
     test('should close panel when close button is clicked', async ({ page }) => {
-        await page.goto('/docs/library/');
+        await page.goto('/library/');
         await page.waitForTimeout(2000);
         
         const firstHack = page.locator('.hack-card').first();

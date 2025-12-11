@@ -91,22 +91,22 @@ export class PerformanceMonitor {
         };
 
         if (thresholds[name] && value > thresholds[name]) {
-            console.warn(`Performance threshold exceeded for ${name}: ${Math.round(value)}ms (threshold: ${thresholds[name]}ms)`);
+            // Only log in development
+            if (window.location.hostname === 'localhost') {
+                console.warn(`Performance threshold exceeded for ${name}: ${Math.round(value)}ms`);
+            }
             
             // Identify LCP element for debugging
             if (name === 'LCP') {
                 this.identifyLCPElement(value);
-                if (value > 2500) {
-                    console.error('Critical LCP performance issue detected');
-                }
             }
-        } else if (thresholds[name]) {
-            console.log(`✓ ${name}: ${Math.round(value)}ms (under ${thresholds[name]}ms threshold)`);
         }
     }
 
     identifyLCPElement(lcpTime) {
-        // Get LCP element details for debugging
+        // Get LCP element details for debugging (development only)
+        if (window.location.hostname !== 'localhost') return;
+        
         const lcpEntries = this.metrics.get('LCP');
         if (lcpEntries && lcpEntries.length > 0) {
             const latestLCP = lcpEntries[lcpEntries.length - 1];

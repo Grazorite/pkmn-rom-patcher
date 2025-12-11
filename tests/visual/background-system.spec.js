@@ -3,10 +3,10 @@ import { test, expect } from '@playwright/test';
 test.describe('Background System Tests', () => {
     test('all pages have unified dark purple gradient background', async ({ page }) => {
         const pages = [
-            '/docs/',
-            '/docs/library/',
-            '/docs/patcher/',
-            '/docs/submit/'
+            '/',
+            '/library/',
+            '/patcher/',
+            '/submit/'
         ];
         
         for (const pagePath of pages) {
@@ -41,10 +41,10 @@ test.describe('Background System Tests', () => {
     
     test('all pages have animated floating circles', async ({ page }) => {
         const pages = [
-            '/docs/',
-            '/docs/library/',
-            '/docs/patcher/',
-            '/docs/submit/'
+            '/',
+            '/library/',
+            '/patcher/',
+            '/submit/'
         ];
         
         for (const pagePath of pages) {
@@ -69,7 +69,7 @@ test.describe('Background System Tests', () => {
     });
     
     test('background system CSS loads with highest priority', async ({ page }) => {
-        await page.goto('http://localhost:3000/docs/library/');
+        await page.goto('http://localhost:3000/library/');
         await page.waitForLoadState('networkidle');
         
         // Check that background-system.css is loaded

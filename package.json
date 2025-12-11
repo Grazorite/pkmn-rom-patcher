@@ -4,7 +4,7 @@
   "description": "A GitHub Pages-hosted ROM patcher that automatically updates its patch list when new files are added.",
   "main": "index.js",
   "scripts": {
-    "serve": "http-server . -p 3000 -a localhost",
+    "serve": "http-server docs -p 3000 -a localhost",
     "test": "playwright test",
     "test:smoke": "playwright test tests/smoke --reporter=list",
     "test:core": "playwright test tests/core --reporter=list",

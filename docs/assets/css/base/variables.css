@@ -4,8 +4,10 @@
     --z-background: -1;
     --z-content: 1;
     --z-sidebar: 100;
-    --z-mobile-nav: 1000;
-    --z-notifications: 1100;
+    --z-detail-overlay: 900;
+    --z-detail-panel: 1000;
+    --z-mobile-sheets: 1100;
+    --z-floating-buttons: 1200;
     --z-modals: 2000;
     
     /* Mobile Navigation */

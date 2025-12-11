@@ -16,8 +16,6 @@ class ROMPatcherApp {
         this.romPatcherInitialized = false;
         this.romPatcherReady = false;
         this.retryAttempted = false;
-        this.isGitHubPages = window.location.hostname.includes('github.io');
-        this.basePath = this.isGitHubPages ? '/pkmn-rom-patcher' : '';
         
         this.init();
     }
@@ -400,18 +398,9 @@ class ROMPatcherApp {
         this.hideOtherResults(patchId);
         this.positionAndShowDetails(patchId);
         
-        // Build patch info for RomPatcher
-        // Fix path for both local and GitHub Pages
-        let patchFile = this.selectedPatch.file;
-        if (this.isGitHubPages) {
-            // GitHub Pages: /pkmn-rom-patcher/docs/../patches/file.bps
-            patchFile = this.basePath + '/docs/' + this.selectedPatch.file;
-        } else {
-            // Local: ../../patches/file.bps
-            patchFile = patchFile.replace('../patches/', '../../patches/');
-        }
+        // Build patch info for RomPatcher using unified path resolution
         const patchInfo = {
-            file: patchFile,
+            file: PathResolver.resolvePatchPath(this.selectedPatch.file),
             name: this.selectedPatch.title,
             description: this.selectedPatch.changelog ? this.selectedPatch.changelog.substring(0, 200) : '',
             outputName: this.selectedPatch.title.replace(/[^a-zA-Z0-9-_]/g, '_')
@@ -431,7 +420,7 @@ class ROMPatcherApp {
             // Only show notification if not coming from URL (to avoid double notification)
             const params = new URLSearchParams(window.location.search);
             if (!params.get('patch') && !params.get('name')) {
-                this.showNotification(`Selected patch: ${this.selectedPatch.title}`, patchFile);
+                this.showNotification(`Selected patch: ${this.selectedPatch.title}`, patchInfo.file);
             }
         } else {
             console.error('Failed to load patch');
@@ -646,18 +635,18 @@ class ROMPatcherApp {
                     setTimeout(() => {
 
                         this.selectPatch(patch.id);
-                        this.showNotification(`Loaded patch: ${patch.title}`, patchFile);
+                        this.showNotification(`Loaded patch: ${patch.title}`, PathResolver.resolvePatchPath(patch.file));
                     }, 800);
                 } else {
 
                     // Create patch info from URL params for direct loading
                     const patchInfo = {
-                        file: patchFile,
+                        file: PathResolver.resolvePatchPath(patchFile),
                         name: patchName || 'Selected Patch',
                         title: patchName || 'Selected Patch'
                     };
                     this.initializeRomPatcherWithPatch(patchInfo);
-                    this.showNotification(`Loaded patch: ${patchInfo.name}`, patchFile);
+                    this.showNotification(`Loaded patch: ${patchInfo.name}`, patchInfo.file);
                 }
             }, 1200);
         }

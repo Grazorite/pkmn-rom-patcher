@@ -6,19 +6,19 @@ test.describe('Integration Tests', () => {
         test('maintains independent state per page', async ({ page, browserName }) => {
             // WebKit has known timing issues with sessionStorage in test environments
             test.fixme(browserName === 'webkit', 'WebKit sessionStorage timing issue in test environment');
-            await page.goto('/docs/library/');
+            await page.goto('/library/');
             await page.waitForLoadState('networkidle');
             await page.waitForSelector('#searchInput', { timeout: 5000 });
             await page.fill('#searchInput', 'library search');
             await page.waitForTimeout(1000); // Allow state to save
             
-            await page.goto('/docs/patcher/');
+            await page.goto('/patcher/');
             await page.waitForLoadState('networkidle');
             await page.waitForSelector('#patchSearch', { timeout: 5000 });
             await page.fill('#patchSearch', 'patcher search');
             await page.waitForTimeout(1000); // Allow state to save
             
-            await page.goto('/docs/library/');
+            await page.goto('/library/');
             await page.waitForLoadState('networkidle');
             await page.waitForSelector('#searchInput', { timeout: 5000 });
             
@@ -27,7 +27,7 @@ test.describe('Integration Tests', () => {
             
             await expect(page.locator('#searchInput')).toHaveValue('library search');
             
-            await page.goto('/docs/patcher/');
+            await page.goto('/patcher/');
             await page.waitForLoadState('networkidle');
             await page.waitForSelector('#patchSearch', { timeout: 5000 });
             await page.waitForTimeout(1000); // Allow state restoration
