@@ -5,7 +5,7 @@
         // IMMEDIATE base tag injection - executes before asset parsing
         (function() {
             const isGitHubPages = window.location.hostname === 'grazorite.github.io';
-            const basePath = isGitHubPages ? '/pkmn-rom-patcher/docs/' : '/';
+            const basePath = isGitHubPages ? '/pkmn-rom-patcher/' : '/';
             const base = document.createElement('base');
             base.href = basePath;
             document.head.insertBefore(base, document.head.firstChild);
@@ -23,22 +23,22 @@
     <style>html,body{margin:0!important;padding:0!important}</style>
     
     <!-- Design System (highest priority) -->
-    <link rel="stylesheet" href="assets/css/design-system/background-system.css">
-    <link rel="stylesheet" href="assets/css/design-system/status-system.css">
-    <link rel="stylesheet" href="assets/css/design-system/image-display.css">
+    <link rel="stylesheet" href="docs/assets/css/design-system/background-system.css">
+    <link rel="stylesheet" href="docs/assets/css/design-system/status-system.css">
+    <link rel="stylesheet" href="docs/assets/css/design-system/image-display.css">
     
     <!-- Main CSS (imports components) -->
-    <link rel="stylesheet" href="assets/css/main.css?v=3">
+    <link rel="stylesheet" href="docs/assets/css/main.css?v=3">
     
     <!-- Page-specific CSS -->
-    <link rel="stylesheet" href="assets/css/transitions.css">
-    <link rel="stylesheet" href="assets/css/components/patcher-results.css?v=2">
-    <link rel="stylesheet" href="assets/css/components/loaded-patch-info.css?v=2">
-    <link rel="stylesheet" href="assets/css/components/patcher-single-layout.css?v=2">
-    <link rel="stylesheet" href="assets/css/components/patcher-widget-position.css?v=2">
+    <link rel="stylesheet" href="docs/assets/css/transitions.css">
+    <link rel="stylesheet" href="docs/assets/css/components/patcher-results.css?v=2">
+    <link rel="stylesheet" href="docs/assets/css/components/loaded-patch-info.css?v=2">
+    <link rel="stylesheet" href="docs/assets/css/components/patcher-single-layout.css?v=2">
+    <link rel="stylesheet" href="docs/assets/css/components/patcher-widget-position.css?v=2">
 
-    <link rel="stylesheet" href="patcher/rom-patcher-js/style.css">
-    <link rel="stylesheet" href="assets/css/components/rompatcher-theme.css?v=2">
+    <link rel="stylesheet" href="docs/patcher/rom-patcher-js/style.css">
+    <link rel="stylesheet" href="docs/assets/css/components/rompatcher-theme.css?v=2">
     
     <!-- CRITICAL CSS - Inline to bypass cache -->
     <style>
@@ -178,35 +178,35 @@
             <h3>UROMM</h3>
         </div>
         <div class="nav-links">
-            <a href="" class="nav-link">
+            <a href="docs/" class="nav-link">
                 <i data-lucide="home" width="20" height="20"></i>
                 Home
             </a>
-            <a href="patcher/" class="nav-link active">
+            <a href="docs/patcher/" class="nav-link active">
                 <i data-lucide="download" width="20" height="20"></i>
                 ROM Patcher
             </a>
-            <a href="library/" class="nav-link">
+            <a href="docs/library/" class="nav-link">
                 <i data-lucide="book-open" width="20" height="20"></i>
                 ROM Library
             </a>
-            <a href="submit/" class="nav-link">
+            <a href="docs/submit/" class="nav-link">
                 <i data-lucide="upload" width="20" height="20"></i>
                 Submit Patch
             </a>
         </div>
 
         <div class="nav-collapsed-icons">
-            <a href="" class="nav-collapsed-icon" title="Home">
+            <a href="docs/" class="nav-collapsed-icon" title="Home">
                 <i data-lucide="home" width="20" height="20"></i>
             </a>
-            <a href="patcher/" class="nav-collapsed-icon active" title="ROM Patcher">
+            <a href="docs/patcher/" class="nav-collapsed-icon active" title="ROM Patcher">
                 <i data-lucide="download" width="20" height="20"></i>
             </a>
-            <a href="library/" class="nav-collapsed-icon" title="ROM Library">
+            <a href="docs/library/" class="nav-collapsed-icon" title="ROM Library">
                 <i data-lucide="book-open" width="20" height="20"></i>
             </a>
-            <a href="submit/" class="nav-collapsed-icon" title="Submit Patch">
+            <a href="docs/submit/" class="nav-collapsed-icon" title="Submit Patch">
                 <i data-lucide="upload" width="20" height="20"></i>
             </a>
         </div>
@@ -336,16 +336,16 @@
     <div id="debugContainer" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); color: white; padding: 10px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; z-index: 9999; display: none;"></div>
     
     <!-- RomPatcher.js library -->
-    <script src="patcher/rom-patcher-js/RomPatcher.webapp.js"></script>
+    <script src="docs/patcher/rom-patcher-js/RomPatcher.webapp.js"></script>
     
-    <script src="assets/js/utils/error-boundary.js"></script>
-    <script src="assets/js/utils/page-transitions.js"></script>
-    <script src="assets/js/core.js"></script>
-    <script src="assets/js/navigation.js"></script>
+    <script src="docs/assets/js/utils/error-boundary.js"></script>
+    <script src="docs/assets/js/utils/page-transitions.js"></script>
+    <script src="docs/assets/js/core.js"></script>
+    <script src="docs/assets/js/navigation.js"></script>
 
-    <script src="assets/js/floating-buttons.js?v=3"></script>
+    <script src="docs/assets/js/floating-buttons.js?v=3"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
 
-    <script type="module" src="assets/js/modules/patcher-app.js?v=2"></script>
+    <script type="module" src="docs/assets/js/modules/patcher-app.js?v=2"></script>
 </body>
 </html>
