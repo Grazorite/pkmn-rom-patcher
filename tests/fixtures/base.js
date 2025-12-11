@@ -38,13 +38,13 @@ class BaseFixtures {
     }
 
     async landingPage({ page }) {
-        await page.goto('http://localhost:3000/docs/');
+        await page.goto('http://localhost:3000/');
         await page.waitForLoadState('networkidle');
         return { page, selectors: this.selectors };
     }
 
     async libraryPage({ page }) {
-        await page.goto('http://localhost:3000/docs/library/');
+        await page.goto('http://localhost:3000/library/');
         await page.waitForLoadState('networkidle');
         // Just wait for basic page load, not app initialization
         await page.waitForSelector('h1', { timeout: 5000 });
@@ -52,7 +52,7 @@ class BaseFixtures {
     }
 
     async patcherPage({ page }) {
-        await page.goto('http://localhost:3000/docs/patcher/');
+        await page.goto('http://localhost:3000/patcher/');
         await page.waitForLoadState('networkidle');
         // Just wait for basic page load
         await page.waitForSelector('h1', { timeout: 5000 });

@@ -3,7 +3,7 @@ let baseRomsCache = null;
 
 async function loadBaseRoms() {
     if (baseRomsCache) return baseRomsCache;
-    const response = await fetch('../../config/base-roms.json');
+    const response = await fetch('config/base-roms.json');
     baseRomsCache = await response.json();
     return baseRomsCache;
 }

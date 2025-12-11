@@ -6,7 +6,7 @@ let baseRomsCache = null;
 export async function loadSystems() {
     if (systemsCache) return systemsCache;
     
-    const response = await fetch('../../config/systems.json');
+    const response = await fetch('config/systems.json');
     systemsCache = await response.json();
     return systemsCache;
 }
@@ -14,7 +14,7 @@ export async function loadSystems() {
 export async function loadBaseRoms() {
     if (baseRomsCache) return baseRomsCache;
     
-    const response = await fetch('../../config/base-roms.json');
+    const response = await fetch('config/base-roms.json');
     baseRomsCache = await response.json();
     return baseRomsCache;
 }

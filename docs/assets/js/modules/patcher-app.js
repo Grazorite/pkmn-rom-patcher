@@ -4,6 +4,8 @@ import { imagePopup } from './image-popup.js';
 import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
 import { StateManager } from '../utils/state-manager.js';
 import { PathResolver } from '../utils/path-resolver.js';
+import { BasicSearch } from '../utils/basic-search.js';
+import { manifestLoader } from '../utils/manifest-loader.js';
 
 class ROMPatcherApp {
     constructor() {
@@ -14,8 +16,6 @@ class ROMPatcherApp {
         this.romPatcherInitialized = false;
         this.romPatcherReady = false;
         this.retryAttempted = false;
-        this.isGitHubPages = window.location.hostname.includes('github.io');
-        this.basePath = this.isGitHubPages ? '/pkmn-rom-patcher' : '';
         
         this.init();
     }
@@ -23,9 +23,21 @@ class ROMPatcherApp {
     async init() {
         await initBadgeRenderer();
         this.initializeIcons();
-        await this.loadPatches();
-        this.setupEventListeners();
+        
+        // Setup initial search UI
         this.setupSearch();
+        this.setupEventListeners();
+        
+        // Load patches for search functionality
+        await this.loadPatches();
+        
+        // Setup Fuse.js if patches were loaded
+        if (this.patches.length > 0) {
+            this.setupFuse();
+            // Update search UI now that data is available
+            this.setupSearch();
+        }
+        
         this.restoreState();
         this.handleURLParameters();
     }
@@ -46,10 +58,56 @@ class ROMPatcherApp {
     }
     
     saveState() {
-        StateManager.saveState('patcher', {
-            searchQuery: document.getElementById('patchSearch')?.value || '',
-            selectedPatchId: this.selectedPatch?.id || null
-        });
+        // Validate state before saving
+        const searchInput = document.getElementById('patchSearch');
+        const searchQuery = searchInput?.value || '';
+        const selectedPatchId = this.selectedPatch?.id || null;
+        
+        // Only save if we have valid data
+        if (searchInput && (searchQuery || selectedPatchId)) {
+            StateManager.saveState('patcher', {
+                searchQuery,
+                selectedPatchId
+            });
+        }
+    }
+    
+    deferredSaveState() {
+        // Defer state saving until after DOM operations complete
+        setTimeout(() => {
+            try {
+                this.saveState();
+            } catch (error) {
+                console.warn('State save failed:', error);
+                // Retry once after additional delay
+                setTimeout(() => {
+                    try {
+                        this.saveState();
+                    } catch (retryError) {
+                        console.error('State save retry failed:', retryError);
+                    }
+                }, 100);
+            }
+        }, 50);
+    }
+    
+    deferredInitializeIcons() {
+        // Defer icon initialization until after DOM is fully rendered
+        setTimeout(() => {
+            try {
+                this.initializeIcons();
+            } catch (error) {
+                console.warn('Icon initialization failed:', error);
+                // Fallback: try again after longer delay
+                setTimeout(() => {
+                    try {
+                        this.initializeIcons();
+                    } catch (retryError) {
+                        console.error('Icon initialization retry failed:', retryError);
+                    }
+                }, 100);
+            }
+        }, 10);
     }
     
     initializeIcons() {
@@ -65,44 +123,34 @@ class ROMPatcherApp {
     }
     
     async loadPatches() {
+        // Always load manifest for search functionality using centralized loader
         try {
-            const manifestPaths = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? ['/docs/manifest.json', './manifest.json', '../manifest.json']
-                : ['../manifest.json'];
-            
-            let response;
-            let successPath;
-            for (const path of manifestPaths) {
-                try {
-                    response = await fetch(path);
-                    if (response.ok) {
-                        successPath = path;
-                        break;
-                    }
-                } catch (e) { /* try next path */ }
-            }
-            
-            if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            
-            this.patches = await response.json();
-            // Sort alphabetically by title
+            this.patches = await manifestLoader.load();
             this.patches.sort((a, b) => a.title.localeCompare(b.title));
-            this.setupFuse();
         } catch (error) {
-            console.error('Failed to load patches:', error);
-            document.getElementById('patchResults').innerHTML = 
-                `<div class="loading error">Failed to load patches: ${error.message}</div>`;
+            console.warn('Failed to load patches manifest:', error.message);
+            this.patches = [];
         }
     }
     
     setupFuse() {
-        const options = {
-            keys: ['title', 'meta.tags', 'meta.author', 'meta.baseRom'],
-            threshold: 0.3,
-            includeScore: true,
-            minMatchCharLength: 2
-        };
-        this.fuse = new Fuse(this.patches, options);
+        if (typeof Fuse === 'undefined') {
+            console.warn('Fuse.js not available for patcher search');
+            return;
+        }
+        
+        try {
+            const options = {
+                keys: ['title', 'meta.tags', 'meta.author', 'meta.baseRom'],
+                threshold: 0.3,
+                includeScore: true,
+                minMatchCharLength: 2
+            };
+            this.fuse = new Fuse(this.patches, options);
+        } catch (error) {
+            console.warn('Failed to initialize Fuse.js in patcher:', error);
+            this.fuse = null;
+        }
     }
     
     setupEventListeners() {
@@ -110,11 +158,20 @@ class ROMPatcherApp {
         if (searchInput) {
             searchInput.addEventListener('input', Utils.debounce((e) => {
                 this.handleSearch(e.target.value);
-                this.saveState();
+                this.deferredSaveState();
             }, 300));
         }
         
-
+        // Event delegation for patch results
+        const resultsContainer = document.getElementById('patchResults');
+        if (resultsContainer) {
+            resultsContainer.addEventListener('click', (e) => {
+                const patchResult = e.target.closest('.patch-result');
+                if (patchResult && patchResult.dataset.patchId) {
+                    this.selectPatch(patchResult.dataset.patchId);
+                }
+            });
+        }
         
         const closePatchBtn = document.getElementById('closePatchDescription');
         if (closePatchBtn) {
@@ -125,6 +182,11 @@ class ROMPatcherApp {
     initializeRomPatcherWithPatch(patchInfo) {
         if (typeof RomPatcherWeb === 'undefined') {
             console.error('RomPatcherWeb not loaded');
+            return false;
+        }
+        
+        if (!patchInfo || !patchInfo.file) {
+            console.error('Invalid patch info provided:', patchInfo);
             return false;
         }
         
@@ -185,17 +247,23 @@ class ROMPatcherApp {
     setupSearch() {
         const resultsContainer = document.getElementById('patchResults');
         if (resultsContainer) {
-            resultsContainer.innerHTML = '<div class="loading">Start typing to search for patches...</div>';
+            if (this.patches.length > 0) {
+                resultsContainer.innerHTML = '<div class="loading">Start typing to search for patches...</div>';
+            } else {
+                resultsContainer.innerHTML = '<div class="loading">Loading patches for search...</div>';
+            }
         }
     }
     
     handleSearch(query) {
         const resultsContainer = document.getElementById('patchResults');
         
-
-        
         if (!query.trim()) {
-            resultsContainer.innerHTML = '<div class="loading">Start typing to search for patches...</div>';
+            if (this.patches.length > 0) {
+                resultsContainer.innerHTML = '<div class="loading">Start typing to search for patches...</div>';
+            } else {
+                resultsContainer.innerHTML = '<div class="loading">Loading patches for search...</div>';
+            }
             return;
         }
         
@@ -204,14 +272,53 @@ class ROMPatcherApp {
             return;
         }
         
-        const results = this.fuse.search(query);
+        // Check if patches are still loading
+        if (this.patches.length === 0) {
+            resultsContainer.innerHTML = '<div class="loading">Loading patches...</div>';
+            return;
+        }
+        
+        let results = [];
+        
+        // Use Fuse.js if available
+        if (this.fuse) {
+            try {
+                results = this.fuse.search(query);
+            } catch (error) {
+                console.warn('Fuse.js search failed:', error);
+                results = this.basicSearch(query);
+            }
+        } else {
+            // Fallback to basic search
+            results = this.basicSearch(query);
+        }
+        
         this.renderSearchResults(results.slice(0, 10));
+    }
+    
+    basicSearch(query) {
+        if (!this.patches || !Array.isArray(this.patches)) {
+            return [];
+        }
+        
+        const searchQuery = query.toLowerCase();
+        return this.patches.filter(patch => {
+            return patch.title.toLowerCase().includes(searchQuery) ||
+                   (patch.meta?.author && patch.meta.author.toLowerCase().includes(searchQuery)) ||
+                   (patch.meta?.baseRom && patch.meta.baseRom.toLowerCase().includes(searchQuery)) ||
+                   (patch.meta?.tags && patch.meta.tags.some(tag => 
+                       tag.toLowerCase().includes(searchQuery)
+                   ));
+        }).map(item => ({ item, score: 0 }));
     }
     
     renderSearchResults(results) {
         const container = document.getElementById('patchResults');
         
-
+        if (!container) {
+            console.error('Patch results container not found');
+            return;
+        }
         
         if (results.length === 0) {
             container.innerHTML = '<div class="loading">No patches found</div>';
@@ -221,16 +328,27 @@ class ROMPatcherApp {
         const resultsHtml = results.map(result => {
             const patch = result.item;
             const description = patch.changelog ? patch.changelog.replace(/[#*`]/g, '').substring(0, 100) + '...' : 'No description available';
-            const boxArt = PathResolver.resolveImagePath(patch.meta?.images?.boxArt || '', 'patcher');
+            const boxArt = patch.meta?.images?.boxArt;
             const status = patch.meta?.status || 'Completed';
             const statusClass = `status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+            
+            // Resolve box art URL properly
+            let boxArtUrl = '';
+            if (boxArt) {
+                if (boxArt.startsWith('http')) {
+                    boxArtUrl = boxArt;
+                } else {
+                    // Handle relative paths
+                    boxArtUrl = boxArt.startsWith('/') ? boxArt : `/${boxArt}`;
+                }
+            }
             
             return `
                 <div class="patch-result clickable" data-patch-id="${patch.id}">
                     <div class="patch-result-boxart">
-                        ${boxArt ? 
+                        ${boxArtUrl ? 
                             `<div class="image-container">
-                                <img src="${boxArt}" class="patch-boxart" alt="${patch.title}" onerror="this.parentElement.classList.add('has-broken-image')">
+                                <img src="${boxArtUrl}" class="patch-boxart" alt="${patch.title}" onerror="this.parentElement.classList.add('has-broken-image')">
                                 <div class="image-fallback"><i data-lucide="image-off" width="24" height="24"></i></div>
                             </div>` : 
                             `<div class="image-fallback"><i data-lucide="image-off" width="24" height="24"></i></div>`
@@ -239,11 +357,9 @@ class ROMPatcherApp {
                     <div class="patch-result-content">
                         <h4>${patch.title}</h4>
                         <p class="patch-description">${description}</p>
-                        <div class="patch-meta-row">
-                            <div class="patch-badges">
-                                ${renderBadge('rom', patch.meta?.baseRom)}
-                                ${renderBadge('system', patch.meta?.system)}
-                            </div>
+                        <div class="patch-badges">
+                            ${renderBadge('rom', patch.meta?.baseRom)}
+                            ${renderBadge('system', patch.meta?.system)}
                             <div class="status-indicator">
                                 <div class="status-dot ${statusClass}"></div>
                                 <span>${status}</span>
@@ -254,16 +370,17 @@ class ROMPatcherApp {
             `;
         }).join('');
         
-        container.innerHTML = resultsHtml;
+        // Add result count info
+        const countInfo = results.length === 1 ? '1 patch found' : `${results.length} patches found`;
+        const countHtml = `<div class="search-results-count">${countInfo}</div>`;
         
-        container.querySelectorAll('.patch-result').forEach(result => {
-            result.addEventListener('click', (e) => {
-                const patchId = e.target.closest('.patch-result').dataset.patchId;
-                this.selectPatch(patchId);
-            });
-        });
+        container.innerHTML = countHtml + resultsHtml;
         
-        this.initializeIcons();
+        // Event delegation handles clicks - no individual listeners needed
+        this.deferredInitializeIcons();
+        
+        // Ensure container remains accessible after DOM updates
+        this.preserveSelectedPatchContainer();
     }
     
     async selectPatch(patchId) {
@@ -273,25 +390,17 @@ class ROMPatcherApp {
         }
         
         this.selectedPatch = this.patches.find(p => p.id === patchId);
-        if (!this.selectedPatch) return;
-        
-        this.saveState();
+        if (!this.selectedPatch) {
+            console.warn('Patch not found:', patchId);
+            return;
+        }
         
         this.hideOtherResults(patchId);
         this.positionAndShowDetails(patchId);
         
-        // Build patch info for RomPatcher
-        // Fix path for both local and GitHub Pages
-        let patchFile = this.selectedPatch.file;
-        if (this.isGitHubPages) {
-            // GitHub Pages: /pkmn-rom-patcher/docs/../patches/file.bps
-            patchFile = this.basePath + '/docs/' + this.selectedPatch.file;
-        } else {
-            // Local: ../../patches/file.bps
-            patchFile = patchFile.replace('../patches/', '../../patches/');
-        }
+        // Build patch info for RomPatcher using unified path resolution
         const patchInfo = {
-            file: patchFile,
+            file: PathResolver.resolvePatchPath(this.selectedPatch.file),
             name: this.selectedPatch.title,
             description: this.selectedPatch.changelog ? this.selectedPatch.changelog.substring(0, 200) : '',
             outputName: this.selectedPatch.title.replace(/[^a-zA-Z0-9-_]/g, '_')
@@ -305,20 +414,26 @@ class ROMPatcherApp {
         const success = this.initializeRomPatcherWithPatch(patchInfo);
         
         if (success) {
+            // Save state after successful patch selection
+            this.deferredSaveState();
+            
             // Only show notification if not coming from URL (to avoid double notification)
             const params = new URLSearchParams(window.location.search);
             if (!params.get('patch') && !params.get('name')) {
-                this.showNotification(`Selected patch: ${this.selectedPatch.title}`, patchFile);
+                this.showNotification(`Selected patch: ${this.selectedPatch.title}`, patchInfo.file);
             }
         } else {
             console.error('Failed to load patch');
+            this.selectedPatch = null; // Reset on failure
         }
     }
     
     deselectPatch() {
         this.selectedPatch = null;
-        this.saveState();
         this.hideSelectedPatchWithAnimation();
+        
+        // Save state after UI updates complete
+        this.deferredSaveState();
         
         // Unload patch from patcher widget
         if (typeof RomPatcherWeb !== 'undefined' && typeof RomPatcherWeb.providePatchFile === 'function') {
@@ -344,10 +459,19 @@ class ROMPatcherApp {
     
     positionAndShowDetails(selectedId) {
         const selectedElement = document.querySelector(`[data-patch-id="${selectedId}"]`);
-        const container = document.getElementById('selectedPatch');
+        let container = document.getElementById('selectedPatch');
+        
+        // Create container if missing (DOM lifecycle issue)
+        if (!container) {
+            container = this.createSelectedPatchContainer();
+        }
+        
         const description = document.getElementById('selectedPatchDescription');
         
-        if (!selectedElement || !container) return;
+        if (!selectedElement || !container) {
+            console.warn('Required elements not found for patch details:', { selectedId, selectedElement: !!selectedElement, container: !!container });
+            return;
+        }
         
         // Show banner with bannerImage (same as library implementation)
         const banner = document.getElementById('selectedPatchBanner');
@@ -382,7 +506,10 @@ class ROMPatcherApp {
             }
         }
         
-        selectedElement.parentNode.insertBefore(container, selectedElement.nextSibling);
+        // Ensure container is properly positioned in DOM
+        if (container.parentNode !== selectedElement.parentNode) {
+            selectedElement.parentNode.insertBefore(container, selectedElement.nextSibling);
+        }
         
         container.style.display = 'block';
         container.classList.remove('hide');
@@ -401,7 +528,28 @@ class ROMPatcherApp {
             setTimeout(() => {
                 container.style.display = 'none';
                 container.classList.remove('hide');
+                // Keep container in DOM but move to stable location
+                this.ensureContainerInStableLocation(container);
             }, 400);
+        }
+    }
+    
+    ensureContainerInStableLocation(container) {
+        // Move container to a stable location in DOM to prevent loss
+        const patcherMain = document.querySelector('.patcher-main-single');
+        if (patcherMain && container.parentNode !== patcherMain) {
+            patcherMain.appendChild(container);
+        }
+    }
+    
+    preserveSelectedPatchContainer() {
+        // Ensure container exists and is in a stable location after DOM updates
+        let container = document.getElementById('selectedPatch');
+        if (!container) {
+            container = this.createSelectedPatchContainer();
+            this.ensureContainerInStableLocation(container);
+        } else {
+            this.ensureContainerInStableLocation(container);
         }
     }
     
@@ -487,18 +635,18 @@ class ROMPatcherApp {
                     setTimeout(() => {
 
                         this.selectPatch(patch.id);
-                        this.showNotification(`Loaded patch: ${patch.title}`, patchFile);
+                        this.showNotification(`Loaded patch: ${patch.title}`, PathResolver.resolvePatchPath(patch.file));
                     }, 800);
                 } else {
 
                     // Create patch info from URL params for direct loading
                     const patchInfo = {
-                        file: patchFile,
+                        file: PathResolver.resolvePatchPath(patchFile),
                         name: patchName || 'Selected Patch',
                         title: patchName || 'Selected Patch'
                     };
                     this.initializeRomPatcherWithPatch(patchInfo);
-                    this.showNotification(`Loaded patch: ${patchInfo.name}`, patchFile);
+                    this.showNotification(`Loaded patch: ${patchInfo.name}`, patchInfo.file);
                 }
             }, 1200);
         }
@@ -530,6 +678,32 @@ class ROMPatcherApp {
         }, 8000);
         
         this.initializeIcons();
+    }
+    
+    createSelectedPatchContainer() {
+        const container = document.createElement('div');
+        container.id = 'selectedPatch';
+        container.className = 'selected-patch';
+        container.style.cssText = 'display: none; position: relative;';
+        
+        container.innerHTML = `
+            <button class="close-btn" id="closePatchDescription" style="position: absolute; top: 0.75rem; right: 0.75rem; z-index: 10;">
+                <i data-lucide="x" width="20" height="20"></i>
+            </button>
+            <div id="selectedPatchBanner" class="detail-banner"></div>
+            <div class="patch-info" style="max-height: 400px; overflow-y: auto; padding: 0.5rem 1.25rem 1rem 1rem; position: relative;">
+                <p id="selectedPatchDescription" style="padding-right: 0.75rem; margin: 0;"></p>
+            </div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, transparent, var(--bg-secondary)); pointer-events: none;"></div>
+        `;
+        
+        // Re-attach close button event listener
+        const closeBtn = container.querySelector('#closePatchDescription');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.deselectPatch());
+        }
+        
+        return container;
     }
     
     showLoadedPatchInfo(patchInfo) {

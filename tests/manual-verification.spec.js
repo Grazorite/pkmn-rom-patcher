@@ -4,7 +4,7 @@ test.describe('Manual Verification', () => {
     test('patcher page navigation and images work', async ({ page }) => {
         // Test desktop viewport
         await page.setViewportSize({ width: 1024, height: 768 });
-        await page.goto('/docs/patcher/');
+        await page.goto('/patcher/');
         
         // Check navigation exists
         const navSidebar = page.locator('.nav-sidebar');
@@ -46,7 +46,7 @@ test.describe('Manual Verification', () => {
     });
     
     test('back-to-top button appears on right side', async ({ page }) => {
-        await page.goto('/docs/library/');
+        await page.goto('/library/');
         await page.waitForTimeout(2000);
         
         // Add scrollable content

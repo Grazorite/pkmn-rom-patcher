@@ -1,0 +1,28 @@
+/* Unified Image Display System - Overrides performance.css conflicts */
+
+/* High specificity to override performance.css - Zoom to fit (cover) */
+.hack-grid .hack-card .hack-card-image img,
+.hack-grid.grid-view .hack-card .hack-card-image img {
+    object-fit: cover !important;
+    aspect-ratio: unset !important;
+}
+
+/* Grid view specific overrides */
+.hack-grid.grid-view .grid-card-image img {
+    object-fit: cover !important;
+    aspect-ratio: unset !important;
+}
+
+/* Image container overrides */
+.hack-grid .image-container img {
+    object-fit: cover !important;
+    aspect-ratio: unset !important;
+}
+
+/* Container background removal - highest priority */
+.hack-card-image,
+.image-container,
+.grid-placeholder,
+.image-placeholder {
+    background: none !important;
+}

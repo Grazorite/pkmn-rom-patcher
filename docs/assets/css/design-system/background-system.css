@@ -1,0 +1,163 @@
+/* Background System - Unified dark purple gradient with animated circles */
+body {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+    background-attachment: fixed !important;
+    min-height: 100vh;
+}
+
+.background-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    animation: float 20s infinite ease-in-out;
+}
+
+.shape:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    top: 20vh;
+    left: 10%;
+    animation-delay: 0s;
+    animation-duration: 25s;
+}
+
+.shape:nth-child(2) {
+    width: 120px;
+    height: 120px;
+    top: 60vh;
+    left: 20%;
+    animation-delay: 5s;
+    animation-duration: 30s;
+}
+
+.shape:nth-child(3) {
+    width: 60px;
+    height: 60px;
+    top: 35vh;
+    left: 70%;
+    animation-delay: 10s;
+    animation-duration: 20s;
+}
+
+.shape:nth-child(4) {
+    width: 100px;
+    height: 100px;
+    top: 80vh;
+    left: 80%;
+    animation-delay: 15s;
+    animation-duration: 35s;
+}
+
+.shape:nth-child(5) {
+    width: 90px;
+    height: 90px;
+    top: 45vh;
+    left: 50%;
+    animation-delay: 20s;
+    animation-duration: 28s;
+}
+
+/* Mobile Responsive Optimizations */
+@media (max-width: 768px) {
+    .shape:nth-child(1) {
+        width: 60px;
+        height: 60px;
+        top: 15vh;
+        left: 8%;
+    }
+    
+    .shape:nth-child(2) {
+        width: 80px;
+        height: 80px;
+        top: 65vh;
+        left: 15%;
+    }
+    
+    .shape:nth-child(3) {
+        width: 45px;
+        height: 45px;
+        top: 40vh;
+        left: 75%;
+    }
+    
+    .shape:nth-child(4) {
+        width: 70px;
+        height: 70px;
+        top: 85vh;
+        left: 70%;
+    }
+    
+    .shape:nth-child(5) {
+        width: 65px;
+        height: 65px;
+        top: 50vh;
+        left: 45%;
+    }
+}
+
+@media (max-width: 480px) {
+    .shape:nth-child(1) {
+        width: 50px;
+        height: 50px;
+        top: 12vh;
+        left: 5%;
+    }
+    
+    .shape:nth-child(2) {
+        width: 70px;
+        height: 70px;
+        top: 70vh;
+        left: 10%;
+    }
+    
+    .shape:nth-child(3) {
+        width: 35px;
+        height: 35px;
+        top: 35vh;
+        left: 80%;
+    }
+    
+    .shape:nth-child(4) {
+        width: 60px;
+        height: 60px;
+        top: 90vh;
+        left: 75%;
+    }
+    
+    .shape:nth-child(5) {
+        width: 55px;
+        height: 55px;
+        top: 55vh;
+        left: 40%;
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+        transform: translateY(80vh) rotate(45deg) scale(1);
+    }
+    85% {
+        opacity: 1;
+        transform: translateY(-80px) rotate(315deg) scale(1);
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg) scale(0.8);
+        opacity: 0;
+    }
+}

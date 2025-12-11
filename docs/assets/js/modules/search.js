@@ -1,7 +1,10 @@
 // Search and filter functionality
+import { BasicSearch } from '../utils/basic-search.js';
+
 export class SearchManager {
     constructor() {
         this.fuse = null;
+        this.fuseReady = false;
         this.activeFilters = {
             baseRom: new Set(),
             system: new Set(),
@@ -17,19 +20,46 @@ export class SearchManager {
     }
 
     initFuse(data) {
-        const options = {
-            keys: ['title', 'meta.tags', 'meta.author', 'meta.baseRom'],
-            threshold: 0.3,
-            includeScore: true
-        };
-        this.fuse = new Fuse(data, options);
+        if (typeof Fuse === 'undefined') {
+            console.warn('Fuse.js not available, using basic search fallback');
+            this.fuseReady = false;
+            return;
+        }
+        
+        try {
+            const options = {
+                keys: ['title', 'meta.tags', 'meta.author', 'meta.baseRom'],
+                threshold: 0.3,
+                includeScore: true
+            };
+            this.fuse = new Fuse(data, options);
+            this.fuseReady = true;
+        } catch (error) {
+            console.warn('Failed to initialize Fuse.js:', error);
+            this.fuse = null;
+            this.fuseReady = false;
+        }
     }
 
     search(query, data) {
-        if (!query.trim()) {
-            return data;
+        if (!query || !query.trim()) {
+            return data || [];
         }
-        const results = this.fuse.search(query);
+        
+        // Use Fuse.js if available and ready
+        if (this.fuse && this.fuseReady) {
+            try {
+                const results = this.fuse.search(query);
+                return results.map(result => result.item);
+            } catch (error) {
+                console.warn('Fuse.js search failed, falling back to basic search:', error);
+            }
+        }
+        
+        // Fallback to basic search
+        const results = BasicSearch.search(query, data, {
+            keys: ['title', 'meta.tags', 'meta.author', 'meta.baseRom']
+        });
         return results.map(result => result.item);
     }
 

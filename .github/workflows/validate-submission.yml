@@ -14,6 +14,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+          
+      - name: Analyze PR type
+        id: analyze
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          node scripts/pr-analyzer.js
+          
+      - name: Skip validation for development PRs
+        if: steps.analyze.outputs.should_validate != 'true'
+        run: |
+          echo "Skipping validation - this appears to be a development PR"
+          echo "PR Type: ${{ steps.analyze.outputs.pr_type }}"
+          exit 0
         
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -21,6 +37,7 @@ jobs:
           node-version: '18'
           
       - name: Validate metadata files
+        if: steps.analyze.outputs.should_validate == 'true'
         run: |
           echo "Validating metadata files..."
           
@@ -61,6 +78,7 @@ jobs:
           done
           
       - name: Validate patch files
+        if: steps.analyze.outputs.should_validate == 'true'
         run: |
           echo "Validating patch files..."
           
@@ -84,6 +102,7 @@ jobs:
           done
           
       - name: Check for duplicates
+        if: steps.analyze.outputs.should_validate == 'true'
         run: |
           echo "Checking for duplicate submissions..."
           
@@ -99,13 +118,13 @@ jobs:
           done
           
       - name: Comment on PR
-        if: always()
+        if: always() && steps.analyze.outputs.should_validate == 'true'
         uses: actions/github-script@v6
         with:
           script: |
             const fs = require('fs');
             
-            let comment = '## Validation Results\n\n';
+            let comment = '## 🎮 ROM Hack Submission Validation\n\n';
             
             if (context.payload.pull_request) {
               comment += '✅ All validation checks passed!\n\n';

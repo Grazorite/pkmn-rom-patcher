@@ -4,7 +4,7 @@ test.describe('Mobile Navigation', () => {
   test.use({ viewport: { width: 375, height: 667 } });
   
   test('displays horizontal navigation on mobile', async ({ page }) => {
-    await page.goto('/docs/library/');
+    await page.goto('/library/');
     
     const navSidebar = page.locator('.nav-sidebar');
     await expect(navSidebar).toBeVisible();
@@ -16,7 +16,7 @@ test.describe('Mobile Navigation', () => {
   });
   
   test('nav icons are properly sized for touch', async ({ page }) => {
-    await page.goto('/docs/library/');
+    await page.goto('/library/');
     
     const icons = page.locator('.nav-collapsed-icon');
     const firstIcon = icons.first();
@@ -27,7 +27,7 @@ test.describe('Mobile Navigation', () => {
   });
   
   test('nav icons are horizontally arranged', async ({ page }) => {
-    await page.goto('/docs/library/');
+    await page.goto('/library/');
     
     const iconsContainer = page.locator('.nav-collapsed-icons');
     await expect(iconsContainer).toBeVisible();

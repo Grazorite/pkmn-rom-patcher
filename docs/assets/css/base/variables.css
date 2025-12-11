@@ -4,8 +4,10 @@
     --z-background: -1;
     --z-content: 1;
     --z-sidebar: 100;
-    --z-mobile-nav: 1000;
-    --z-notifications: 1100;
+    --z-detail-overlay: 900;
+    --z-detail-panel: 1000;
+    --z-mobile-sheets: 1100;
+    --z-floating-buttons: 1200;
     --z-modals: 2000;
     
     /* Mobile Navigation */
@@ -18,10 +20,10 @@
     --success: #10b981;
     --warning: #f59e0b;
     --error: #ef4444;
-    --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --bg-primary: #ffffff;
-    --bg-secondary: #f7fafc;
+    --text-primary: #ffffff;
+    --text-secondary: #e2e8f0;
+    --bg-primary: #1a202c;
+    --bg-secondary: #2d3748;
     --border: #e2e8f0;
     --shadow: rgba(0, 0, 0, 0.06);
     

@@ -2,7 +2,7 @@
   {
     "id": "crystal-gold-97-reforged-v6-1e",
     "title": "Gold 97: Reforged",
-    "file": "../patches/crystal/GOLD-97-REFORGED_GBC_CRY-0900_6.1E_2024.ips",
+    "file": "patches/crystal/GOLD-97-REFORGED_GBC_CRY-0900_6.1E_2024.ips",
     "type": "ips",
     "baseRom": "crystal",
     "meta": {
@@ -55,7 +55,7 @@
   {
     "id": "emerald-emerald-enhanced-v11-010",
     "title": "Emerald Enhanced",
-    "file": "../patches/emerald/EMERALD-ENHANCED_GBA_EM-1961_11.010_2025.xdelta",
+    "file": "patches/emerald/EMERALD-ENHANCED_GBA_EM-1961_11.010_2025.xdelta",
     "type": "xdelta",
     "baseRom": "emerald",
     "meta": {

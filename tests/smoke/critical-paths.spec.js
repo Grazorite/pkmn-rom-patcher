@@ -4,9 +4,9 @@ test.describe('Smoke Tests', () => {
   test('critical pages load', async ({ page }) => {
     const pages = [
       { url: '/', title: 'Universal ROM Management' },
-      { url: '/docs/library/', title: 'ROM Library' },
-      { url: '/docs/patcher/', title: 'ROM Patcher' },
-      { url: '/docs/submit/', title: 'Submit Patch' }
+      { url: '/library/', title: 'ROM Library' },
+      { url: '/patcher/', title: 'ROM Patcher' },
+      { url: '/submit/', title: 'Submit Patch' }
     ];
 
     for (const { url, title } of pages) {
@@ -26,7 +26,7 @@ test.describe('Smoke Tests', () => {
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     
-    await page.goto('/docs/patcher/');
+    await page.goto('/patcher/');
     await page.waitForTimeout(2000);
     
     expect(errors).toHaveLength(0);
@@ -67,7 +67,7 @@ test.describe('Smoke Tests', () => {
   
   test('viewport navigation positioning works', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/docs/library/');
+    await page.goto('/library/');
     
     // Check viewport nav exists
     const navSidebar = page.locator('.nav-sidebar');
@@ -84,16 +84,17 @@ test.describe('Smoke Tests', () => {
     await expect(backToTop).toBeVisible();
     
     const buttonBox = await backToTop.boundingBox();
-    expect(buttonBox.y).toBeLessThan(600); // Above nav area
+    // Button should be in bottom right area (within last 100px of viewport height)
+    expect(buttonBox.y).toBeGreaterThan(567); // 667 - 100px
     expect(buttonBox.x).toBeGreaterThan(300); // Should be on right side
   });
 
   test('state persistence does not break page load', async ({ page }) => {
-    await page.goto('/docs/library/');
+    await page.goto('/library/');
     await page.fill('#searchInput', 'test');
     
-    await page.goto('/docs/patcher/');
-    await page.goto('/docs/library/');
+    await page.goto('/patcher/');
+    await page.goto('/library/');
     
     await expect(page.locator('h1')).toBeVisible();
   });

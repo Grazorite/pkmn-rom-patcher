@@ -1,17 +1,19 @@
 // Universal Path Resolver
 export class PathResolver {
+    static resolvePatchPath(patchPath) {
+        if (!patchPath) return '';
+        if (patchPath.startsWith('http')) return patchPath;
+        
+        // Normalize to base-relative path (remove ../ prefixes)
+        return patchPath.replace(/^\.\.\//, '');
+    }
+    
     static resolveImagePath(imagePath, currentPage = 'library') {
         if (!imagePath) return '';
         if (imagePath.startsWith('http')) return imagePath;
         
-        // Handle relative paths based on current page context
-        if (currentPage === 'patcher') {
-            // Patcher is in /patcher/ directory, needs to go up one level
-            return imagePath.startsWith('../') ? imagePath : `../${imagePath}`;
-        }
-        
-        // Library and other pages
-        return imagePath;
+        // Normalize to base-relative path
+        return imagePath.replace(/^\.\.\//, '');
     }
     
     static getCurrentPage() {

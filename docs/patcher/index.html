@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -9,14 +10,26 @@
     <title>ROM Patcher</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7,10 12,15 17,10'/><line x1='12' y1='15' x2='12' y2='3'/></svg>">
 
-    <link rel="stylesheet" href="/docs/assets/css/main.css?v=3">
-    <link rel="stylesheet" href="/docs/assets/css/components/patcher-results.css?v=2">
-    <link rel="stylesheet" href="/docs/assets/css/components/loaded-patch-info.css?v=2">
-    <link rel="stylesheet" href="/docs/assets/css/components/patcher-single-layout.css?v=2">
-    <link rel="stylesheet" href="/docs/assets/css/components/patcher-widget-position.css?v=2">
+    <!-- FOUC Prevention CSS -->
+    <style>html,body{margin:0!important;padding:0!important}</style>
+    
+    <!-- Design System (highest priority) -->
+    <link rel="stylesheet" href="assets/css/design-system/background-system.css">
+    <link rel="stylesheet" href="assets/css/design-system/status-system.css">
+    <link rel="stylesheet" href="assets/css/design-system/image-display.css">
+    
+    <!-- Main CSS (imports components) -->
+    <link rel="stylesheet" href="assets/css/main.css?v=3">
+    
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="assets/css/transitions.css">
+    <link rel="stylesheet" href="assets/css/components/patcher-results.css?v=2">
+    <link rel="stylesheet" href="assets/css/components/loaded-patch-info.css?v=2">
+    <link rel="stylesheet" href="assets/css/components/patcher-single-layout.css?v=2">
+    <link rel="stylesheet" href="assets/css/components/patcher-widget-position.css?v=2">
 
-    <link rel="stylesheet" href="./rom-patcher-js/style.css">
-    <link rel="stylesheet" href="/docs/assets/css/components/rompatcher-theme.css?v=2">
+    <link rel="stylesheet" href="patcher/rom-patcher-js/style.css">
+    <link rel="stylesheet" href="assets/css/components/rompatcher-theme.css?v=2">
     
     <!-- CRITICAL CSS - Inline to bypass cache -->
     <style>
@@ -91,13 +104,55 @@
             transform: none !important;
             color: white !important;
         }
+        
+        /* Remove pink border from ROM patcher widget - CRITICAL OVERRIDE */
+        #rom-patcher-container,
+        #rom-patcher-container *,
+        #rom-patcher-container > *,
+        .rom-patcher-row,
+        .margin-bottom,
+        .text-center,
+        .text-selectable,
+        .text-mono,
+        .text-muted,
+        #rom-patcher-row-apply,
+        #rom-patcher-loaded-patch-info,
+        #rom-patcher-row-file-rom,
+        #rom-patcher-rom-info {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: transparent !important;
+        }
+        
+        /* Force all elements to use app colors */
+        #rom-patcher-container *,
+        #rom-patcher-container *:before,
+        #rom-patcher-container *:after {
+            border-color: var(--border-color, #2a2a3e) !important;
+        }
+        
+        /* Box art image visibility fix */
+        .patch-result-boxart .image-container {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .patch-result-boxart img {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 2 !important;
+        }
     </style>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.basic.min.js"></script>
 
+
 </head>
-<body>
+<body style="margin: 0; padding: 0;">
     <div class="background-shapes">
         <div class="shape"></div>
         <div class="shape"></div>
@@ -114,35 +169,35 @@
             <h3>UROMM</h3>
         </div>
         <div class="nav-links">
-            <a href="../" class="nav-link">
+            <a href="" class="nav-link">
                 <i data-lucide="home" width="20" height="20"></i>
                 Home
             </a>
-            <a href="../patcher/" class="nav-link active">
+            <a href="patcher/" class="nav-link active">
                 <i data-lucide="download" width="20" height="20"></i>
                 ROM Patcher
             </a>
-            <a href="../library/" class="nav-link">
+            <a href="library/" class="nav-link">
                 <i data-lucide="book-open" width="20" height="20"></i>
                 ROM Library
             </a>
-            <a href="../submit/" class="nav-link">
+            <a href="submit/" class="nav-link">
                 <i data-lucide="upload" width="20" height="20"></i>
                 Submit Patch
             </a>
         </div>
 
         <div class="nav-collapsed-icons">
-            <a href="../" class="nav-collapsed-icon" title="Home">
+            <a href="" class="nav-collapsed-icon" title="Home">
                 <i data-lucide="home" width="20" height="20"></i>
             </a>
-            <a href="../patcher/" class="nav-collapsed-icon active" title="ROM Patcher">
+            <a href="patcher/" class="nav-collapsed-icon active" title="ROM Patcher">
                 <i data-lucide="download" width="20" height="20"></i>
             </a>
-            <a href="../library/" class="nav-collapsed-icon" title="ROM Library">
+            <a href="library/" class="nav-collapsed-icon" title="ROM Library">
                 <i data-lucide="book-open" width="20" height="20"></i>
             </a>
-            <a href="../submit/" class="nav-collapsed-icon" title="Submit Patch">
+            <a href="submit/" class="nav-collapsed-icon" title="Submit Patch">
                 <i data-lucide="upload" width="20" height="20"></i>
             </a>
         </div>
@@ -255,7 +310,7 @@
     
     <!-- Floating Buttons -->
     <div class="floating-buttons" id="floatingButtons">
-        <button class="floating-btn back-to-top" id="backToTop" title="Back to Top">
+        <button class="floating-btn back-to-top shimmer-on-hover" id="backToTop" title="Back to Top">
             <i data-lucide="arrow-up" width="20" height="20"></i>
         </button>
     </div>
@@ -272,14 +327,16 @@
     <div id="debugContainer" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); color: white; padding: 10px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; z-index: 9999; display: none;"></div>
     
     <!-- RomPatcher.js library -->
-    <script src="./rom-patcher-js/RomPatcher.webapp.js"></script>
+    <script src="patcher/rom-patcher-js/RomPatcher.webapp.js"></script>
     
-    <script src="/docs/assets/js/core.js"></script>
-    <script src="/docs/assets/js/navigation.js"></script>
+    <script src="assets/js/utils/error-boundary.js"></script>
+    <script src="assets/js/utils/page-transitions.js"></script>
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/navigation.js"></script>
 
-    <script src="/docs/assets/js/floating-buttons.js?v=3"></script>
+    <script src="assets/js/floating-buttons.js?v=3"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
 
-    <script type="module" src="/docs/assets/js/modules/patcher-app.js?v=2"></script>
+    <script type="module" src="assets/js/modules/patcher-app.js?v=2"></script>
 </body>
 </html>

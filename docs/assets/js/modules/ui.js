@@ -3,6 +3,7 @@ import { PerformanceManager } from './performance.js';
 import { imageCache } from './image-cache.js';
 import { imagePopup } from './image-popup.js';
 import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
+import { imageLoader } from '../utils/image-loader.js';
 
 export class UIManager {
     constructor() {
@@ -118,20 +119,20 @@ export class UIManager {
             }
         ]);
 
-        // Setup lazy loading for new images and preload
+        // Setup optimized lazy loading
         const imageUrls = hacksToShow
             .map(hack => hack.meta?.images?.boxArt || hack.meta?.images?.banner)
             .filter(Boolean);
         
         if (imageUrls.length > 0) {
-            imageCache.preloadImages(imageUrls);
+            requestIdleCallback(() => {
+                imageCache.preloadImages(imageUrls.slice(0, 5)); // Preload first 5 only
+            });
         }
         
-        grid.querySelectorAll('.lazy-load').forEach(img => {
-            this.performanceManager.observeImage(img);
-            img.addEventListener('load', () => {
-                img.classList.add('loaded');
-            });
+        // Use optimized image loader
+        grid.querySelectorAll('img[data-src]').forEach(img => {
+            imageLoader.observe(img);
         });
 
         this.updateResultsCount(hacks.length);

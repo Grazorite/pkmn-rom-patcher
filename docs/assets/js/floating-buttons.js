@@ -17,13 +17,15 @@
                 
                 if (clickCount === 1) {
                     clickTimer = setTimeout(() => {
-                        // Single click: toggle sidebar
-                        const sidebar = document.querySelector('.sidebar');
-                        if (sidebar) {
-                            if (window.innerWidth > 768) {
+                        // Mobile: show filter sheet, Desktop: toggle sidebar
+                        if (window.innerWidth <= 768) {
+                            if (window.mobileFilterSheet) {
+                                window.mobileFilterSheet.toggle();
+                            }
+                        } else {
+                            const sidebar = document.querySelector('.sidebar');
+                            if (sidebar) {
                                 sidebar.classList.toggle('collapsed');
-                            } else {
-                                sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
                             }
                         }
                         clickCount = 0;
@@ -85,18 +87,24 @@
             });
         }
         
-        // Show close button when detail panel opens
+        // Replace filter button with close button when detail panel opens
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                     const panel = mutation.target;
-                    if (panel.id === 'detailPanel' && closeBtn) {
+                    if (panel.id === 'detailPanel' && closeBtn && filterBtn) {
                         if (panel.classList.contains('open')) {
+                            // Start cross-fade: filter out, close in
+                            filterBtn.classList.remove('visible');
                             closeBtn.style.display = 'flex';
-                            setTimeout(() => closeBtn.classList.add('visible'), 100);
+                            setTimeout(() => closeBtn.classList.add('visible'), 150);
                         } else {
+                            // Reverse cross-fade: close out, filter in
                             closeBtn.classList.remove('visible');
-                            setTimeout(() => closeBtn.style.display = 'none', 300);
+                            setTimeout(() => {
+                                closeBtn.style.display = 'none';
+                                filterBtn.classList.add('visible');
+                            }, 150);
                         }
                     }
                 }

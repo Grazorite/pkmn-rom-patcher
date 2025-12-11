@@ -2,17 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-const REQUIRED_FIELDS = [
-  'baseRom', 'system', 'status', 'author', 'website', 'released',
-  'hackType', 'tags', 'graphics', 'story', 'maps', 'postgame',
-  'difficulty', 'mechanics', 'fakemons', 'variants', 'typeChanges',
-  'physicalSpecialSplit', 'antiCheat'
-];
 
-// Map YAML field names to required field names
-const FIELD_MAPPING = {
-  'antiCheat': 'antiCheat'
-};
 
 function validateMetadata(meta, filename) {
   const warnings = [];
@@ -92,9 +82,9 @@ function scanPatchesDirectory(patchesDir, metadataDir) {
       const cleanName = baseName.replace(/\s*\[([A-Fa-f0-9]{8})\]\s*/, '');
       const id = `${baseRom.toLowerCase()}-${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
       
-      // Create relative path from docs directory for GitHub Pages
+      // Create base-relative path (remove docs/ prefix)
       const relativePath = path.relative(
-        path.join(__dirname, '..', 'docs'), 
+        path.join(__dirname, '..'), 
         patchPath
       ).replace(/\\/g, '/');
       

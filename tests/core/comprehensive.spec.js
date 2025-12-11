@@ -4,7 +4,7 @@ test.describe('Comprehensive Test Suite', () => {
   
   // Landing Page - Test what's actually visible
   test('landing page core functionality', async ({ page }) => {
-    await page.goto('/docs/');
+    await page.goto('/');
     
     await expect(page.locator('h1')).toContainText('Universal ROM Management');
     await expect(page.locator('.cta-button')).toHaveCount(3);
@@ -30,7 +30,7 @@ test.describe('Comprehensive Test Suite', () => {
 
   // Submit Page - Test what's actually accessible
   test('submit page core functionality', async ({ page }) => {
-    await page.goto('/docs/submit/');
+    await page.goto('/submit/');
     
     await expect(page.locator('h1')).toContainText('Submit');
     await expect(page.locator('.progress-steps')).toBeVisible();
@@ -47,10 +47,10 @@ test.describe('Comprehensive Test Suite', () => {
   // Cross-page navigation
   test('cross-page navigation works', async ({ page }) => {
     const pages = [
-      { url: '/docs/', title: 'Universal ROM Management' },
-      { url: '/docs/patcher/', title: 'ROM Patcher' },
-      { url: '/docs/library/', title: 'ROM Library' },
-      { url: '/docs/submit/', title: 'Submit' }
+      { url: '/', title: 'Universal ROM Management' },
+      { url: '/patcher/', title: 'ROM Patcher' },
+      { url: '/library/', title: 'ROM Library' },
+      { url: '/submit/', title: 'Submit' }
     ];
     
     for (const pageInfo of pages) {
@@ -61,7 +61,7 @@ test.describe('Comprehensive Test Suite', () => {
 
   // Test element existence without visibility requirements
   test('form elements exist in DOM', async ({ page }) => {
-    await page.goto('/docs/submit/');
+    await page.goto('/submit/');
     
     // Elements exist even if hidden
     await expect(page.locator('#boxArt')).toHaveCount(1);
@@ -80,7 +80,7 @@ test.describe('Comprehensive Test Suite', () => {
 
   // Test responsive behavior
   test('responsive design works', async ({ page }) => {
-    await page.goto('/docs/');
+    await page.goto('/');
     
     // Mobile
     await page.setViewportSize({ width: 375, height: 667 });
@@ -101,17 +101,17 @@ test.describe('Comprehensive Test Suite', () => {
       }
     });
     
-    await page.goto('/docs/');
-    await page.goto('/docs/patcher/');
-    await page.goto('/docs/library/');
-    await page.goto('/docs/submit/');
+    await page.goto('/');
+    await page.goto('/patcher/');
+    await page.goto('/library/');
+    await page.goto('/submit/');
     
     expect(errors).toHaveLength(0);
   });
 
   // Test performance
   test('pages load within reasonable time', async ({ page }) => {
-    const pages = ['/docs/', '/docs/patcher/', '/docs/library/', '/docs/submit/'];
+    const pages = ['/', '/patcher/', '/library/', '/submit/'];
     
     for (const pageUrl of pages) {
       const startTime = Date.now();
@@ -125,7 +125,7 @@ test.describe('Comprehensive Test Suite', () => {
 
   // Test theme consistency
   test('theme elements present on all pages', async ({ page }) => {
-    const pages = ['/docs/', '/docs/patcher/', '/docs/library/', '/docs/submit/'];
+    const pages = ['/', '/patcher/', '/library/', '/submit/'];
     
     for (const pageUrl of pages) {
       await page.goto(pageUrl);
