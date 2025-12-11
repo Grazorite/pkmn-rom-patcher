@@ -2,11 +2,13 @@
 <html lang="en" style="background-color: #0f0f23;">
 <head>
     <script>
-        // Environment-aware base tag for GitHub Pages compatibility
+        // IMMEDIATE base tag injection - executes before asset parsing
         (function() {
             const isGitHubPages = window.location.hostname === 'grazorite.github.io';
             const basePath = isGitHubPages ? '/pkmn-rom-patcher/docs/' : '/';
-            document.write('<base href="' + basePath + '">');
+            const base = document.createElement('base');
+            base.href = basePath;
+            document.head.insertBefore(base, document.head.firstChild);
         })();
     </script>
     <meta charset="UTF-8">
