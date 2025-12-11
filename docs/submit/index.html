@@ -1,33 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        // IMMEDIATE base tag injection - executes before asset parsing
-        (function() {
-            const isGitHubPages = window.location.hostname === 'grazorite.github.io';
-            const basePath = isGitHubPages ? '/pkmn-rom-patcher/' : '/';
-            const base = document.createElement('base');
-            base.href = basePath;
-            document.head.insertBefore(base, document.head.firstChild);
-        })();
-    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Patch</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='17 8 12 3 7 8'/><line x1='12' y1='3' x2='12' y2='15'/></svg>">
+    <!-- PathResolver for asset loading -->
+    <script src="submit/path-resolver.js"></script>
+    
     <!-- FOUC Prevention -->
     <style>html,body{margin:0!important;padding:0!important}</style>
-    <!-- Design System (highest priority) -->
-    <link rel="stylesheet" href="docs/assets/css/design-system/background-system.css">
-    <link rel="stylesheet" href="docs/assets/css/design-system/status-system.css">
-    <link rel="stylesheet" href="docs/assets/css/design-system/image-display.css">
-    
-    <!-- Main CSS (imports components) -->
-    <link rel="stylesheet" href="docs/assets/css/main.css?v=3">
-    
-    <!-- Page-specific CSS -->
-    <link rel="stylesheet" href="docs/assets/css/transitions.css">
-    <link rel="stylesheet" href="docs/assets/css/performance.css?v=2">
 </head>
 <body>
     <div class="background-shapes">
@@ -46,35 +29,35 @@
             <h3>UROMM</h3>
         </div>
         <div class="nav-links">
-            <a href="docs/" class="nav-link">
+            <a href="" class="nav-link">
                 <i data-lucide="home" width="20" height="20"></i>
                 Home
             </a>
-            <a href="docs/patcher/" class="nav-link">
+            <a href="patcher/" class="nav-link">
                 <i data-lucide="download" width="20" height="20"></i>
                 ROM Patcher
             </a>
-            <a href="docs/library/" class="nav-link">
+            <a href="library/" class="nav-link">
                 <i data-lucide="book-open" width="20" height="20"></i>
                 ROM Library
             </a>
-            <a href="docs/submit/" class="nav-link active">
+            <a href="submit/" class="nav-link active">
                 <i data-lucide="upload" width="20" height="20"></i>
                 Submit Patch
             </a>
         </div>
 
         <div class="nav-collapsed-icons">
-            <a href="docs/" class="nav-collapsed-icon" title="Home">
+            <a href="" class="nav-collapsed-icon" title="Home">
                 <i data-lucide="home" width="20" height="20"></i>
             </a>
-            <a href="docs/patcher/" class="nav-collapsed-icon" title="ROM Patcher">
+            <a href="patcher/" class="nav-collapsed-icon" title="ROM Patcher">
                 <i data-lucide="download" width="20" height="20"></i>
             </a>
-            <a href="docs/library/" class="nav-collapsed-icon" title="ROM Library">
+            <a href="library/" class="nav-collapsed-icon" title="ROM Library">
                 <i data-lucide="book-open" width="20" height="20"></i>
             </a>
-            <a href="docs/submit/" class="nav-collapsed-icon active" title="Submit Patch">
+            <a href="submit/" class="nav-collapsed-icon active" title="Submit Patch">
                 <i data-lucide="upload" width="20" height="20"></i>
             </a>
         </div>
@@ -333,12 +316,24 @@
     </div>
     
 
-    <script src="docs/assets/js/utils/page-transitions.js"></script>
-    <script src="docs/assets/js/core.js"></script>
-    <script src="docs/assets/js/navigation.js"></script>
-
-    <script src="docs/assets/js/floating-buttons.js?v=3"></script>
+    <script>
+        // Load JS assets using PathResolver
+        const jsAssets = [
+            'utils/page-transitions.js',
+            'core.js',
+            'navigation.js',
+            'floating-buttons.js?v=3'
+        ];
+        
+        jsAssets.forEach(asset => {
+            const script = document.createElement('script');
+            script.src = window.PathResolver.resolveJS(asset);
+            document.head.appendChild(script);
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
-    <script type="module" src="docs/assets/js/modules/submit-form.js"></script>
+    <script type="module">
+        import(window.PathResolver.resolveJS('modules/submit-form.js'));
+    </script>
 </body>
 </html>
