@@ -12,8 +12,19 @@
     <!-- DNS prefetch for external resources -->
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     
-    <!-- PathResolver for asset loading -->
-    <script src="library/path-resolver.js"></script>
+    <!-- Inline path detection and centralized PathResolver loading -->
+    <script>
+        (function() {
+            const isGitHubPages = location.hostname === 'grazorite.github.io';
+            const basePath = isGitHubPages ? '/pkmn-rom-patcher/docs/' : '/docs/';
+            window.APP_BASE_PATH = basePath;
+            
+            const script = document.createElement('script');
+            script.src = basePath + 'assets/js/utils/path-resolver-v2.js';
+            script.onload = () => window.pathResolverReady = true;
+            document.head.appendChild(script);
+        })();
+    </script>
     
     <!-- Critical CSS inlined - FOUC prevention -->
     <style>
@@ -375,21 +386,30 @@
         }
     </script>
     <script>
-        // Load JS assets using PathResolver
-        const jsAssets = [
-            'utils/error-boundary.js',
-            'utils/page-transitions.js', 
-            'core.js',
-            'navigation.js',
-            'mobile/mobile-filter-sheet.js',
-            'floating-buttons.js?v=3'
-        ];
+        // Wait for PathResolver then load assets
+        function loadAssets() {
+            if (!window.PathResolver) {
+                setTimeout(loadAssets, 50);
+                return;
+            }
+            
+            const jsAssets = [
+                'utils/error-boundary.js',
+                'utils/page-transitions.js', 
+                'core.js',
+                'navigation.js',
+                'mobile/mobile-filter-sheet.js',
+                'floating-buttons.js?v=3'
+            ];
+            
+            jsAssets.forEach(asset => {
+                const script = document.createElement('script');
+                script.src = window.PathResolver.resolveJS(asset);
+                document.head.appendChild(script);
+            });
+        }
         
-        jsAssets.forEach(asset => {
-            const script = document.createElement('script');
-            script.src = window.PathResolver.resolveJS(asset);
-            document.head.appendChild(script);
-        });
+        loadAssets();
     </script>
     <script>
         // Initialize mobile filter sheet on library page
@@ -405,7 +425,14 @@
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js" defer></script>
 
     <script type="module">
-        import(window.PathResolver.resolveJS('modules/library-app.js?v=4'));
+        function loadModule() {
+            if (!window.PathResolver) {
+                setTimeout(loadModule, 50);
+                return;
+            }
+            import(window.PathResolver.resolveJS('modules/library-app.js?v=4'));
+        }
+        loadModule();
     </script>
 </body>
 </html>

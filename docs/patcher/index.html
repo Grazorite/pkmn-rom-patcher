@@ -10,8 +10,19 @@
     <title>ROM Patcher</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7,10 12,15 17,10'/><line x1='12' y1='15' x2='12' y2='3'/></svg>">
 
-    <!-- PathResolver for asset loading -->
-    <script src="patcher/path-resolver.js"></script>
+    <!-- Inline path detection and centralized PathResolver loading -->
+    <script>
+        (function() {
+            const isGitHubPages = location.hostname === 'grazorite.github.io';
+            const basePath = isGitHubPages ? '/pkmn-rom-patcher/docs/' : '/docs/';
+            window.APP_BASE_PATH = basePath;
+            
+            const script = document.createElement('script');
+            script.src = basePath + 'assets/js/utils/path-resolver-v2.js';
+            script.onload = () => window.pathResolverReady = true;
+            document.head.appendChild(script);
+        })();
+    </script>
     
     <!-- FOUC Prevention CSS -->
     <style>html,body{margin:0!important;padding:0!important}</style>
@@ -312,29 +323,36 @@
     <div id="debugContainer" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); color: white; padding: 10px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; z-index: 9999; display: none;"></div>
     
     <script>
-        // Load JS assets using PathResolver
-        const jsAssets = [
-            'utils/error-boundary.js',
-            'utils/page-transitions.js',
-            'core.js',
-            'navigation.js',
-            'floating-buttons.js?v=3'
-        ];
+        // Wait for PathResolver then load assets
+        function loadAssets() {
+            if (!window.PathResolver) {
+                setTimeout(loadAssets, 50);
+                return;
+            }
+            
+            const jsAssets = [
+                'utils/error-boundary.js',
+                'utils/page-transitions.js',
+                'core.js',
+                'navigation.js',
+                'floating-buttons.js?v=3'
+            ];
+            
+            jsAssets.forEach(asset => {
+                const script = document.createElement('script');
+                script.src = window.PathResolver.resolveJS(asset);
+                document.head.appendChild(script);
+            });
+            
+            const romPatcherScript = document.createElement('script');
+            romPatcherScript.src = window.PathResolver.resolveRomPatcherJS('RomPatcher.webapp.js');
+            document.head.appendChild(romPatcherScript);
+            
+            import(window.PathResolver.resolveJS('modules/patcher-app.js?v=2'));
+        }
         
-        jsAssets.forEach(asset => {
-            const script = document.createElement('script');
-            script.src = window.PathResolver.resolveJS(asset);
-            document.head.appendChild(script);
-        });
-        
-        // ROM Patcher JS
-        const romPatcherScript = document.createElement('script');
-        romPatcherScript.src = window.PathResolver.resolveRomPatcherJS('RomPatcher.webapp.js');
-        document.head.appendChild(romPatcherScript);
+        loadAssets();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
-    <script type="module">
-        import(window.PathResolver.resolveJS('modules/patcher-app.js?v=2'));
-    </script>
 </body>
 </html>

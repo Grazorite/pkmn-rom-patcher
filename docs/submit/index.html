@@ -6,8 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Patch</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='17 8 12 3 7 8'/><line x1='12' y1='3' x2='12' y2='15'/></svg>">
-    <!-- PathResolver for asset loading -->
-    <script src="submit/path-resolver.js"></script>
+    <!-- Inline path detection and centralized PathResolver loading -->
+    <script>
+        (function() {
+            const isGitHubPages = location.hostname === 'grazorite.github.io';
+            const basePath = isGitHubPages ? '/pkmn-rom-patcher/docs/' : '/docs/';
+            window.APP_BASE_PATH = basePath;
+            
+            const script = document.createElement('script');
+            script.src = basePath + 'assets/js/utils/path-resolver-v2.js';
+            script.onload = () => window.pathResolverReady = true;
+            document.head.appendChild(script);
+        })();
+    </script>
     
     <!-- FOUC Prevention -->
     <style>html,body{margin:0!important;padding:0!important}</style>
@@ -317,23 +328,31 @@
     
 
     <script>
-        // Load JS assets using PathResolver
-        const jsAssets = [
-            'utils/page-transitions.js',
-            'core.js',
-            'navigation.js',
-            'floating-buttons.js?v=3'
-        ];
+        // Wait for PathResolver then load assets
+        function loadAssets() {
+            if (!window.PathResolver) {
+                setTimeout(loadAssets, 50);
+                return;
+            }
+            
+            const jsAssets = [
+                'utils/page-transitions.js',
+                'core.js',
+                'navigation.js',
+                'floating-buttons.js?v=3'
+            ];
+            
+            jsAssets.forEach(asset => {
+                const script = document.createElement('script');
+                script.src = window.PathResolver.resolveJS(asset);
+                document.head.appendChild(script);
+            });
+            
+            import(window.PathResolver.resolveJS('modules/submit-form.js'));
+        }
         
-        jsAssets.forEach(asset => {
-            const script = document.createElement('script');
-            script.src = window.PathResolver.resolveJS(asset);
-            document.head.appendChild(script);
-        });
+        loadAssets();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
-    <script type="module">
-        import(window.PathResolver.resolveJS('modules/submit-form.js'));
-    </script>
 </body>
 </html>
