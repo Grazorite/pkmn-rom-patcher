@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <base href="/">
+    <script>
+        // Environment-aware base tag for GitHub Pages compatibility
+        (function() {
+            const isGitHubPages = window.location.hostname === 'grazorite.github.io';
+            const basePath = isGitHubPages ? '/pkmn-rom-patcher/docs/' : '/';
+            document.write('<base href="' + basePath + '">');
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Patch</title>
