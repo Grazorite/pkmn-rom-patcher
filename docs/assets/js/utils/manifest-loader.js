@@ -71,10 +71,10 @@ export class ManifestLoader {
     }
 
     getManifestPaths() {
-        if (window.PathResolver) {
-            return [window.PathResolver.resolveManifest()];
-        }
-        return ['manifest.json'];
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        return isLocal
+            ? ['/docs/manifest.json', './manifest.json', '../manifest.json']
+            : ['../manifest.json'];
     }
 
     isCacheValid() {

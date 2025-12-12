@@ -12,20 +12,6 @@
     <!-- DNS prefetch for external resources -->
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     
-    <!-- Inline path detection and centralized PathResolver loading -->
-    <script>
-        (function() {
-            const isGitHubPages = location.hostname === 'grazorite.github.io';
-            const basePath = isGitHubPages ? '/pkmn-rom-patcher/docs/' : '/docs/';
-            window.APP_BASE_PATH = basePath;
-            
-            const script = document.createElement('script');
-            script.src = basePath + 'assets/js/utils/path-resolver-v2.js';
-            script.onload = () => window.pathResolverReady = true;
-            document.head.appendChild(script);
-        })();
-    </script>
-    
     <!-- Critical CSS inlined - FOUC prevention -->
     <style>
         /* Immediate FOUC prevention with transition readiness */
@@ -33,6 +19,20 @@
         /* Critical above-the-fold CSS - optimized for LCP */
         :root{--bg-primary:#1a202c;--bg-secondary:#2d3748;--surface-color:#16213e;--text-primary:#eee;--text-secondary:#a0a0a0;--accent-primary:#667eea;--border-color:#2a2a3e}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--text-primary);line-height:1.6;overflow-x:hidden;contain:layout style}.app-container{display:flex;min-height:100vh;padding-left:280px;contain:layout}.nav-sidebar{position:fixed;top:0;left:0;width:280px;height:100vh;background:var(--bg-secondary);z-index:1000;contain:layout style}.app-header{padding:2rem 0 1rem;text-align:center;contain:layout}.app-header h1{font-size:2.5rem;margin-bottom:.5rem;color:var(--text-primary);contain:layout}.app-layout{display:flex;gap:2rem;width:100%;max-width:1400px;margin:0 auto;padding:0 2rem;contain:layout}.sidebar{width:280px;flex-shrink:0;contain:layout}.main-content{flex:1;min-width:0;contain:layout}.hack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;margin-top:1rem;contain:layout}.loading{text-align:center;padding:3rem;color:var(--text-secondary);font-size:1.1rem;contain:layout}.skeleton{background:linear-gradient(90deg,var(--surface-color) 25%,var(--border-color) 50%,var(--surface-color) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:12px;contain:layout}@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}.skeleton-card{height:280px;margin-bottom:1rem;contain:layout}@media (max-width:768px){.app-container{padding-left:0}.nav-sidebar{transform:translateX(-100%)}.app-layout{flex-direction:column;padding:0 1rem}.sidebar{width:100%;display:none!important}}
     </style>
+    
+    <!-- Load critical CSS synchronously to prevent FOUC -->
+    <!-- Design System (highest priority) -->
+    <link rel="stylesheet" href="../assets/css/design-system/background-system.css">
+    <link rel="stylesheet" href="../assets/css/design-system/status-system.css">
+    <link rel="stylesheet" href="../assets/css/design-system/image-display.css">
+    
+    <!-- Main CSS (imports components) -->
+    <link rel="stylesheet" href="../assets/css/main.css?v=3">
+    <link rel="stylesheet" href="../assets/css/components/mobile-filter-sheet.css">
+    
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="../assets/css/transitions.css">
+    <link rel="stylesheet" href="../assets/css/performance.css?v=2">
     
     <!-- CDN scripts loaded just-in-time by resource loader -->
 
@@ -54,35 +54,35 @@
             <h3>UROMM</h3>
         </div>
         <div class="nav-links">
-            <a href="" class="nav-link">
+            <a href="../" class="nav-link">
                 <i data-lucide="home" width="20" height="20"></i>
                 Home
             </a>
-            <a href="patcher/" class="nav-link">
+            <a href="../patcher/" class="nav-link">
                 <i data-lucide="download" width="20" height="20"></i>
                 ROM Patcher
             </a>
-            <a href="library/" class="nav-link active">
+            <a href="../library/" class="nav-link active">
                 <i data-lucide="book-open" width="20" height="20"></i>
                 ROM Library
             </a>
-            <a href="submit/" class="nav-link">
+            <a href="../submit/" class="nav-link">
                 <i data-lucide="upload" width="20" height="20"></i>
                 Submit Patch
             </a>
         </div>
 
         <div class="nav-collapsed-icons">
-            <a href="" class="nav-collapsed-icon" title="Home">
+            <a href="../" class="nav-collapsed-icon" title="Home">
                 <i data-lucide="home" width="20" height="20"></i>
             </a>
-            <a href="patcher/" class="nav-collapsed-icon" title="ROM Patcher">
+            <a href="../patcher/" class="nav-collapsed-icon" title="ROM Patcher">
                 <i data-lucide="download" width="20" height="20"></i>
             </a>
-            <a href="library/" class="nav-collapsed-icon active" title="ROM Library">
+            <a href="../library/" class="nav-collapsed-icon active" title="ROM Library">
                 <i data-lucide="book-open" width="20" height="20"></i>
             </a>
-            <a href="submit/" class="nav-collapsed-icon" title="Submit Patch">
+            <a href="../submit/" class="nav-collapsed-icon" title="Submit Patch">
                 <i data-lucide="upload" width="20" height="20"></i>
             </a>
         </div>
@@ -368,20 +368,12 @@
         }
         
         // Critical path optimization - library page only
-        function setCRC32Path() {
-            if (window.PathResolver) {
-                window.CRC32_WORKER_PATH = window.PathResolver.resolveAsset('js/vendor/worker_crc.js');
-            } else {
-                setTimeout(setCRC32Path, 50);
-            }
-        }
-        setCRC32Path();
+        window.CRC32_WORKER_PATH = '../assets/js/vendor/worker_crc.js';
         
         // Register service worker for performance
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                const isGitHubPages = window.location.hostname === 'grazorite.github.io';
-                const swPath = isGitHubPages ? '/pkmn-rom-patcher/docs/sw.js' : '/docs/sw.js';
+                const swPath = '/docs/sw.js';
                 navigator.serviceWorker.register(swPath)
                     .then(registration => {
                         console.log('SW registered:', registration);
@@ -392,60 +384,26 @@
             });
         }
     </script>
+    <script src="../assets/js/utils/error-boundary.js"></script>
+    <script src="../assets/js/utils/page-transitions.js"></script>
+    <script src="../assets/js/core.js"></script>
+    <script src="../assets/js/navigation.js"></script>
+
+    <script src="../assets/js/mobile/mobile-filter-sheet.js"></script>
+    <script src="../assets/js/floating-buttons.js?v=3"></script>
     <script>
-        // Wait for PathResolver then load assets
-        function loadAssets() {
-            if (!window.PathResolver) {
-                setTimeout(loadAssets, 50);
-                return;
-            }
-            
-            const jsAssets = [
-                'utils/error-boundary.js',
-                'utils/page-transitions.js', 
-                'core.js',
-                'navigation.js',
-                'mobile/mobile-filter-sheet.js',
-                'floating-buttons.js?v=3'
-            ];
-            
-            jsAssets.forEach(asset => {
-                const script = document.createElement('script');
-                script.src = window.PathResolver.resolveJS(asset);
-                document.head.appendChild(script);
-            });
-        }
-        
-        loadAssets();
-    </script>
-    <script>
-        // Initialize mobile filter sheet after assets load
-        function initMobileFilterSheet() {
-            if (window.MobileFilterSheet) {
-                window.mobileFilterSheet = new MobileFilterSheet();
-            } else {
-                setTimeout(initMobileFilterSheet, 100);
-            }
-        }
-        
+        // Initialize mobile filter sheet on library page
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initMobileFilterSheet);
+            document.addEventListener('DOMContentLoaded', () => {
+                window.mobileFilterSheet = new MobileFilterSheet();
+            });
         } else {
-            initMobileFilterSheet();
+            window.mobileFilterSheet = new MobileFilterSheet();
         }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js" defer></script>
 
-    <script type="module">
-        function loadModule() {
-            if (!window.PathResolver) {
-                setTimeout(loadModule, 50);
-                return;
-            }
-            import(window.PathResolver.resolveJS('modules/library-app.js?v=4'));
-        }
-        loadModule();
-    </script>
+    <script type="module" src="../assets/js/modules/library-app.js?v=4"></script>
 </body>
 </html>
