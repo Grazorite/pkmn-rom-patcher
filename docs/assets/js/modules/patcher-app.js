@@ -3,7 +3,7 @@ import { Utils } from './utils.js';
 import { imagePopup } from './image-popup.js';
 import { renderBadge, initBadgeRenderer } from '../utils/badge-renderer.js';
 import { StateManager } from '../utils/state-manager.js';
-import { PathResolver } from '../utils/path-resolver.js';
+
 import { BasicSearch } from '../utils/basic-search.js';
 import { manifestLoader } from '../utils/manifest-loader.js';
 
@@ -400,7 +400,7 @@ class ROMPatcherApp {
         
         // Build patch info for RomPatcher using unified path resolution
         const patchInfo = {
-            file: PathResolver.resolvePatchPath(this.selectedPatch.file),
+            file: this.selectedPatch.file,
             name: this.selectedPatch.title,
             description: this.selectedPatch.changelog ? this.selectedPatch.changelog.substring(0, 200) : '',
             outputName: this.selectedPatch.title.replace(/[^a-zA-Z0-9-_]/g, '_')
@@ -476,7 +476,7 @@ class ROMPatcherApp {
         // Show banner with bannerImage (same as library implementation)
         const banner = document.getElementById('selectedPatchBanner');
         if (banner) {
-            const bannerImage = PathResolver.resolveImagePath(this.selectedPatch.meta?.images?.banner || '', 'patcher');
+            const bannerImage = this.selectedPatch.meta?.images?.banner || '';
             if (bannerImage) {
                 banner.classList.add('has-banner');
                 banner.style.setProperty('--banner-bg', `url('${bannerImage}')`);
@@ -635,13 +635,13 @@ class ROMPatcherApp {
                     setTimeout(() => {
 
                         this.selectPatch(patch.id);
-                        this.showNotification(`Loaded patch: ${patch.title}`, PathResolver.resolvePatchPath(patch.file));
+                        this.showNotification(`Loaded patch: ${patch.title}`, patch.file);
                     }, 800);
                 } else {
 
                     // Create patch info from URL params for direct loading
                     const patchInfo = {
-                        file: PathResolver.resolvePatchPath(patchFile),
+                        file: patchFile,
                         name: patchName || 'Selected Patch',
                         title: patchName || 'Selected Patch'
                     };

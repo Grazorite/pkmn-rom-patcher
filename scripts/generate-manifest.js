@@ -82,8 +82,8 @@ function scanPatchesDirectory(patchesDir, metadataDir) {
       const cleanName = baseName.replace(/\s*\[([A-Fa-f0-9]{8})\]\s*/, '');
       const id = `${baseRom.toLowerCase()}-${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
       
-      // Create base-relative path (remove docs/ prefix)
-      const relativePath = path.relative(
+      // Create relative path from docs/ directory
+      const relativePath = '../' + path.relative(
         path.join(__dirname, '..'), 
         patchPath
       ).replace(/\\/g, '/');
