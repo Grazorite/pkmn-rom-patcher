@@ -1,10 +1,11 @@
 // Badge Renderer - Centralized badge HTML generation
+import { configLoader } from './config-loader.js';
+
 let baseRomsCache = null;
 
 async function loadBaseRoms() {
     if (baseRomsCache) return baseRomsCache;
-    const response = await fetch('config/base-roms.json');
-    baseRomsCache = await response.json();
+    baseRomsCache = await configLoader.load('base-roms.json');
     return baseRomsCache;
 }
 
