@@ -53,6 +53,7 @@ Before editing files, produce a **short plan** including:
 - Keep edits **localized**. Do not modify unrelated modules.
 - After edits:
   - Run format/lint/tests that exist in the repo.
+  - Update any affected documentation (README.md, docs/*.md, comments).
   - Post a **Validation Report** (tests run, results, manual checks performed).
 
 ## Testing Protocol
@@ -97,3 +98,4 @@ Before editing files, produce a **short plan** including:
 - Guess libraries/patterns without reading code.
 - Introduce new utility layers if an equivalent exists.
 - Ship code without tests or validation evidence.
+- Leave documentation outdated after implementation changes.
