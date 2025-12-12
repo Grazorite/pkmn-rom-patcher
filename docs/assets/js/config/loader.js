@@ -1,4 +1,5 @@
 // Config Loader - Frontend access to config files
+import { configLoader } from '../utils/config-loader.js';
 
 let systemsCache = null;
 let baseRomsCache = null;
@@ -6,16 +7,14 @@ let baseRomsCache = null;
 export async function loadSystems() {
     if (systemsCache) return systemsCache;
     
-    const response = await fetch('config/systems.json');
-    systemsCache = await response.json();
+    systemsCache = await configLoader.load('systems.json');
     return systemsCache;
 }
 
 export async function loadBaseRoms() {
     if (baseRomsCache) return baseRomsCache;
     
-    const response = await fetch('config/base-roms.json');
-    baseRomsCache = await response.json();
+    baseRomsCache = await configLoader.load('base-roms.json');
     return baseRomsCache;
 }
 

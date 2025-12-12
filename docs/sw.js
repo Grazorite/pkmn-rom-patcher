@@ -4,17 +4,17 @@ const MANIFEST_CACHE = 'manifest-cache-v1';
 
 // Cache critical resources with instant priority
 const INSTANT_CACHE = [
-    '/docs/assets/css/main.css',
-    '/docs/assets/css/transitions.css'
+    './assets/css/main.css',
+    './assets/css/transitions.css'
 ];
 
 const CRITICAL_RESOURCES = [
-    '/docs/assets/css/performance.css',
-    '/docs/assets/js/modules/library-app.js',
-    '/docs/assets/js/modules/ui.js',
-    '/docs/assets/js/modules/search.js',
-    '/docs/assets/js/modules/cache.js',
-    '/docs/assets/js/utils/page-transitions.js'
+    './assets/css/performance.css',
+    './assets/js/modules/library-app.js',
+    './assets/js/modules/ui.js',
+    './assets/js/modules/search.js',
+    './assets/js/modules/cache.js',
+    './assets/js/utils/page-transitions.js'
 ];
 
 // Install event - cache critical resources

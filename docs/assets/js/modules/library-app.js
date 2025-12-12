@@ -11,6 +11,7 @@ import { StateManager } from '../utils/state-manager.js';
 import { imageLoader } from '../utils/image-loader.js';
 import { resourceLoader } from '../utils/resource-loader.js';
 import { manifestLoader } from '../utils/manifest-loader.js';
+import { configLoader } from '../utils/config-loader.js';
 import { PageDetector } from '../utils/page-detector.js';
 import { BasicSearch } from '../utils/basic-search.js';
 
