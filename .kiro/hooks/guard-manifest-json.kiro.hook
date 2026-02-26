@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Guard manifest.json",
+  "description": "Detects when docs/manifest.json has been directly edited and warns the agent that it's auto-generated. Edit metadata/ files instead, then run: node scripts/generate-manifest.js",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "docs/manifest.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "WARNING: You just edited docs/manifest.json directly. This file is auto-generated and your changes will be overwritten. Revert your changes to docs/manifest.json, edit the corresponding file in metadata/ instead, then run: node scripts/generate-manifest.js"
+  }
+}

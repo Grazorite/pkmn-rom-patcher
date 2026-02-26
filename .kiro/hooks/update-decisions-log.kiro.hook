@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Check for Architecture Decisions",
+  "description": "After completing a spec task, reminds the agent to check if any architectural decisions were made that should be logged in decisions.md.",
+  "version": "1",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review what was just implemented. If any new architectural decisions were made (new libraries, patterns, data flow changes, API changes), update .kiro/steering/decisions.md with a new ADR entry following the existing format."
+  }
+}

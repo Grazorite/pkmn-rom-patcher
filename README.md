@@ -201,7 +201,7 @@ npm run test:ui
 
 All patches follow a standardized naming format for consistency and automation:
 
-```
+```css
 {TITLE}_{SYSTEM}_{BASEROM-CRC}_{VERSION}{VARIANT}_{YEAR}.{ext}
 ```
 

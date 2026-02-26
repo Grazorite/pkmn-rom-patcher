@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Validate Patch Naming",
+  "description": "Runs the filename validation script when new patch files are created to ensure they follow the naming convention.",
+  "version": "1",
+  "when": {
+    "type": "fileCreated",
+    "patterns": [
+      "patches/**/*"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "python scripts/validate_filenames.py"
+  }
+}

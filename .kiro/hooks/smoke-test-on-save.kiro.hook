@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Run Smoke Tests",
+  "description": "Runs the fast Playwright smoke test suite to catch regressions. Trigger manually when ready to validate frontend changes.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npm run test:smoke"
+  }
+}

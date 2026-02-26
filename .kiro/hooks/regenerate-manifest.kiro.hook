@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Regenerate Manifest",
+  "description": "Automatically regenerates docs/manifest.json when metadata JSON files or patch files are added or modified.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "metadata/**/*.json",
+      "patches/**/*"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "node scripts/generate-manifest.js"
+  }
+}
