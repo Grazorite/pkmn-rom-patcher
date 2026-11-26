@@ -1,260 +1,50 @@
 # Universal ROM Management (UROMM)
 
-A comprehensive ROM patching platform with automated patch management, community submissions, and GitHub Pages hosting.
+UROMM is a browser-based ROM patcher and searchable patch library. Use your own legally obtained
+base ROM. ROM files stay in the browser during patching; they are not uploaded to the site.
 
-## Features
+## Use the patcher
 
-### 🎮 ROM Patcher
+Browse the [library](docs/library/index.html), select a patch, then choose your local ROM in the
+[patcher](docs/patcher/index.html). The patcher validates the input and offers the patched file for
+download. See the [patcher guide](docs/patcher/README.md) for details.
 
-- Client-side ROM patching (IPS, BPS, UPS, XDelta)
-- Search and filter patches
-- Automatic ROM validation
-- CRC32/MD5/SHA-1 checksums
-- No server uploads - everything runs in your browser
+To suggest a new patch, use the site's [submission form](docs/submit/index.html). It uses a
+GitHub personal access token to create a pull request. The site stores the token in the browser's
+session storage. Do not include a base ROM or credentials in a submission.
 
-### 📚 ROM Library
+## Develop locally
 
-- Searchable patch database
-- Advanced filtering (system, difficulty, status, tags)
-- Detailed patch information with descriptions
-- Banner images and box art
-- Direct links to documentation and communities
+From the repository root with Node.js 18 or newer:
 
-### 📤 Community Submissions
-
-- Web-based submission form
-- GitHub PAT authentication
-- Automated PR creation
-- Metadata validation via GitHub Actions
-- No GitHub knowledge required
-
-## Quick Start
-
-### For Users
-
-1. Visit the hosted site
-2. Browse the library or search for patches
-3. Select a patch and upload your ROM file
-4. Download the patched ROM
-
-### For Contributors
-
-1. Navigate to `/submit` page
-2. Fill out the 5-step submission form
-3. Authenticate with GitHub (PAT)
-4. Submit - creates automatic PR
-5. Wait for maintainer review
-
-## Setup (Self-Hosting)
-
-### Prerequisites
-
-- GitHub repository
-- GitHub Pages enabled
-- Node.js 18+ (for development)
-
-### Installation
-
-1. **Clone repository**
-
-   ```bash
-   git clone <repository-url>
-   cd pkmn-rom-patcher
-   ```
-
-2. **Enable GitHub Pages**
-   - Settings → Pages → Source: GitHub Actions
-
-3. **Add RomPatcher.js**
-   - Download from [MarcRobledo/RomPatcher.js](https://github.com/MarcRobledo/RomPatcher.js)
-   - Place `rompatcher.min.js` in `docs/patcher/rom-patcher-js/`
-
-4. **Configure workflows**
-   - `.github/workflows/update_manifest.yml` - Auto-updates manifest
-   - `.github/workflows/validate-submission.yml` - Validates submissions
-
-### Development
-
-```bash
-# Install dependencies
-npm install
-
-# Start local server
+```sh
+npm ci
 npm run serve
-
-# Run tests
-npm test
-npm run test:smoke
 ```
 
-## Submission Templates
+Open `http://localhost:3000`. Both local development and GitHub Pages serve the `docs/`
+directory. Keep paths consistent between environments. The RomPatcher.js source is already
+included in [the patcher directory](docs/patcher/rom-patcher-js/).
 
-### Metadata Format
-
-Submissions should follow this structure:
-
-```json
-{
-  "id": "base-rom-hack-name",
-  "title": "Hack Name",
-  "file": "../patches/baserom/Hack_Name.bps",
-  "type": "bps",
-  "baseRom": "baserom",
-  "meta": {
-    "baseRom": "Base ROM Name",
-    "system": "GBA",
-    "author": "Author Name",
-    "version": "1.0",
-    "released": "2024-01-01",
-    "status": "Complete",
-    "difficulty": "Normal",
-    "images": {
-      "boxArt": "https://example.com/boxart.png",
-      "banner": "https://example.com/banner.png"
-    },
-    "links": {
-      "website": "https://example.com",
-      "discord": "https://discord.gg/example",
-      "documentation": "https://docs.example.com"
-    }
-  },
-  "changelog": "# Description\n\nMarkdown formatted description..."
-}
+```sh
+npx playwright install
+npm run test:smoke    # Critical paths
+npm test              # Full Playwright suite
 ```
 
-### Pull Request Template
+See the [test guide](tests/README.md) for other suites and troubleshooting.
 
-Community submissions use `.github/PULL_REQUEST_TEMPLATE/community_submission.md`:
+## Maintain the catalog
 
-- Title format: `Add [Hack Name]`
-- Required fields: title, author, base ROM, description
-- Checklist for validation
-- Auto-generated metadata preview
+- Follow the [patch naming convention](docs/NAMING_CONVENTION.md).
+- Use the [community pull request template](.github/PULL_REQUEST_TEMPLATE/community_submission.md).
+- Maintainers store patches under `patches/` and Markdown metadata under `metadata/`. Do not edit
+  `docs/manifest.json` by hand. See the [manifest workflow](.github/workflows/update_manifest.yml)
+  for the push trigger and [workflow guide](docs/WORKFLOW_OPTIMIZATION.md) for validation behavior.
+- For engineering context, see the [project context](.amazonq/rules/PROJECT_CONTEXT.md),
+  [configuration guide](config/README.md), and [CSS guide](docs/assets/css/README.md).
 
-## File Structure
+## License and credits
 
-```css
-├── .github/
-│   ├── workflows/
-│   │   ├── update_manifest.yml          # Auto-update manifest
-│   │   └── validate-submission.yml      # Validate PRs
-│   └── PULL_REQUEST_TEMPLATE/
-│       └── community_submission.md      # PR template
-├── docs/
-│   ├── assets/
-│   │   ├── css/                         # Modular CSS
-│   │   └── js/
-│   │       ├── modules/                 # App modules
-│   │       └── services/                # GitHub integration
-│   ├── library/                         # Library page
-│   ├── patcher/                         # Patcher page
-│   ├── submit/                          # Submission form
-│   ├── manifest.json                    # Auto-generated
-│   └── index.html                       # Landing page
-├── patches/                             # Patch files
-├── metadata/                            # Metadata files
-└── tests/                               # Playwright tests
-```
-
-## GitHub Actions Workflows
-
-### Update Manifest
-
-Automatically updates `manifest.json` when patches are added:
-
-- Triggers on push to `patches/` or `metadata/`
-- Generates manifest from metadata files
-- Commits changes back to repository
-
-### Validate Submissions
-
-Validates community submissions:
-
-- Checks JSON validity
-- Verifies required fields
-- Validates patch file extensions
-- Checks for duplicates
-- Auto-comments on PRs
-
-## Testing
-
-### Test Suite
-
-- **93 tests** across 3 browsers (Chromium, Firefox, WebKit)
-- Smoke tests for critical paths
-- Core functionality tests
-- Integration tests
-- Visual regression tests
-
-```bash
-# Run all tests
-npm test
-
-# Run smoke tests only
-npm run test:smoke
-
-# Run with UI
-npm run test:ui
-```
-
-## Patch Naming Convention
-
-All patches follow a standardized naming format for consistency and automation:
-
-```
-{TITLE}_{SYSTEM}_{BASEROM-CRC}_{VERSION}{VARIANT}_{YEAR}.{ext}
-```
-
-**Example**: `EMERALD-ENHANCED_GBA_EM-1961_v11.010_2025.bps`
-
-See [NAMING_CONVENTION.md](NAMING_CONVENTION.md) for complete details and tools.
-
-## Contributing
-
-### Adding Patches (Maintainers)
-
-1. Add patch file to `patches/[baserom]/`
-2. Add metadata to `metadata/[baserom]/[hackname].json`
-3. Commit and push - manifest updates automatically
-
-### Community Submissions
-
-1. Use `/submit` page on the website
-2. Fill out all required fields
-3. Authenticate with GitHub PAT
-4. Submit creates automatic PR
-5. Maintainers review and merge
-
-### Development Guidelines
-
-- Follow existing code structure
-- Add tests for new features
-- Update documentation
-- Use semantic commit messages
-
-## Security
-
-- All patching happens client-side
-- No ROM files uploaded to servers
-- GitHub PAT stored in sessionStorage only
-- Minimal permissions required (public_repo)
-- Automated validation prevents malicious submissions
-
-## License
-
-ISC
-
-## Credits
-
-- [RomPatcher.js](https://github.com/MarcRobledo/RomPatcher.js) by Marc Robledo
-- [Lucide Icons](https://lucide.dev/)
-- [Fuse.js](https://fusejs.io/) for search
-- [Marked.js](https://marked.js.org/) for markdown
-
-## Support
-
-For issues or questions:
-
-- Open an issue on GitHub
-- Check existing documentation
-- Review PR template for submission guidelines
+ISC. Uses [RomPatcher.js](https://github.com/MarcRobledo/RomPatcher.js) by Marc Robledo,
+[Lucide](https://lucide.dev/), [Fuse.js](https://www.fusejs.io/), and [Marked](https://marked.js.org/).
